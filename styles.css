@@ -1,0 +1,1669 @@
+/**
+ * ============================================================================
+ * SISTEMAS OPERATIVOS - ULL ESIT (ull-esit-sistemas-operativos.github.io/ssoo-apuntes/)
+ * Sistema de Diseño Moderno en Modo Oscuro Técnico
+ * ============================================================================
+ */
+
+:root {
+  --bg-primary: #0f172a;       /* Fondo principal oscuro */
+  --bg-secondary: #1e293b;     /* Tarjetas y contenedores */
+  --bg-tertiary: #090d16;      /* Fondo de bloques de código y canvas */
+  --border-color: #334155;     /* Bordes técnicos */
+  --border-light: #475569;
+  
+  --accent-blue: #3b82f6;      /* Azul primario acento */
+  --accent-blue-hover: #2563eb;
+  --color-success: #10b981;    /* Verde asignado / acierto */
+  --color-danger: #ef4444;     /* Rojo espera / fallo */
+  --color-warning: #f59e0b;    /* Ámbar atención / bloqueo */
+  --color-purple: #8b5cf6;     /* Púrpura procesos */
+  --color-cyan: #06b6d4;       /* Cian hardware */
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-sub: #64748b;
+
+  --sidebar-width: 320px;
+  --header-height: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', Cascadia Code, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-light);
+}
+
+/* ==========================================================================
+   SIDEBAR LATERAL IZQUIERDO (ULL ESIT)
+   ========================================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: #0b1120;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
+  user-select: none;
+}
+
+.sidebar-header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(180deg, #131c31 0%, #0b1120 100%);
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.sidebar-header h1 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.sidebar-header p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.search-container {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-input {
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 0.5rem;
+}
+
+/* Acordeón de Módulos */
+.module-accordion {
+  margin-bottom: 0.6rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.75rem;
+  background-color: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.module-header:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-light);
+}
+
+.module-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.module-icon {
+  font-size: 0.9rem;
+  color: var(--accent-blue);
+}
+
+.module-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #e2e8f0;
+}
+
+.module-badge {
+  font-size: 0.68rem;
+  background-color: #334155;
+  color: #94a3b8;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.module-chevron {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.module-accordion.open .module-chevron {
+  transform: rotate(180deg);
+}
+
+.lessons-list {
+  display: none;
+  list-style: none;
+  padding: 0.25rem 0 0.25rem 0.75rem;
+}
+
+.module-accordion.open .lessons-list {
+  display: block;
+}
+
+.lesson-item {
+  margin: 0.15rem 0;
+}
+
+.lesson-btn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.lesson-btn:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+  color: #fff;
+  border-left-color: rgba(59, 130, 246, 0.5);
+}
+
+.lesson-btn.active {
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #fff;
+  font-weight: 600;
+  border-left-color: var(--accent-blue);
+}
+
+.lesson-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--accent-blue);
+  min-width: 18px;
+}
+
+.sidebar-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.72rem;
+  color: var(--text-sub);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ==========================================================================
+   ÁREA PRINCIPAL DERECHA
+   ========================================================================== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+}
+
+/* Barra Superior de Cabecera */
+.top-header {
+  height: var(--header-height);
+  background-color: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.header-badge {
+  background-color: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: var(--accent-blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.header-title-text h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.header-title-text p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Contenedor del Contenido de la Lección */
+.content-body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1350px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ==========================================================================
+   PARTE SUPERIOR: TEORÍA Y FUNDAMENTOS (ULL ESIT)
+   ========================================================================== */
+.theory-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.theory-header h3 {
+  font-size: 1.35rem;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.theory-summary {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.theory-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.theory-section h4 {
+  font-size: 1.05rem;
+  color: #93c5fd;
+  margin-bottom: 0.5rem;
+}
+
+.theory-section p, .theory-section ul, .theory-section ol {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+}
+
+.theory-section ul, .theory-section ol {
+  padding-left: 1.5rem;
+}
+
+.theory-section li {
+  margin-bottom: 0.35rem;
+}
+
+/* Tarjetas y Rejillas de Teoría */
+.grid-2col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+.theory-card {
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.theory-card h4 {
+  font-size: 0.92rem;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.theory-card p, .theory-card ul {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Callouts y Alertas */
+.callout {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin: 0.85rem 0;
+  border-left: 4px solid;
+  font-size: 0.88rem;
+  background-color: rgba(15, 23, 42, 0.7);
+}
+
+.callout-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.callout-important {
+  border-color: var(--accent-blue);
+  color: #e2e8f0;
+}
+
+.callout-exam {
+  border-color: var(--color-warning);
+  color: #fef3c7;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+/* Bloque de Código C */
+.code-container {
+  margin: 1rem 0;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.code-header {
+  padding: 0.4rem 0.85rem;
+  background-color: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.code-block {
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #38bdf8;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Tablas Teóricas */
+.theory-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+
+.theory-table th {
+  background-color: #131c31;
+  color: #93c5fd;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+.theory-table td {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-color);
+  color: #cbd5e1;
+}
+
+.theory-table tr:nth-child(even) {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* ==========================================================================
+   PARTE INFERIOR: TALLER INTERACTIVO Y SIMULADOR
+   ========================================================================== */
+.workshop-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.workshop-header {
+  margin-bottom: 1.25rem;
+}
+
+.workshop-header h3 {
+  font-size: 1.25rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workshop-header p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Barra de Controles del Simulador */
+.sim-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.control-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.control-group select, .control-group input[type="number"], .control-group input[type="text"] {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.control-group select:focus, .control-group input:focus {
+  border-color: var(--accent-blue);
+}
+
+.control-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-blue);
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: var(--accent-blue-hover);
+}
+
+.btn-secondary {
+  background-color: #334155;
+  color: #f8fafc;
+  border-color: #475569;
+}
+.btn-secondary:hover {
+  background-color: #475569;
+}
+
+.btn-success {
+  background-color: var(--color-success);
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #059669;
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.btn-warning {
+  background-color: var(--color-warning);
+  color: #0f172a;
+}
+.btn-warning:hover {
+  background-color: #d97706;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+.btn-outline:hover {
+  border-color: #cbd5e1;
+  color: #fff;
+}
+
+.btn-xs {
+  padding: 0.2rem 0.45rem;
+  font-size: 0.72rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Canvas / Contenedor Gráfico */
+.sim-canvas-box {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  min-height: 180px;
+}
+
+.box-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+/* Medidores de Recursos */
+.resource-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.meter-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 12px;
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+/* Visualizador de Cronograma / Línea Temporal */
+.timeline-track {
+  display: flex;
+  width: 100%;
+  height: 38px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.time-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #fff;
+  border-right: 1px solid rgba(15, 23, 42, 0.4);
+}
+
+.time-block.idle {
+  background-color: #ef4444;
+}
+
+/* Generaciones Specs Grid */
+.gen-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.gen-icon {
+  font-size: 2.5rem;
+}
+.gen-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.spec-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+.spec-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Diagrama de Componentes */
+.components-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.component-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  text-align: center;
+  transition: all 0.25s;
+}
+
+.component-card.active-component {
+  border-color: var(--accent-blue);
+  background-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.comp-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.comp-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.comp-status {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.step-explanation-box {
+  background-color: rgba(30, 41, 59, 0.7);
+  border-left: 3px solid var(--accent-blue);
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+/* Dual Mode Diagram (Lección 6) */
+.dual-mode-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mode-box {
+  flex: 1;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.mode-box.mode-active {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.35);
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.mode-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 700;
+  background-color: var(--accent-blue);
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.trap-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trap-arrow {
+  padding: 0.4rem 0.8rem;
+  background-color: #334155;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.trap-arrow.active-trap {
+  background-color: var(--color-danger);
+  animation: pulse 1s infinite;
+}
+
+.trap-arrow.return-trap {
+  background-color: var(--color-success);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Ciclo de Arranque (Lección 7) */
+.boot-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.boot-phase-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem;
+  font-size: 0.78rem;
+}
+
+.boot-phase-card.boot-done {
+  border-color: var(--color-success);
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.boot-phase-card.boot-current {
+  border-color: var(--accent-blue);
+  background-color: rgba(59, 130, 246, 0.18);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.phase-number {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+/* Arquitecturas de Kernel (Lección 8) */
+.arch-visual-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.arch-layer {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  background-color: var(--bg-secondary);
+}
+
+.layer-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background-color: var(--accent-blue);
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.layer-modules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.module-chip {
+  padding: 0.3rem 0.6rem;
+  background-color: #0f172a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.chip-highlight {
+  border-color: var(--accent-blue);
+  color: #93c5fd;
+}
+
+.chip-primary {
+  background-color: rgba(59, 130, 246, 0.2);
+  border-color: var(--accent-blue);
+}
+
+.arch-boundary-line {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-warning);
+}
+
+.panic-banner {
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid;
+}
+.panic-fatal {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-danger);
+  color: #fee2e2;
+}
+.panic-recovered {
+  background-color: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-success);
+  color: #d1fae5;
+}
+
+/* Diagrama de Estados (Lección 9) */
+.states-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.state-node {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  text-align: center;
+  min-width: 110px;
+  transition: all 0.2s;
+}
+
+.state-node.node-active {
+  border-color: var(--color-success);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.state-node.node-running {
+  border-color: var(--accent-blue);
+  background-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.state-node.node-terminated {
+  border-color: var(--text-sub);
+  opacity: 0.7;
+}
+
+.node-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.node-count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.state-arrow {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.state-node-sub {
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fef3c7;
+}
+
+/* Diagrama de Gantt (Lección 10) */
+.gantt-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gantt-chart {
+  display: flex;
+  width: 100%;
+  height: 44px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.gantt-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border-right: 1px solid rgba(15, 23, 42, 0.5);
+  transition: width 0.3s ease;
+}
+
+.gantt-bar small {
+  font-size: 0.65rem;
+  opacity: 0.85;
+}
+
+.gantt-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+
+/* Paso de Mensajes (Lección 11) */
+.ipc-diagram {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.ipc-process-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+}
+
+.ipc-mailbox-container {
+  background-color: #0b1120;
+  border: 2px solid var(--accent-blue);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+
+.mailbox-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #93c5fd;
+  margin-bottom: 0.5rem;
+}
+
+.mailbox-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 70px;
+}
+
+.message-envelope {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
+}
+
+.mailbox-empty-slot {
+  font-size: 0.76rem;
+  text-align: center;
+  padding: 1.25rem 0;
+}
+
+/* Memoria Compartida (Lección 12) */
+.shm-visual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.process-vmem {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  text-align: center;
+}
+
+.shared-ram-block {
+  background-color: #0b1120;
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.shared-ram-block.block-corrupt {
+  border-color: var(--color-danger);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.ram-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.counter-display {
+  font-size: 1.75rem;
+  color: #fff;
+  margin-left: 0.5rem;
+}
+
+/* Hilos (Lección 13) */
+.threads-process-box {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.shared-mem-bar {
+  background-color: #0f172a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+.threads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+
+.thread-card {
+  background-color: #0f172a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem;
+  font-size: 0.74rem;
+}
+
+.thread-card.thread-blocked {
+  border-color: var(--color-danger);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Sincronización Búfer (Lección 14) */
+.sync-buffer-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.sync-slot {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.sync-slot.slot-full {
+  border-color: var(--color-success);
+  background-color: rgba(16, 185, 129, 0.15);
+}
+
+.slot-idx {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.semaphores-panel {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.sem-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.philosophers-table-view {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem 0;
+}
+
+.philo-node {
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.philo-pensando { border-color: var(--accent-blue); background: rgba(59, 130, 246, 0.1); }
+.philo-hambriento { border-color: var(--color-warning); background: rgba(245, 158, 11, 0.1); }
+.philo-comiendo { border-color: var(--color-success); background: rgba(16, 185, 129, 0.15); }
+
+/* Memoria Continua (Lección 15) */
+.memory-bar {
+  display: flex;
+  width: 100%;
+  height: 48px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.mem-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-right: 1px solid rgba(15, 23, 42, 0.5);
+  transition: width 0.3s ease;
+}
+
+.mem-allocated {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.mem-free {
+  background-color: #10b981;
+  color: #0f172a;
+}
+
+.mem-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+/* Paginación MMU (Lección 16) */
+.mmu-pipeline-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mmu-card {
+  flex: 1;
+  min-width: 160px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.mmu-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background-color: #334155;
+  color: #cbd5e1;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.binary-split {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+.split-p { background: #1e3a8a; color: #93c5fd; padding: 0.2rem 0.4rem; border-radius: 4px; }
+.split-d { background: #064e3b; color: #a7f3d0; padding: 0.2rem 0.4rem; border-radius: 4px; }
+
+.mmu-tlb-hit { border-color: var(--color-success); background: rgba(16, 185, 129, 0.1); }
+.mmu-tlb-miss { border-color: var(--color-warning); background: rgba(245, 158, 11, 0.1); }
+.mmu-arrow { font-size: 0.74rem; color: var(--text-muted); }
+
+/* Matriz de Páginas (Lección 17) */
+.page-matrix-container {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.matrix-grid {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.matrix-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 38px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.ref-label {
+  background-color: #334155;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.25rem 0;
+  border-radius: 4px;
+}
+
+.frame-cell {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0;
+  border-radius: 4px;
+}
+
+.status-cell {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0;
+  border-radius: 4px;
+}
+
+.col-hit .status-cell { background-color: rgba(16, 185, 129, 0.2); color: var(--color-success); }
+.col-fault .status-cell { background-color: rgba(239, 68, 68, 0.2); color: var(--color-danger); }
+
+/* Trayectoria de Disco (Lección 18) */
+.disk-track-diagram {
+  position: relative;
+  height: 220px;
+  background-color: #0b1120;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+
+.disk-track-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.25rem;
+}
+
+.track-path-line {
+  position: relative;
+  height: 180px;
+  margin-top: 0.5rem;
+}
+
+.track-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: var(--accent-blue);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-point span {
+  position: absolute;
+  top: -16px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: #93c5fd;
+  white-space: nowrap;
+}
+
+/* Cuadrícula de Disco (Lección 19) */
+.disk-grid-6x6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.45rem;
+}
+
+.disk-sector-cell {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.25rem;
+  text-align: center;
+  font-size: 0.72rem;
+  position: relative;
+}
+
+.sec-num {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 0.6rem;
+  color: var(--text-sub);
+}
+
+.sector-occupied {
+  border-width: 2px;
+}
+
+/* Inodo UNIX (Lección 20) */
+.inode-structure-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.inode-meta-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.inode-pointers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.pointer-block {
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pointer-direct { border-color: var(--accent-blue); }
+.pointer-active { border-color: var(--color-success); background: rgba(16, 185, 129, 0.08); }
+.pointer-inactive { opacity: 0.5; }
+
+/* Tablas Detalladas de Estado */
+.sim-table-box {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.data-table th {
+  background-color: #131c31;
+  color: #93c5fd;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.data-table tr:hover {
+  background-color: rgba(30, 41, 59, 0.4);
+}
+
+.data-table tr.row-highlight {
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+/* Insignias (Badges) */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.badge-primary { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+.badge-success { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge-danger { background: rgba(239, 68, 68, 0.2); color: #fecaca; border: 1px solid rgba(239, 68, 68, 0.4); }
+.badge-warning { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
+.badge-outline { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); }
+
+/* ==========================================================================
+   TARJETAS GRANDES DE MÉTRICAS (KPIS)
+   ========================================================================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.kpi-card {
+  background: linear-gradient(180deg, #1e293b 0%, #151e2e 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.15rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-blue);
+}
+
+.kpi-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.kpi-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+}
+
+.kpi-subtext {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+}
+
+.kpi-card.kpi-danger .kpi-value { color: var(--color-danger); }
+.kpi-card.kpi-success .kpi-value { color: var(--color-success); }
+.kpi-card.kpi-warning .kpi-value { color: var(--color-warning); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  body {
+    flex-direction: column;
+    height: auto;
+    overflow: auto;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+  .main-content {
+    height: auto;
+  }
+}
