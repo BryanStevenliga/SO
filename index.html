@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistemas Operativos - Gestion de Procesos | ULL ESIT</title>
+  <style>
+    /* ==========================================================================
+       VARIABLES Y PALETA DE COLOR TECNICA (SOBRIA, SIN ADORNOS)
+       ========================================================================== */
+    :root {
+      --bg-main: #0f172a;
+      --bg-sidebar: #0b1120;
+      --bg-card: #162032;
+      --bg-subcard: #111827;
+      --bg-terminal: #070d17;
+      --border: #293548;
+      --border-focus: #3b82f6;
+
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --state-active: #10b981;    /* Verde: activo / valido / exito */
+      --state-warn: #f59e0b;      /* Ambar: advertencia / metricas */
+      --state-error: #ef4444;     /* Rojo: bloqueo / error / carrera */
+      --state-muted: #64748b;     /* Gris: terminado / neutral */
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #64748b;
+
+      --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+      --sidebar-width: 300px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbars sobrios */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b4d66;
+    }
+
+    /* ==========================================================================
+       SIDEBAR LATERAL IZQUIERDO
+       ========================================================================== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      user-select: none;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-header p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.85rem 0.6rem;
+    }
+
+    .module-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .module-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 0.65rem;
+      background-color: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .module-heading:hover {
+      color: var(--text-main);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .module-group.active-group .module-heading {
+      color: #93c5fd;
+      border-color: var(--border);
+      background-color: rgba(37, 99, 235, 0.08);
+    }
+
+    .module-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .module-items {
+      list-style: none;
+      padding-left: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .module-group.collapsed .module-items {
+      display: none;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: 0.45rem 0.65rem;
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.12s;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-btn:hover {
+      background-color: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background-color: rgba(37, 99, 235, 0.15);
+      color: #ffffff;
+      font-weight: 600;
+      border-left-color: var(--accent-blue);
+    }
+
+    .nav-btn.nav-disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--accent-blue);
+      min-width: 20px;
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-sub);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ==========================================================================
+       AREA PRINCIPAL DERECHA
+       ========================================================================== */
+    .main-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+      background-color: var(--bg-main);
+    }
+
+    .top-bar {
+      height: 56px;
+      background-color: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .topic-indicator {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--accent-blue);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .topic-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .top-nav-arrows {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .content-area {
+      padding: 1.5rem 1.75rem 3rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* ==========================================================================
+       PARTE 1: SINTESIS TEORICA PARA EXPONER (3 TARJETAS HORIZONTALES)
+       ========================================================================== */
+    .theory-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .deck-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .deck-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(41, 53, 72, 0.6);
+      padding-bottom: 0.4rem;
+    }
+
+    .deck-card-num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent-blue);
+      font-weight: 700;
+    }
+
+    .deck-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .deck-card-body {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .deck-card-body strong {
+      color: var(--text-main);
+    }
+
+    .deck-card-body code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #93c5fd;
+      background-color: var(--bg-subcard);
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+    }
+
+    /* ==========================================================================
+       PARTE 2: LABORATORIO INTERACTIVO
+       ========================================================================== */
+    .lab-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .lab-title-group h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .lab-title-group p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Barra de Controles y Formulario */
+    .controls-panel {
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .input-group label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .input-field, .select-field {
+      background-color: var(--bg-terminal);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.35rem 0.55rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--border-focus);
+    }
+
+    /* Botones */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.38rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      user-select: none;
+      transition: background-color 0.12s, border-color 0.12s;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-blue-hover);
+    }
+
+    .btn-secondary {
+      background-color: #1e293b;
+      border-color: var(--border);
+      color: #cbd5e1;
+    }
+    .btn-secondary:hover {
+      background-color: #334155;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background-color: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .btn-danger:hover {
+      background-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-success {
+      background-color: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #86efac;
+    }
+    .btn-success:hover {
+      background-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-xs {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.72rem;
+    }
+
+    /* Visualizador Grafico */
+    .viz-box {
+      background-color: var(--bg-terminal);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.1rem;
+      min-height: 140px;
+    }
+
+    .viz-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.85rem;
+    }
+
+    /* Tablas de Seguimiento */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--bg-subcard);
+    }
+
+    .track-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .track-table th {
+      background-color: #0b1120;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: left;
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .track-table td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid rgba(41, 53, 72, 0.5);
+      color: #cbd5e1;
+      font-family: var(--font-sans);
+      white-space: nowrap;
+    }
+
+    .track-table td.mono {
+      font-family: var(--font-mono);
+    }
+
+    .track-table tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Insignias de Estado Sobrias (Sin emojis) */
+    .badge-status {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-running {
+      background-color: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #86efac;
+    }
+
+    .status-ready {
+      background-color: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93c5fd;
+    }
+
+    .status-waiting {
+      background-color: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fde68a;
+    }
+
+    .status-terminated {
+      background-color: rgba(100, 116, 139, 0.15);
+      border: 1px solid rgba(100, 116, 139, 0.4);
+      color: #94a3b8;
+    }
+
+    .status-error {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    /* Tarjetas de Metricas (3 KPIs) */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .kpi-box {
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .kpi-heading {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-val {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+    }
+
+    /* Recuadro de Comprobacion Matematica / Logica */
+    .audit-box {
+      background-color: var(--bg-terminal);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border-focus);
+      border-radius: 4px;
+      padding: 0.9rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .audit-box-header {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .audit-line {
+      margin-bottom: 0.25rem;
+    }
+
+    .audit-highlight {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .audit-alert {
+      color: #fca5a5;
+      background-color: rgba(239, 68, 68, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      display: inline-block;
+      margin-top: 0.3rem;
+    }
+
+    /* ==========================================================================
+       ESTILOS ESPECIFICOS DE LOS SIMULADORES
+       ========================================================================== */
+    /* Tema 9: Diagrama de 5 Estados */
+    .states-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+    }
+
+    .state-cell {
+      flex: 1;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .state-cell.active-cell {
+      border-color: var(--state-active);
+      background-color: rgba(16, 185, 129, 0.08);
+    }
+
+    .state-cell-name {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .state-cell-pids {
+      margin-top: 0.35rem;
+      min-height: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      justify-content: center;
+    }
+
+    .pid-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      color: #93c5fd;
+    }
+
+    /* Tema 10: Gantt Chart */
+    .gantt-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .gantt-bar {
+      display: flex;
+      width: 100%;
+      height: 38px;
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .gantt-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #ffffff;
+      border-right: 1px solid rgba(15, 23, 42, 0.6);
+      transition: width 0.2s ease;
+    }
+
+    .gantt-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      padding: 0 2px;
+    }
+
+    /* Tema 11: Buzon Mailbox */
+    .mailbox-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr 180px;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .actor-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+
+    .mailbox-slots {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .slot-unit {
+      flex: 1;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      min-height: 65px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .slot-unit.occupied {
+      border-color: var(--accent-blue);
+      background-color: rgba(37, 99, 235, 0.12);
+      color: #bfdbfe;
+    }
+
+    /* Tema 12: Bufer Circular */
+    .circular-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.45rem;
+    }
+
+    .circular-cell {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.6rem 0.35rem;
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+
+    .cell-idx {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      border-bottom: 1px solid rgba(41, 53, 72, 0.4);
+      padding-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .cell-val {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      min-height: 18px;
+    }
+
+    .cell-pointer {
+      margin-top: 0.25rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .ptr-in { color: #60a5fa; }
+    .ptr-out { color: #4ade80; }
+
+    /* Tema 13: Diagrama de Hilos y Amdahl */
+    .threads-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .thread-stack-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+
+    .stack-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.35rem 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .amdahl-meter {
+      height: 10px;
+      background-color: var(--bg-subcard);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .amdahl-fill {
+      height: 100%;
+      background-color: var(--accent-blue);
+      transition: width 0.2s;
+    }
+
+    /* Tema 14: Sincronizacion Microinstrucciones */
+    .interleave-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .thread-col {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem;
+    }
+
+    .thread-col h4 {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #93c5fd;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .micro-step {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      padding: 0.3rem 0.45rem;
+      border-radius: 3px;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+    }
+
+    .micro-step.step-active {
+      background-color: rgba(37, 99, 235, 0.15);
+      border-color: var(--accent-blue);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .micro-step.step-done {
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .deck-grid {
+        grid-template-columns: 1fr;
+      }
+      .kpi-row {
+        grid-template-columns: 1fr;
+      }
+      .mailbox-grid, .threads-layout, .interleave-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================================
+       1. SIDEBAR LATERAL (MENU EXACTO ULL ESIT)
+       ==================================================================== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-tag">ULL ESIT • Catedra SSOO</div>
+      <h1>Sistemas Operativos</h1>
+      <p>Modulo III: Gestion de Procesos (Temas 9-14)</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <!-- MODULO 1: INTRODUCCION (Colapsado) -->
+      <div class="module-group collapsed">
+        <div class="module-heading" onclick="toggleGroup(this)">
+          <span>Modulo 1: Introduccion</span>
+          <span class="module-badge">3</span>
+        </div>
+        <ul class="module-items">
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">01.</span> Definiciones</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">02.</span> Tipos de sistemas</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">03.</span> Historia (Extra)</span></li>
+        </ul>
+      </div>
+
+      <!-- MODULO 2: ORGANIZACION (Colapsado) -->
+      <div class="module-group collapsed">
+        <div class="module-heading" onclick="toggleGroup(this)">
+          <span>Modulo 2: Organizacion</span>
+          <span class="module-badge">5</span>
+        </div>
+        <ul class="module-items">
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">04.</span> Componentes</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">05.</span> Servicios</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">06.</span> Interfaz de programacion</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">07.</span> Operacion del sistema</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">08.</span> Sistemas por su estructura</span></li>
+        </ul>
+      </div>
+
+      <!-- MODULO 3: GESTION DE PROCESOS (Activo y desplegable) -->
+      <div class="module-group active-group">
+        <div class="module-heading">
+          <span>Modulo 3: Gestion de Procesos</span>
+          <span class="module-badge">6</span>
+        </div>
+        <ul class="module-items">
+          <li>
+            <button class="nav-btn active" data-topic="9" onclick="loadTopic(9)">
+              <span class="nav-num">09.</span> Procesos
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-topic="10" onclick="loadTopic(10)">
+              <span class="nav-num">10.</span> Planificacion de la CPU
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-topic="11" onclick="loadTopic(11)">
+              <span class="nav-num">11.</span> Paso de mensajes
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-topic="12" onclick="loadTopic(12)">
+              <span class="nav-num">12.</span> Memoria compartida
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-topic="13" onclick="loadTopic(13)">
+              <span class="nav-num">13.</span> Hilos
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-topic="14" onclick="loadTopic(14)">
+              <span class="nav-num">14.</span> Sincronizacion
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- MODULO 4: GESTION DE LA MEMORIA (Colapsado) -->
+      <div class="module-group collapsed">
+        <div class="module-heading" onclick="toggleGroup(this)">
+          <span>Modulo 4: Gestion Memoria</span>
+          <span class="module-badge">3</span>
+        </div>
+        <ul class="module-items">
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">15.</span> Memoria principal</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">16.</span> Paginacion</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">17.</span> Memoria virtual</span></li>
+        </ul>
+      </div>
+
+      <!-- MODULO 5: GESTION DEL ALMACENAMIENTO (Colapsado) -->
+      <div class="module-group collapsed">
+        <div class="module-heading" onclick="toggleGroup(this)">
+          <span>Modulo 5: Almacenamiento</span>
+          <span class="module-badge">3</span>
+        </div>
+        <ul class="module-items">
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">18.</span> Almacenamiento secundario</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">19.</span> Sistemas de archivos</span></li>
+          <li><span class="nav-btn nav-disabled"><span class="nav-num">20.</span> Implementacion FS</span></li>
+        </ul>
+      </div>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>ull-esit-ssoo-apuntes</span>
+      <span>CC-BY 4.0</span>
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       2. AREA PRINCIPAL DERECHA
+       ==================================================================== -->
+  <main class="main-view">
+    <!-- Top Sticky Bar -->
+    <header class="top-bar">
+      <div class="top-meta">
+        <span class="topic-indicator" id="top-indicator">Tema 9</span>
+        <span class="topic-name" id="top-title">Procesos</span>
+      </div>
+      <div class="top-nav-arrows">
+        <button class="btn btn-secondary btn-xs" onclick="navigateTopic(-1)">Anterior</button>
+        <button class="btn btn-secondary btn-xs" onclick="navigateTopic(1)">Siguiente</button>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- PARTE 1: SINTESIS TEORICA PARA EXPONER (3 TARJETAS HORIZONTALES) -->
+      <section class="theory-deck">
+        <span class="section-label">Sintesis Teorica de Catedra (ULL ESIT)</span>
+        <div class="deck-grid" id="deck-cards-container">
+          <!-- Renderizado dinamicamente por JS -->
+        </div>
+      </section>
+
+      <!-- PARTE 2: LABORATORIO INTERACTIVO -->
+      <section class="lab-container">
+        <div class="lab-header">
+          <div class="lab-title-group">
+            <h2 id="lab-heading">Taller Experimental</h2>
+            <p id="lab-subheading">Entrada de parametros en vivo, seguimiento de estados y verificacion formal de reglas.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="loadCurrentExample()">Cargar Ejercicio de Ejemplo</button>
+        </div>
+
+        <!-- Barra de Controles Especifica -->
+        <div class="controls-panel" id="lab-controls">
+          <!-- Renderizado dinamicamente por JS -->
+        </div>
+
+        <!-- Visualizacion Grafica Dinamica -->
+        <div class="viz-box">
+          <div class="viz-title" id="viz-title-label">Diagrama de Estado / Flujo Dinamico</div>
+          <div id="viz-content">
+            <!-- Renderizado dinamicamente por JS -->
+          </div>
+        </div>
+
+        <!-- Tabla de Seguimiento Detallada -->
+        <div class="table-container">
+          <table class="track-table" id="lab-table">
+            <!-- Renderizado dinamicamente por JS -->
+          </table>
+        </div>
+
+        <!-- 3 KPIs Numericos Grandes -->
+        <div class="kpi-row" id="lab-kpis">
+          <!-- Renderizado dinamicamente por JS -->
+        </div>
+
+        <!-- Recuadro de Comprobacion Matematica / Logica -->
+        <div class="audit-box" id="lab-audit">
+          <div class="audit-box-header">Comprobacion Matematica y Logica del Kernel</div>
+          <div id="audit-content">
+            <!-- Renderizado dinamicamente por JS -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       3. LOGICA Y MOTORES DE SIMULACION EN VANILLA JAVASCRIPT PURO
+       ==================================================================== -->
+  <script>
+    // --------------------------------------------------------------------------
+    // BASE DE CONOCIMIENTO TEORICA (3 TARJETAS EXACTAS POR TEMA 9-14)
+    // --------------------------------------------------------------------------
+    const THEORY_DATA = {
+      9: {
+        indicator: "Tema 9",
+        title: "Procesos",
+        cards: [
+          {
+            num: "01",
+            title: "Concepto y Espacio de Memoria",
+            body: "Un <strong>proceso</strong> es un programa en ejecucion (entidad activa). Su espacio de direcciones contiene: segmento de <strong>Texto</strong> (codigo maquina de solo lectura), <strong>Datos</strong> (.data inicializados, .bss sin inicializar), <strong>Heap</strong> (memoria dinamica con <code>malloc()</code> creciente hacia arriba) y <strong>Stack</strong> (registros de activacion y variables locales creciente hacia abajo)."
+          },
+          {
+            num: "02",
+            title: "Bloque de Control de Proceso (PCB)",
+            body: "Estructura del kernel (<code>task_struct</code> en Linux) que almacena el descriptor del proceso: <strong>PID</strong> (identificador unico), <strong>PC</strong> (Program Counter / direccion de la siguiente instruccion), <strong>Registros CPU</strong>, punteros de memoria y estado contable. El <em>cambio de contexto</em> es sobrecarga pura: salva el PCB saliente y carga el entrante."
+          },
+          {
+            num: "03",
+            title: "Diagrama de 5 Estados y Reglas",
+            body: "Estados formales: <strong>Nuevo</strong> (creandose) &rarr; <strong>Preparado</strong> (esperando CPU) &harr; <strong>Ejecutando</strong> (instrucciones en CPU) &rarr; <strong>Esperando</strong> (bloqueado por E/S) &rarr; <strong>Terminado</strong>. <em>Regla de transicion:</em> Ningun proceso puede pasar de Esperando a Ejecutando directamente; siempre debe reincorporarse a la cola de Preparados tras el evento."
+          }
+        ]
+      },
+      10: {
+        indicator: "Tema 10",
+        title: "Planificacion de la CPU",
+        cards: [
+          {
+            num: "01",
+            title: "Alternancia de Rafagas y Despacho",
+            body: "La ejecucion alterna rafagas de CPU y de E/S. El <strong>Planificador</strong> selecciona que proceso preparado obtiene la CPU; el <strong>Despachador</strong> aplica el cambio de contexto. Puede ser <em>No Apropiativo</em> (el proceso retiene la CPU hasta cederla o terminar) o <em>Apropiativo</em> (desalojo forzado por temporizador o prioridad)."
+          },
+          {
+            num: "02",
+            title: "Metricas Analiticas del Temario",
+            body: "Tiempo de Retorno (Turnaround): <code>T_ret = T_fin - T_llegada</code>.<br>Tiempo de Espera (Waiting): <code>T_esp = T_ret - T_rafaga</code>.<br>Tiempo Medio de Espera: <code>TME = (1/n) &Sigma; T_esp</code>.<br>Utilizacion de CPU: <code>U = (&Sigma; T_rafaga / T_total) &times; 100%</code>."
+          },
+          {
+            num: "03",
+            title: "Algoritmos y Efecto Convoy",
+            body: "<strong>FCFS:</strong> Orden estricto de llegada; genera el <em>Efecto Convoy</em> cuando un proceso largo bloquea a procesos cortos detr&aacute;s. <strong>SJF:</strong> Minima rafaga primero (optimo en TME). <strong>SRTF:</strong> SJF apropiativo con desalojo ante llegadas cortas. <strong>Round Robin:</strong> Cola circular con quantum <code>q</code>."
+          }
+        ]
+      },
+      11: {
+        indicator: "Tema 11",
+        title: "Paso de mensajes",
+        cards: [
+          {
+            num: "01",
+            title: "Comunicacion Indirecta por Buzon",
+            body: "Mecanismo IPC donde los procesos intercambian informacion sin compartir espacio de direcciones. Los mensajes se depositan en <strong>buzones (mailboxes)</strong> o puertos gestionados directamente en el espacio de memoria del kernel mediante primitivas <code>send(buzon, msg)</code> y <code>receive(buzon, &msg)</code>."
+          },
+          {
+            num: "02",
+            title: "Semantica de Sincronizacion",
+            body: "<strong>Bloqueante (Sincrono):</strong> El emisor se suspende si el buzon esta lleno; el receptor se suspende si el buzon esta vacio. <strong>No Bloqueante (Asincrono):</strong> El emisor deposita o recibe error de rechazo; el receptor toma el mensaje o continua de inmediato si no hay datos disponibles."
+          },
+          {
+            num: "03",
+            title: "Sobrecarga de Copias y Capacidad",
+            body: "Cada mensaje implica <strong>2 copias de memoria</strong>: Espacio Usuario &rarr; Espacio Kernel &rarr; Espacio Usuario, mas 2 cambios de modo Ring 3 &harr; Ring 0. <em>Capacidad:</em> Cero (Rendezvous estricto), Acotada (cola finita de <code>N</code> mensajes) o Ilimitada."
+          }
+        ]
+      },
+      12: {
+        indicator: "Tema 12",
+        title: "Memoria compartida",
+        cards: [
+          {
+            num: "01",
+            title: "Acceso Directo a Velocidad RAM",
+            body: "Dos o mas procesos mapean la misma region de memoria fisica (marcos de pagina) en sus espacios de direcciones virtuales (mediante <code>shm_open()</code> y <code>mmap()</code> en POSIX). Es el mecanismo IPC mas rapido posible al <strong>eliminar la intervencion del kernel</strong> en cada transferencia de datos."
+          },
+          {
+            num: "02",
+            title: "Bufer Circular Productor-Consumidor",
+            body: "Estructura clasica de tamano <code>BUFFER_SIZE = N</code> implementada con dos indices compartidos: <code>in</code> (posicion de insercion del productor) y <code>out</code> (posicion de extraccion del consumidor). Los punteros avanzan mediante aritmetica modular: <code>(idx + 1) % N</code>."
+          },
+          {
+            num: "03",
+            title: "Condiciones de Vacio y Lleno",
+            body: "Bufer Vacio: <code>in == out</code>.<br>Bufer Lleno: <code>(in + 1) % N == out</code>.<br><em>Regla de implementacion:</em> La capacidad maxima de almacenamiento es <code>N - 1</code> elementos para evitar la ambiguedad aritmetica entre bufer lleno y vacio."
+          }
+        ]
+      },
+      13: {
+        indicator: "Tema 13",
+        title: "Hilos",
+        cards: [
+          {
+            num: "01",
+            title: "Unidad Basica de CPU (Thread)",
+            body: "Flujo de control secuencial dentro de un proceso. <strong>Recursos compartidos:</strong> Segmento de codigo (.text), variables globales (.data), memoria dinamica (Heap) y archivos abiertos. <strong>Recursos privados por hilo:</strong> Identificador TID, Contador de Programa (PC), banco de registros y Pila propia (Stack)."
+          },
+          {
+            num: "02",
+            title: "Ley de Amdahl y Speedup",
+            body: "Calcula la aceleracion teorica al usar <code>N</code> nucleos sobre una aplicacion con fraccion paralelizable <code>P</code> (y fraccion serie <code>1 - P</code>):<br><code>S(N) = 1 / ((1 - P) + (P / N))</code>.<br>Limite teorico cuando <code>N &rarr; &infin;</code>: <code>S_max = 1 / (1 - P)</code>."
+          },
+          {
+            num: "03",
+            title: "Economia de Recursos vs Procesos",
+            body: "Crear un hilo consume ordenes de magnitud menos memoria que un proceso completo (un hilo requiere solo su stack ~64 KB - 1 MB frente a ~4 MB de tablas de pagina y PCB por proceso independiente). El cambio de contexto entre hilos del mismo proceso no invalida la cache TLB."
+          }
+        ]
+      },
+      14: {
+        indicator: "Tema 14",
+        title: "Sincronizacion",
+        cards: [
+          {
+            num: "01",
+            title: "Condicion de Carrera (Race Condition)",
+            body: "Ocurre cuando varios hilos leen y escriben datos compartidos concurrentemente y el resultado final depende del orden de intercalacion de instrucciones. La instruccion <code>count++</code> se descompone en 3 microinstrucciones de maquina: <code>R1 = count</code>, <code>R1 = R1 + 1</code>, <code>count = R1</code>."
+          },
+          {
+            num: "02",
+            title: "Problema de la Seccion Critica",
+            body: "Fragmento de codigo que manipula datos compartidos. Debe garantizar 3 requisitos formales: <strong>1. Exclusion Mutua</strong> (un solo hilo dentro a la vez), <strong>2. Progreso</strong> (la seleccion no se pospone indefinidamente), <strong>3. Espera Acotada</strong> (limite de entradas de otros hilos antes de concederla)."
+          },
+          {
+            num: "03",
+            title: "Cerrojo Mutex y Consistencia",
+            body: "Primitiva con dos estados (<code>LIBRE</code> / <code>BLOQUEADO</code>) y operaciones atomicas <code>acquire()</code> y <code>release()</code>. Al encapsular la seccion critica con un Mutex, las 3 microinstrucciones se ejecutan con exclusion mutua garantizada, evitando la perdida de actualizaciones."
+          }
+        ]
+      }
+    };
+
+    // --------------------------------------------------------------------------
+    // ESTADO GLOBAL DE LA APLICACION Y SIMULADORES
+    // --------------------------------------------------------------------------
+    let currentTopicId = 9;
+
+    // Estado del Tema 9: Procesos
+    const stateT9 = {
+      processes: [
+        { pid: 101, state: "Preparado", pc: "0x00401A20", cpuTime: 4, priority: 2 },
+        { pid: 102, state: "Ejecutando", pc: "0x00402F00", cpuTime: 12, priority: 1 },
+        { pid: 103, state: "Esperando", pc: "0x00400810", cpuTime: 2, priority: 3 }
+      ],
+      nextPid: 104,
+      contextSwitches: 6,
+      lastAction: "Inicializacion de procesos",
+      auditMsg: "El kernel mantiene 3 procesos activos. P102 posee la CPU en modo usuario.",
+      auditAlert: null
+    };
+
+    // Estado del Tema 10: Planificacion CPU
+    const stateT10 = {
+      algorithm: "RR",
+      quantum: 2,
+      processes: [
+        { pid: "P1", arrival: 0, burst: 8 },
+        { pid: "P2", arrival: 1, burst: 4 },
+        { pid: "P3", arrival: 2, burst: 9 },
+        { pid: "P4", arrival: 3, burst: 5 }
+      ],
+      evaluated: [],
+      gantt: [],
+      tme: "0.0",
+      tmr: "0.0",
+      cpuUtil: "100%",
+      hasConvoy: false,
+      auditMsg: ""
+    };
+
+    // Estado del Tema 11: Paso de Mensajes
+    const stateT11 = {
+      mode: "blocking",
+      capacity: 3,
+      mailbox: [
+        { id: "M1", sender: "P1", text: "SYNC_REQ", size: 128 },
+        { id: "M2", sender: "P2", text: "DATA_FRAME_4", size: 512 }
+      ],
+      p1State: "Activo",
+      p3State: "Activo",
+      totalCopies: 4,
+      auditMsg: "Buzon con 2 mensajes almacenados en espacio de nucleo. Modo bloqueante activo.",
+      auditAlert: null
+    };
+
+    // Estado del Tema 12: Memoria Compartida
+    const stateT12 = {
+      size: 8,
+      inPtr: 3,
+      outPtr: 0,
+      buffer: ["ITEM_A", "ITEM_B", "ITEM_C", null, null, null, null, null],
+      auditMsg: "Bufer circular inicializado con 3 elementos.",
+      auditAlert: null
+    };
+
+    // Estado del Tema 13: Hilos y Ley de Amdahl
+    const stateT13 = {
+      threadsN: 8,
+      fractionP: 0.75,
+      auditMsg: ""
+    };
+
+    // Estado del Tema 14: Sincronizacion
+    const stateT14 = {
+      useMutex: false,
+      stepIndex: 0,
+      count: 5,
+      r1: 0,
+      r2: 0,
+      mutexLocked: false,
+      lastStepText: "Secuencia no iniciada. count = 5.",
+      auditMsg: "Modo Sin Sincronizacion seleccionado: vulnerable a carrera.",
+      auditAlert: null
+    };
+
+    // --------------------------------------------------------------------------
+    // CONTROLADOR DE NAVEGACION
+    // --------------------------------------------------------------------------
+    function loadTopic(topicId) {
+      currentTopicId = topicId;
+
+      // Actualizar sidebar buttons
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.remove("active");
+        if (btn.getAttribute("data-topic") === String(topicId)) {
+          btn.classList.add("active");
+        }
+      });
+
+      // Cabecera top
+      const theory = THEORY_DATA[topicId];
+      document.getElementById("top-indicator").textContent = theory.indicator;
+      document.getElementById("top-title").textContent = theory.title;
+
+      // Renderizar las 3 tarjetas de teoria horizontal
+      const deckContainer = document.getElementById("deck-cards-container");
+      deckContainer.innerHTML = theory.cards.map(c => `
+        <div class="deck-card">
+          <div class="deck-card-header">
+            <span class="deck-card-title">${c.title}</span>
+            <span class="deck-card-num">${c.num}</span>
+          </div>
+          <div class="deck-card-body">${c.body}</div>
+        </div>
+      `).join("");
+
+      // Renderizar el simulador interactivo
+      renderSimulator(topicId);
+    }
+
+    function navigateTopic(delta) {
+      let next = currentTopicId + delta;
+      if (next < 9) next = 14;
+      if (next > 14) next = 9;
+      loadTopic(next);
+    }
+
+    function toggleGroup(el) {
+      const parent = el.closest(".module-group");
+      if (parent) {
+        parent.classList.toggle("collapsed");
+      }
+    }
+
+    function loadCurrentExample() {
+      if (currentTopicId === 9) exampleT9();
+      else if (currentTopicId === 10) exampleT10();
+      else if (currentTopicId === 11) exampleT11();
+      else if (currentTopicId === 12) exampleT12();
+      else if (currentTopicId === 13) exampleT13();
+      else if (currentTopicId === 14) exampleT14();
+    }
+
+    // --------------------------------------------------------------------------
+    // DESPACHADOR DE SIMULADORES
+    // --------------------------------------------------------------------------
+    function renderSimulator(topicId) {
+      if (topicId === 9) renderT9();
+      else if (topicId === 10) renderT10();
+      else if (topicId === 11) renderT11();
+      else if (topicId === 12) renderT12();
+      else if (topicId === 13) renderT13();
+      else if (topicId === 14) renderT14();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 9: PROCESOS (5 ESTADOS + PCB + VALIDACION FORMAL)
+    // ==========================================================================
+    function renderT9() {
+      document.getElementById("lab-heading").textContent = "Laboratorio de Ciclo de Vida y Bloque de Control (PCB)";
+      document.getElementById("lab-subheading").textContent = "Validacion de transiciones legales entre los 5 estados segun el diagrama de ULL ESIT e inspeccion del PCB.";
+      document.getElementById("viz-title-label").textContent = "Diagrama de Estados Formal (ULL ESIT)";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <button class="btn btn-primary btn-xs" onclick="actionT9_Admitir()">+ Admitir Nuevo</button>
+          <button class="btn btn-secondary btn-xs" onclick="actionT9_Despachar()">Despachar CPU</button>
+          <button class="btn btn-secondary btn-xs" onclick="actionT9_Quantum()">Fin Quantum (Reloj)</button>
+          <button class="btn btn-secondary btn-xs" onclick="actionT9_PedirIO()">Pedir E/S</button>
+          <button class="btn btn-secondary btn-xs" onclick="actionT9_FinIO()">Fin E/S</button>
+          <button class="btn btn-danger btn-xs" onclick="actionT9_Terminar()">Terminar</button>
+        </div>
+      `;
+
+      // Visualizacion de Estados
+      const states = ["Nuevo", "Preparado", "Ejecutando", "Esperando", "Terminado"];
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="states-flow">
+          ${states.map(st => {
+            const procsInState = stateT9.processes.filter(p => p.state === st);
+            const isActive = st === "Ejecutando" && procsInState.length > 0;
+            return `
+              <div class="state-cell ${isActive ? 'active-cell' : ''}">
+                <div class="state-cell-name">${st}</div>
+                <div class="state-cell-pids">
+                  ${procsInState.map(p => `<span class="pid-tag">PID ${p.pid}</span>`).join("")}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      // Tabla de PCB
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>PID</th>
+            <th>Estado</th>
+            <th>Program Counter (PC)</th>
+            <th>Tiempo CPU</th>
+            <th>Prioridad</th>
+            <th>Acciones Legales Directas</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${stateT9.processes.map(p => {
+            let badgeClass = "status-ready";
+            if (p.state === "Ejecutando") badgeClass = "status-running";
+            else if (p.state === "Esperando") badgeClass = "status-waiting";
+            else if (p.state === "Terminado") badgeClass = "status-terminated";
+
+            return `
+              <tr>
+                <td class="mono"><strong>PID_${p.pid}</strong></td>
+                <td><span class="badge-status ${badgeClass}">${p.state}</span></td>
+                <td class="mono">${p.pc}</td>
+                <td class="mono">${p.cpuTime} u.t.</td>
+                <td class="mono">${p.priority}</td>
+                <td>
+                  ${p.state === "Preparado" ? `<button class="btn btn-secondary btn-xs" onclick="dispatchSpecificPid(${p.pid})">Despachar a CPU</button>` : ""}
+                  ${p.state === "Ejecutando" ? `<button class="btn btn-secondary btn-xs" onclick="actionT9_PedirIO()">Bloquear por E/S</button>` : ""}
+                  ${p.state === "Esperando" ? `<button class="btn btn-secondary btn-xs" onclick="unblockSpecificPid(${p.pid})">Senal Fin E/S</button>` : ""}
+                  ${p.state === "Terminado" ? `<span class="mono" style="color:var(--text-sub)">PCB liberandose</span>` : ""}
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      `;
+
+      // 3 KPIs
+      const activeCount = stateT9.processes.filter(p => p.state !== "Terminado").length;
+      const readyCount = stateT9.processes.filter(p => p.state === "Preparado").length;
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Procesos en Memoria</span>
+          <span class="kpi-val">${activeCount}</span>
+          <span class="kpi-sub">Total en ejecucion o espera</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Cambios de Contexto</span>
+          <span class="kpi-val">${stateT9.contextSwitches}</span>
+          <span class="kpi-sub">Sobrecarga de conmutacion PCB</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Cola de Preparados</span>
+          <span class="kpi-val">${readyCount} proc</span>
+          <span class="kpi-sub">Listos para tomar la CPU</span>
+        </div>
+      `;
+
+      // Auditoria y Comprobacion Logica
+      const audit = document.getElementById("audit-content");
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Ultima transicion:</strong> ${stateT9.lastAction}</div>
+        <div class="audit-line"><strong>Diagnostico del Despachador:</strong> ${stateT9.auditMsg}</div>
+        ${stateT9.auditAlert ? `<div class="audit-alert">${stateT9.auditAlert}</div>` : ""}
+      `;
+    }
+
+    function exampleT9() {
+      stateT9.processes = [
+        { pid: 101, state: "Preparado", pc: "0x00401A20", cpuTime: 4, priority: 2 },
+        { pid: 102, state: "Ejecutando", pc: "0x00402F00", cpuTime: 12, priority: 1 },
+        { pid: 103, state: "Esperando", pc: "0x00400810", cpuTime: 2, priority: 3 }
+      ];
+      stateT9.nextPid = 104;
+      stateT9.contextSwitches = 6;
+      stateT9.lastAction = "Carga de ejercicio academico ULL";
+      stateT9.auditMsg = "Escenario restaurado con 3 procesos distribuidos entre Preparado, Ejecutando y Esperando.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function actionT9_Admitir() {
+      const pid = stateT9.nextPid++;
+      stateT9.processes.push({
+        pid,
+        state: "Preparado",
+        pc: "0x00400000",
+        cpuTime: 0,
+        priority: 2
+      });
+      stateT9.lastAction = `Admitir: Creado PID_${pid} en estado Preparado (Transicion Nuevo -> Preparado).`;
+      stateT9.auditMsg = "Transicion LEGAL. El proceso ha sido cargado en memoria principal y encolado en la lista de preparados.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function actionT9_Despachar() {
+      const running = stateT9.processes.find(p => p.state === "Ejecutando");
+      const ready = stateT9.processes.find(p => p.state === "Preparado");
+
+      if (!ready) {
+        stateT9.lastAction = "Despachar CPU rechazado";
+        stateT9.auditMsg = "No hay ningun proceso en la cola de Preparados.";
+        stateT9.auditAlert = "ERROR DE TRANSICION: La cola de preparados esta vacia. La CPU pasa a estado inactivo (IDLE).";
+        renderT9();
+        return;
+      }
+
+      if (running) {
+        running.state = "Preparado";
+      }
+
+      ready.state = "Ejecutando";
+      stateT9.contextSwitches++;
+      stateT9.lastAction = `Despacho: PID_${ready.pid} pasa a Ejecutando (Transicion Preparado -> Ejecutando).`;
+      stateT9.auditMsg = `Transicion LEGAL. Salva registros en PCB anterior, carga registros de PID_${ready.pid} en CPU y actualiza PC a ${ready.pc}.`;
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function dispatchSpecificPid(pid) {
+      const target = stateT9.processes.find(p => p.pid === pid);
+      if (!target || target.state !== "Preparado") return;
+
+      const running = stateT9.processes.find(p => p.state === "Ejecutando");
+      if (running) running.state = "Preparado";
+
+      target.state = "Ejecutando";
+      stateT9.contextSwitches++;
+      stateT9.lastAction = `Despacho selectivo: PID_${pid} pasa a Ejecutando.`;
+      stateT9.auditMsg = "Transicion LEGAL: Proceso extraido de cola de preparados y asignado a nucleo de CPU.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function actionT9_Quantum() {
+      const running = stateT9.processes.find(p => p.state === "Ejecutando");
+      if (!running) {
+        stateT9.lastAction = "Fin de Quantum rechazado";
+        stateT9.auditAlert = "ERROR DE TRANSICION: No hay ningun proceso en ejecucion en la CPU para desalojar.";
+        renderT9();
+        return;
+      }
+
+      running.state = "Preparado";
+      running.cpuTime += 2;
+      stateT9.contextSwitches++;
+
+      // Despachar el siguiente si hay
+      const next = stateT9.processes.find(p => p.state === "Preparado" && p.pid !== running.pid);
+      if (next) {
+        next.state = "Ejecutando";
+        stateT9.lastAction = `Fin Quantum: PID_${running.pid} desalojado a Preparado. PID_${next.pid} despachado.`;
+      } else {
+        running.state = "Ejecutando"; // Vuelve a ejecutar si es el unico
+        stateT9.lastAction = `Fin Quantum: PID_${running.pid} reanuda (no hay otros en Preparado).`;
+      }
+
+      stateT9.auditMsg = "Transicion LEGAL por interrupcion de reloj de temporizador (Ejecutando -> Preparado). Desalojo apropiativo.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function actionT9_PedirIO() {
+      const running = stateT9.processes.find(p => p.state === "Ejecutando");
+      if (!running) {
+        stateT9.lastAction = "Peticion E/S rechazada";
+        stateT9.auditAlert = "ERROR DE TRANSICION: Solo el proceso en estado Ejecutando puede invocar una llamada al sistema bloqueante de E/S.";
+        renderT9();
+        return;
+      }
+
+      running.state = "Esperando";
+      stateT9.contextSwitches++;
+
+      const next = stateT9.processes.find(p => p.state === "Preparado");
+      if (next) {
+        next.state = "Ejecutando";
+      }
+
+      stateT9.lastAction = `Peticion E/S: PID_${running.pid} bloqueado (Transicion Ejecutando -> Esperando).`;
+      stateT9.auditMsg = "Transicion LEGAL: La llamada read() o wait() desaloja el proceso voluntariamente a la cola de espera del dispositivo.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function actionT9_FinIO() {
+      const waiting = stateT9.processes.find(p => p.state === "Esperando");
+      if (!waiting) {
+        stateT9.lastAction = "Fin de E/S rechazado";
+        stateT9.auditAlert = "ERROR: No hay procesos en cola de Esperando aguardando finalizacion de perifrico.";
+        renderT9();
+        return;
+      }
+
+      waiting.state = "Preparado";
+      stateT9.lastAction = `Interrupcion E/S: PID_${waiting.pid} pasa a Preparado (Transicion Esperando -> Preparado).`;
+      stateT9.auditMsg = "Transicion LEGAL segun regla ULL ESIT: Un proceso que termina E/S NUNCA pasa a Ejecutando de forma directa; debe competir en la cola de Preparados.";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    function unblockSpecificPid(pid) {
+      const target = stateT9.processes.find(p => p.pid === pid);
+      if (target && target.state === "Esperando") {
+        target.state = "Preparado";
+        stateT9.lastAction = `Interrupcion E/S: PID_${pid} desbloqueado a Preparado.`;
+        stateT9.auditMsg = "Transicion LEGAL: Interrupcion del controlador completada. Se encola en cola de listos.";
+        stateT9.auditAlert = null;
+        renderT9();
+      }
+    }
+
+    function actionT9_Terminar() {
+      const running = stateT9.processes.find(p => p.state === "Ejecutando");
+      if (!running) {
+        stateT9.lastAction = "Terminacion rechazada";
+        stateT9.auditAlert = "ERROR: Solo el proceso en Ejecucion puede invocar exit() para terminar.";
+        renderT9();
+        return;
+      }
+
+      running.state = "Terminado";
+      const next = stateT9.processes.find(p => p.state === "Preparado");
+      if (next) {
+        next.state = "Ejecutando";
+      }
+
+      stateT9.lastAction = `Terminacion: PID_${running.pid} ejecuta exit() (Transicion Ejecutando -> Terminado).`;
+      stateT9.auditMsg = "Transicion LEGAL: Recursos liberados y codigo de salida retenido en PCB hasta que el proceso padre invoque wait().";
+      stateT9.auditAlert = null;
+      renderT9();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 10: PLANIFICACION CPU (FCFS, SJF, SRTF, RR + GANTT + CONVOY)
+    // ==========================================================================
+    function calculateScheduleT10() {
+      const procs = stateT10.processes.map(p => ({
+        pid: p.pid,
+        arrival: parseInt(p.arrival, 10),
+        burst: parseInt(p.burst, 10),
+        remaining: parseInt(p.burst, 10),
+        start: -1,
+        finish: 0,
+        turnaround: 0,
+        waiting: 0
+      }));
+
+      const alg = stateT10.algorithm;
+      const q = parseInt(stateT10.quantum, 10) || 2;
+      const gantt = [];
+      let time = 0;
+      let completed = 0;
+      const n = procs.length;
+
+      if (n === 0) {
+        stateT10.evaluated = [];
+        stateT10.gantt = [];
+        return;
+      }
+
+      if (alg === "FCFS") {
+        const sorted = [...procs].sort((a, b) => a.arrival - b.arrival);
+        sorted.forEach(p => {
+          if (time < p.arrival) {
+            gantt.push({ pid: "IDLE", start: time, end: p.arrival, duration: p.arrival - time });
+            time = p.arrival;
+          }
+          p.start = time;
+          gantt.push({ pid: p.pid, start: time, end: time + p.burst, duration: p.burst });
+          time += p.burst;
+          p.finish = time;
+          p.turnaround = p.finish - p.arrival;
+          p.waiting = p.turnaround - p.burst;
+        });
+        stateT10.evaluated = sorted;
+      } else if (alg === "SJF") {
+        // SJF no apropiativo
+        const finishedSet = new Set();
+        while (completed < n) {
+          const ready = procs.filter(p => p.arrival <= time && !finishedSet.has(p.pid));
+          if (ready.length === 0) {
+            gantt.push({ pid: "IDLE", start: time, end: time + 1, duration: 1 });
+            time++;
+            continue;
+          }
+          ready.sort((a, b) => a.burst - b.burst || a.arrival - b.arrival);
+          const curr = ready[0];
+          curr.start = time;
+          gantt.push({ pid: curr.pid, start: time, end: time + curr.burst, duration: curr.burst });
+          time += curr.burst;
+          curr.finish = time;
+          curr.turnaround = curr.finish - curr.arrival;
+          curr.waiting = curr.turnaround - curr.burst;
+          finishedSet.add(curr.pid);
+          completed++;
+        }
+        stateT10.evaluated = procs;
+      } else if (alg === "SRTF") {
+        // SRTF apropiativo
+        while (completed < n) {
+          const ready = procs.filter(p => p.arrival <= time && p.remaining > 0);
+          if (ready.length === 0) {
+            if (gantt.length > 0 && gantt[gantt.length - 1].pid === "IDLE") {
+              gantt[gantt.length - 1].end++;
+              gantt[gantt.length - 1].duration++;
+            } else {
+              gantt.push({ pid: "IDLE", start: time, end: time + 1, duration: 1 });
+            }
+            time++;
+            continue;
+          }
+          ready.sort((a, b) => a.remaining - b.remaining || a.arrival - b.arrival);
+          const curr = ready[0];
+
+          if (curr.start === -1) curr.start = time;
+
+          if (gantt.length > 0 && gantt[gantt.length - 1].pid === curr.pid) {
+            gantt[gantt.length - 1].end++;
+            gantt[gantt.length - 1].duration++;
+          } else {
+            gantt.push({ pid: curr.pid, start: time, end: time + 1, duration: 1 });
+          }
+
+          curr.remaining--;
+          time++;
+
+          if (curr.remaining === 0) {
+            curr.finish = time;
+            curr.turnaround = curr.finish - curr.arrival;
+            curr.waiting = curr.turnaround - curr.burst;
+            completed++;
+          }
+        }
+        stateT10.evaluated = procs;
+      } else if (alg === "RR") {
+        // Round Robin
+        const queue = [];
+        let pIndex = 0;
+        const sortedArrival = [...procs].sort((a, b) => a.arrival - b.arrival);
+
+        while (completed < n) {
+          while (pIndex < n && sortedArrival[pIndex].arrival <= time) {
+            queue.push(sortedArrival[pIndex]);
+            pIndex++;
+          }
+
+          if (queue.length === 0) {
+            gantt.push({ pid: "IDLE", start: time, end: time + 1, duration: 1 });
+            time++;
+            continue;
+          }
+
+          const curr = queue.shift();
+          if (curr.start === -1) curr.start = time;
+
+          const slice = Math.min(curr.remaining, q);
+          gantt.push({ pid: curr.pid, start: time, end: time + slice, duration: slice });
+          curr.remaining -= slice;
+          time += slice;
+
+          while (pIndex < n && sortedArrival[pIndex].arrival <= time) {
+            queue.push(sortedArrival[pIndex]);
+            pIndex++;
+          }
+
+          if (curr.remaining > 0) {
+            queue.push(curr);
+          } else {
+            curr.finish = time;
+            curr.turnaround = curr.finish - curr.arrival;
+            curr.waiting = curr.turnaround - curr.burst;
+            completed++;
+          }
+        }
+        stateT10.evaluated = procs;
+      }
+
+      stateT10.gantt = gantt;
+
+      // Metricas
+      const totalTurnaround = stateT10.evaluated.reduce((a, b) => a + b.turnaround, 0);
+      const totalWaiting = stateT10.evaluated.reduce((a, b) => a + b.waiting, 0);
+      const totalBurst = stateT10.processes.reduce((a, b) => a + parseInt(b.burst, 10), 0);
+
+      stateT10.tmr = (totalTurnaround / n).toFixed(2);
+      stateT10.tme = (totalWaiting / n).toFixed(2);
+      stateT10.cpuUtil = time > 0 ? ((totalBurst / time) * 100).toFixed(1) + "%" : "100%";
+
+      // Comprobacion de Efecto Convoy en FCFS
+      stateT10.hasConvoy = false;
+      if (alg === "FCFS" && stateT10.evaluated.length >= 2) {
+        const first = stateT10.evaluated[0];
+        const othersAvgBurst = stateT10.evaluated.slice(1).reduce((a, b) => a + b.burst, 0) / (stateT10.evaluated.length - 1);
+        if (first.burst >= 2 * othersAvgBurst && first.burst >= 6) {
+          stateT10.hasConvoy = true;
+        }
+      }
+    }
+
+    function renderT10() {
+      calculateScheduleT10();
+
+      document.getElementById("lab-heading").textContent = "Laboratorio de Planificacion de CPU y Diagrama de Gantt";
+      document.getElementById("lab-subheading").textContent = "Generacion proporcional de tiempos de despacho, calculo analitico de TME/TMR y deteccion de efecto convoy.";
+      document.getElementById("viz-title-label").textContent = "Diagrama de Gantt Proporcional (Marcas de Tiempo en u.t.)";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <div class="input-group">
+            <label>Algoritmo:</label>
+            <select class="select-field" id="t10-alg" onchange="changeT10Alg(this.value)">
+              <option value="FCFS" ${stateT10.algorithm === "FCFS" ? "selected" : ""}>FCFS (First-Come, First-Served)</option>
+              <option value="SJF" ${stateT10.algorithm === "SJF" ? "selected" : ""}>SJF (Shortest Job First - No apropiativo)</option>
+              <option value="SRTF" ${stateT10.algorithm === "SRTF" ? "selected" : ""}>SRTF (SJF Apropiativo / Desalojo)</option>
+              <option value="RR" ${stateT10.algorithm === "RR" ? "selected" : ""}>Round Robin (Apropiativo con Quantum)</option>
+            </select>
+          </div>
+          ${stateT10.algorithm === "RR" ? `
+            <div class="input-group">
+              <label>Quantum (q):</label>
+              <input type="number" min="1" max="10" value="${stateT10.quantum}" class="input-field" style="width:65px;" onchange="changeT10Quantum(this.value)">
+            </div>
+          ` : ""}
+        </div>
+        <div class="form-row">
+          <div class="input-group">
+            <label>Nuevo PID:</label>
+            <input type="text" id="t10-new-pid" value="P${stateT10.processes.length + 1}" class="input-field" style="width:60px;">
+          </div>
+          <div class="input-group">
+            <label>Llegada:</label>
+            <input type="number" min="0" max="50" id="t10-new-arr" value="${stateT10.processes.length}" class="input-field" style="width:60px;">
+          </div>
+          <div class="input-group">
+            <label>Rafaga:</label>
+            <input type="number" min="1" max="50" id="t10-new-bst" value="4" class="input-field" style="width:60px;">
+          </div>
+          <button class="btn btn-primary btn-xs" onclick="addProcessT10()">+ Agregar Proceso</button>
+        </div>
+      `;
+
+      // Grafico de Gantt
+      const totalTime = stateT10.gantt.length > 0 ? stateT10.gantt[stateT10.gantt.length - 1].end : 1;
+      const colors = { P1: "#2563eb", P2: "#10b981", P3: "#8b5cf6", P4: "#f59e0b", P5: "#06b6d4", P6: "#ec4899", IDLE: "#475569" };
+
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="gantt-wrapper">
+          <div class="gantt-bar">
+            ${stateT10.gantt.map(g => {
+              const pct = (g.duration / totalTime) * 100;
+              const bg = colors[g.pid] || "#3b82f6";
+              return `
+                <div class="gantt-segment" style="width:${pct}%; background-color:${bg};" title="${g.pid}: [${g.start} - ${g.end}] (${g.duration} u.t.)">
+                  ${g.pid}
+                </div>
+              `;
+            }).join("")}
+          </div>
+          <div class="gantt-ticks">
+            <span>0</span>
+            ${stateT10.gantt.map(g => `<span>${g.end}</span>`).join("")}
+          </div>
+        </div>
+      `;
+
+      // Tabla de Procesos
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Proceso</th>
+            <th>T. Llegada (T_ll)</th>
+            <th>Rafaga CPU (T_raf)</th>
+            <th>T. Finalizacion (T_fin)</th>
+            <th>T. Retorno (T_ret = T_fin - T_ll)</th>
+            <th>T. Espera (T_esp = T_ret - T_raf)</th>
+            <th>Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${stateT10.evaluated.map(p => `
+            <tr>
+              <td class="mono"><strong>${p.pid}</strong></td>
+              <td class="mono">${p.arrival}</td>
+              <td class="mono">${p.burst}</td>
+              <td class="mono">${p.finish}</td>
+              <td class="mono"><strong>${p.turnaround}</strong> u.t.</td>
+              <td class="mono"><strong style="color:var(--state-warn);">${p.waiting}</strong> u.t.</td>
+              <td><button class="btn btn-danger btn-xs" onclick="removeProcessT10('${p.pid}')">Eliminar</button></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      `;
+
+      // 3 KPIs
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Tiempo Medio Espera (TME)</span>
+          <span class="kpi-val">${stateT10.tme} u.t.</span>
+          <span class="kpi-sub">(1/n) &Sigma; T_espera</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Tiempo Medio Retorno (TMR)</span>
+          <span class="kpi-val">${stateT10.tmr} u.t.</span>
+          <span class="kpi-sub">(1/n) &Sigma; T_retorno</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Utilizacion de CPU</span>
+          <span class="kpi-val">${stateT10.cpuUtil}</span>
+          <span class="kpi-sub">Trabajo util sobre tiempo total</span>
+        </div>
+      `;
+
+      // Comprobacion Matematica y Logica
+      const audit = document.getElementById("audit-content");
+      const n = stateT10.evaluated.length;
+      const sumRet = stateT10.evaluated.map(p => p.turnaround).join(" + ");
+      const sumEsp = stateT10.evaluated.map(p => p.waiting).join(" + ");
+
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Algoritmo Seleccionado:</strong> ${stateT10.algorithm} ${stateT10.algorithm === "RR" ? `(Quantum q = ${stateT10.quantum} u.t.)` : ""}</div>
+        <div class="audit-line"><strong>Calculo TMR:</strong> TMR = (${sumRet}) / ${n} = <span class="audit-highlight">${stateT10.tmr} u.t.</span></div>
+        <div class="audit-line"><strong>Calculo TME:</strong> TME = (${sumEsp}) / ${n} = <span class="audit-highlight">${stateT10.tme} u.t.</span></div>
+        ${stateT10.hasConvoy ? `
+          <div class="audit-alert">ALERTA TECNICA: Efecto Convoy detectado en FCFS. El proceso P1 posee una rafaga dominante (${stateT10.evaluated[0].burst} u.t.) que penaliza la cola entera. Recomendacion: evaluar SJF/Round Robin.</div>
+        ` : `
+          <div class="audit-line" style="color:#86efac;">Verificacion: Secuencia completada sin inanicion detectada.</div>
+        `}
+      `;
+    }
+
+    function changeT10Alg(val) {
+      stateT10.algorithm = val;
+      renderT10();
+    }
+
+    function changeT10Quantum(val) {
+      stateT10.quantum = Math.max(1, parseInt(val, 10));
+      renderT10();
+    }
+
+    function addProcessT10() {
+      const pid = document.getElementById("t10-new-pid").value || `P${stateT10.processes.length + 1}`;
+      const arr = parseInt(document.getElementById("t10-new-arr").value, 10) || 0;
+      const bst = parseInt(document.getElementById("t10-new-bst").value, 10) || 1;
+      stateT10.processes.push({ pid, arrival: arr, burst: bst });
+      renderT10();
+    }
+
+    function removeProcessT10(pid) {
+      stateT10.processes = stateT10.processes.filter(p => p.pid !== pid);
+      renderT10();
+    }
+
+    function exampleT10() {
+      stateT10.algorithm = "RR";
+      stateT10.quantum = 2;
+      stateT10.processes = [
+        { pid: "P1", arrival: 0, burst: 8 },
+        { pid: "P2", arrival: 1, burst: 4 },
+        { pid: "P3", arrival: 2, burst: 9 },
+        { pid: "P4", arrival: 3, burst: 5 }
+      ];
+      renderT10();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 11: PASO DE MENSAJES (BUZON FIFO, SINCRONIZACION Y COPIAS)
+    // ==========================================================================
+    function renderT11() {
+      document.getElementById("lab-heading").textContent = "Laboratorio de Paso de Mensajes (Buzon FIFO del Kernel)";
+      document.getElementById("lab-subheading").textContent = "Comunicacion indirecta, conteo de copias en memoria y semantica Bloqueante vs No Bloqueante.";
+      document.getElementById("viz-title-label").textContent = "Esquema Arquitectonico de Copias y Buzon FIFO en Espacio de Nucleo";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <div class="input-group">
+            <label>Modo IPC:</label>
+            <select class="select-field" onchange="changeT11Mode(this.value)">
+              <option value="blocking" ${stateT11.mode === "blocking" ? "selected" : ""}>Bloqueante (Sincrono)</option>
+              <option value="nonblocking" ${stateT11.mode === "nonblocking" ? "selected" : ""}>No Bloqueante (Asincrono)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Capacidad Buzon (N):</label>
+            <select class="select-field" onchange="changeT11Cap(this.value)">
+              <option value="2" ${stateT11.capacity === 2 ? "selected" : ""}>N = 2</option>
+              <option value="3" ${stateT11.capacity === 3 ? "selected" : ""}>N = 3</option>
+              <option value="5" ${stateT11.capacity === 5 ? "selected" : ""}>N = 5</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-primary btn-xs" onclick="sendT11('P1')">P1: send(msg)</button>
+          <button class="btn btn-secondary btn-xs" onclick="sendT11('P2')">P2: send(msg)</button>
+          <button class="btn btn-success btn-xs" onclick="receiveT11()">P3: receive()</button>
+        </div>
+      `;
+
+      // Visualizacion
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="mailbox-grid">
+          <div class="actor-box">
+            <strong>Emisor P1 / P2</strong>
+            <p style="color:var(--text-sub); margin-top:0.25rem;">Espacio Usuario (Ring 3)</p>
+            <p style="margin-top:0.35rem;">Estado P1: <span class="badge-status ${stateT11.p1State === 'Bloqueado' ? 'status-error' : 'status-ready'}">${stateT11.p1State}</span></p>
+          </div>
+
+          <div style="background-color:#0b1120; border:1px solid var(--border); border-radius:4px; padding:0.75rem;">
+            <div style="font-family:var(--font-mono); font-size:0.7rem; color:#93c5fd; margin-bottom:0.5rem; display:flex; justify-content:space-between;">
+              <span>BUZON FIFO KERNEL (Ring 0)</span>
+              <span>${stateT11.mailbox.length} / ${stateT11.capacity} slots</span>
+            </div>
+            <div class="mailbox-slots">
+              ${[...Array(stateT11.capacity)].map((_, idx) => {
+                const msg = stateT11.mailbox[idx];
+                return `
+                  <div class="slot-unit ${msg ? 'occupied' : ''}">
+                    <span style="font-size:0.65rem; color:var(--text-sub);">Slot ${idx}</span>
+                    <strong>${msg ? msg.id : 'VACIO'}</strong>
+                    <span style="font-size:0.65rem;">${msg ? msg.sender : ''}</span>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <div class="actor-box">
+            <strong>Receptor P3</strong>
+            <p style="color:var(--text-sub); margin-top:0.25rem;">Espacio Usuario (Ring 3)</p>
+            <p style="margin-top:0.35rem;">Estado P3: <span class="badge-status ${stateT11.p3State === 'Bloqueado' ? 'status-error' : 'status-running'}">${stateT11.p3State}</span></p>
+          </div>
+        </div>
+      `;
+
+      // Tabla de Mensajes
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Posicion FIFO</th>
+            <th>ID Mensaje</th>
+            <th>Emisor</th>
+            <th>Destinatario</th>
+            <th>Tamano Carga</th>
+            <th>Ubicacion de Memoria</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${stateT11.mailbox.map((m, idx) => `
+            <tr>
+              <td class="mono">Slot #${idx} ${idx === 0 ? '(Siguiente en salir)' : ''}</td>
+              <td class="mono"><strong>${m.id}</strong></td>
+              <td class="mono">${m.sender}</td>
+              <td class="mono">P3</td>
+              <td class="mono">${m.size} Bytes</td>
+              <td><span class="badge-status status-ready">Bucle RAM Kernel</span></td>
+            </tr>
+          `).join("")}
+          ${stateT11.mailbox.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:var(--text-sub);">Buzon vacio actualmente.</td></tr>` : ""}
+        </tbody>
+      `;
+
+      // 3 KPIs
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Ocupacion de Buzon</span>
+          <span class="kpi-val">${stateT11.mailbox.length} / ${stateT11.capacity}</span>
+          <span class="kpi-sub">Slots ocupados en Ring 0</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Copias de Memoria</span>
+          <span class="kpi-val">${stateT11.totalCopies}</span>
+          <span class="kpi-sub">2 copias por mensaje entregado</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Procesos Bloqueados</span>
+          <span class="kpi-val">${(stateT11.p1State === "Bloqueado" ? 1 : 0) + (stateT11.p3State === "Bloqueado" ? 1 : 0)}</span>
+          <span class="kpi-sub">Suspension por semantica IPC</span>
+        </div>
+      `;
+
+      // Auditoria
+      const audit = document.getElementById("audit-content");
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Semantica activa:</strong> ${stateT11.mode === 'blocking' ? 'Bloqueante (Sincrono)' : 'No Bloqueante (Asincrono)'}</div>
+        <div class="audit-line"><strong>Diagnostico:</strong> ${stateT11.auditMsg}</div>
+        <div class="audit-line"><strong>Analisis de Sobrecarga:</strong> Cada mensaje completado requiere 2 copias f&iacute;sicas (Usuario &rarr; Kernel &rarr; Usuario). Total copiado: ${stateT11.totalCopies * 256} Bytes.</div>
+        ${stateT11.auditAlert ? `<div class="audit-alert">${stateT11.auditAlert}</div>` : ""}
+      `;
+    }
+
+    function changeT11Mode(val) {
+      stateT11.mode = val;
+      stateT11.p1State = "Activo";
+      stateT11.p3State = "Activo";
+      stateT11.auditAlert = null;
+      renderT11();
+    }
+
+    function changeT11Cap(val) {
+      stateT11.capacity = parseInt(val, 10);
+      if (stateT11.mailbox.length > stateT11.capacity) {
+        stateT11.mailbox = stateT11.mailbox.slice(0, stateT11.capacity);
+      }
+      renderT11();
+    }
+
+    function sendT11(sender) {
+      if (stateT11.mailbox.length >= stateT11.capacity) {
+        if (stateT11.mode === "blocking") {
+          stateT11.p1State = "Bloqueado";
+          stateT11.auditMsg = `Buzon LLENO (${stateT11.capacity}/${stateT11.capacity}). En modo Bloqueante, ${sender} queda suspendido en cola de espera del buzon.`;
+          stateT11.auditAlert = `BLOQUEO SINKRONO: Proceso ${sender} suspendido hasta que P3 extraiga un mensaje.`;
+        } else {
+          stateT11.auditMsg = `Buzon LLENO. En modo No Bloqueante, ${sender} recibe codigo de error EAGAIN/ENOMSG de inmediato sin bloquearse.`;
+          stateT11.auditAlert = "RECHAZO ASINCRONO: Mensaje descartado por buzon lleno.";
+        }
+        renderT11();
+        return;
+      }
+
+      const id = "M" + (stateT11.mailbox.length + 1);
+      stateT11.mailbox.push({ id, sender, text: `PAYLOAD_${Date.now()%1000}`, size: 256 });
+      stateT11.totalCopies++; // 1 copia a espacio kernel
+      stateT11.p3State = "Activo"; // Desbloquear receptor si estaba esperando
+      stateT11.auditMsg = `${sender} ejecuto send(). Mensaje ${id} copiado al buzon del kernel (Copia 1: Usuario &rarr; Kernel).`;
+      stateT11.auditAlert = null;
+      renderT11();
+    }
+
+    function receiveT11() {
+      if (stateT11.mailbox.length === 0) {
+        if (stateT11.mode === "blocking") {
+          stateT11.p3State = "Bloqueado";
+          stateT11.auditMsg = "Buzon VACIO. En modo Bloqueante, el receptor P3 queda suspendido hasta la llegada de un nuevo mensaje.";
+          stateT11.auditAlert = "BLOQUEO SINKRONO: Receptor P3 suspendido esperando mensaje.";
+        } else {
+          stateT11.auditMsg = "Buzon VACIO. En modo No Bloqueante, P3 recibe un puntero nulo (NULL) y continua su ejecucion sin suspenderse.";
+          stateT11.auditAlert = null;
+        }
+        renderT11();
+        return;
+      }
+
+      const delivered = stateT11.mailbox.shift(); // FIFO
+      stateT11.totalCopies++; // 1 copia a espacio usuario
+      stateT11.p1State = "Activo"; // Desbloquear emisor si estaba bloqueado por lleno
+      stateT11.p3State = "Activo";
+      stateT11.auditMsg = `P3 extrajo el mensaje ${delivered.id} en orden FIFO (Copia 2: Kernel &rarr; Usuario).`;
+      stateT11.auditAlert = null;
+      renderT11();
+    }
+
+    function exampleT11() {
+      stateT11.mode = "blocking";
+      stateT11.capacity = 3;
+      stateT11.mailbox = [
+        { id: "M1", sender: "P1", text: "SYNC_REQ", size: 128 },
+        { id: "M2", sender: "P2", text: "DATA_FRAME_4", size: 512 }
+      ];
+      stateT11.p1State = "Activo";
+      stateT11.p3State = "Activo";
+      stateT11.totalCopies = 4;
+      stateT11.auditMsg = "Escenario academico de buzon con 2 mensajes precargados.";
+      stateT11.auditAlert = null;
+      renderT11();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 12: MEMORIA COMPARTIDA (BUFFER CIRCULAR in/out)
+    // ==========================================================================
+    function renderT12() {
+      document.getElementById("lab-heading").textContent = "Laboratorio de Memoria Compartida (Bufer Circular Productor-Consumidor)";
+      document.getElementById("lab-subheading").textContent = "Comprobacion de indices modulares in / out y de las condiciones matematicas de vacio y lleno de ULL ESIT.";
+      document.getElementById("viz-title-label").textContent = "Representacion Grafica del Bufer Circular de N Celdas";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <button class="btn btn-primary btn-xs" onclick="produceT12()">+ Producir Elemento (in)</button>
+          <button class="btn btn-success btn-xs" onclick="consumeT12()">- Consumir Elemento (out)</button>
+          <button class="btn btn-secondary btn-xs" onclick="clearT12()">Vaciar Bufer</button>
+        </div>
+      `;
+
+      // Visualizacion
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="circular-grid">
+          ${[...Array(stateT12.size)].map((_, i) => {
+            const val = stateT12.buffer[i];
+            const isIn = stateT12.inPtr === i;
+            const isOut = stateT12.outPtr === i;
+            let ptrText = "";
+            if (isIn && isOut) ptrText = `<span class="ptr-in">in</span> | <span class="ptr-out">out</span>`;
+            else if (isIn) ptrText = `<span class="ptr-in">in &rarr;</span>`;
+            else if (isOut) ptrText = `<span class="ptr-out">&rarr; out</span>`;
+
+            return `
+              <div class="circular-cell">
+                <div class="cell-idx">Celda #${i}</div>
+                <div class="cell-val">${val !== null ? val : '<span style="color:var(--text-sub)">NULL</span>'}</div>
+                <div class="cell-pointer">${ptrText}</div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      // Tabla
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Indice (0..N-1)</th>
+            <th>Estado de Celda</th>
+            <th>Contenido Compartido en RAM</th>
+            <th>Punteros Activos</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${[...Array(stateT12.size)].map((_, i) => {
+            const val = stateT12.buffer[i];
+            const isIn = stateT12.inPtr === i;
+            const isOut = stateT12.outPtr === i;
+            return `
+              <tr>
+                <td class="mono">Slot #${i}</td>
+                <td><span class="badge-status ${val !== null ? 'status-ready' : 'status-terminated'}">${val !== null ? 'Ocupada' : 'Libre'}</span></td>
+                <td class="mono">${val !== null ? val : 'NULL'}</td>
+                <td class="mono">${isIn ? '[in (productor)] ' : ''}${isOut ? '[out (consumidor)]' : ''}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      `;
+
+      // Conteo real
+      const count = stateT12.buffer.filter(x => x !== null).length;
+      const isEmpty = stateT12.inPtr === stateT12.outPtr;
+      const isFull = (stateT12.inPtr + 1) % stateT12.size === stateT12.outPtr;
+
+      // 3 KPIs
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Elementos Almacenados</span>
+          <span class="kpi-val">${count} / ${stateT12.size - 1}</span>
+          <span class="kpi-sub">Capacidad util maxima es N - 1</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Indice in (Productor)</span>
+          <span class="kpi-val">#${stateT12.inPtr}</span>
+          <span class="kpi-sub">Siguiente celda de escritura</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Indice out (Consumidor)</span>
+          <span class="kpi-val">#${stateT12.outPtr}</span>
+          <span class="kpi-sub">Siguiente celda de lectura</span>
+        </div>
+      `;
+
+      // Auditoria Matematica
+      const audit = document.getElementById("audit-content");
+      const nextIn = (stateT12.inPtr + 1) % stateT12.size;
+
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Comprobacion de Vacio:</strong> (in == out) &rArr; (${stateT12.inPtr} == ${stateT12.outPtr}) = <span class="audit-highlight">${isEmpty ? 'VERDADERO (Bufer vacio)' : 'FALSO'}</span></div>
+        <div class="audit-line"><strong>Comprobacion de Lleno:</strong> ((in + 1) % N == out) &rArr; ((${stateT12.inPtr} + 1) % ${stateT12.size} == ${stateT12.outPtr}) &rArr; (${nextIn} == ${stateT12.outPtr}) = <span class="audit-highlight">${isFull ? 'VERDADERO (Bufer lleno)' : 'FALSO'}</span></div>
+        <div class="audit-line"><strong>Regla Didactica:</strong> Se reservan N = ${stateT12.size} celdas pero solo se admiten N - 1 = ${stateT12.size - 1} items. Si permitiesemos almacenar ${stateT12.size} items, la condicion de lleno coincidiria con in == out, haciendo indistinguible vacio de lleno.</div>
+        ${stateT12.auditAlert ? `<div class="audit-alert">${stateT12.auditAlert}</div>` : ""}
+      `;
+    }
+
+    function produceT12() {
+      const isFull = (stateT12.inPtr + 1) % stateT12.size === stateT12.outPtr;
+      if (isFull) {
+        stateT12.auditMsg = "Operacion rechazada: Bufer LLENO.";
+        stateT12.auditAlert = `CONDICION DE LLENO ALCANZADA: ((in + 1) % ${stateT12.size} == out). El productor debe esperar.`;
+        renderT12();
+        return;
+      }
+
+      stateT12.buffer[stateT12.inPtr] = `DATA_${Date.now() % 1000}`;
+      stateT12.inPtr = (stateT12.inPtr + 1) % stateT12.size;
+      stateT12.auditMsg = `Producido elemento. in avanzo a celda #${stateT12.inPtr}.`;
+      stateT12.auditAlert = null;
+      renderT12();
+    }
+
+    function consumeT12() {
+      const isEmpty = stateT12.inPtr === stateT12.outPtr;
+      if (isEmpty) {
+        stateT12.auditMsg = "Operacion rechazada: Bufer VACIO.";
+        stateT12.auditAlert = "CONDICION DE VACIO ALCANZADA: (in == out). El consumidor debe esperar.";
+        renderT12();
+        return;
+      }
+
+      stateT12.buffer[stateT12.outPtr] = null;
+      stateT12.outPtr = (stateT12.outPtr + 1) % stateT12.size;
+      stateT12.auditMsg = `Consumido elemento. out avanzo a celda #${stateT12.outPtr}.`;
+      stateT12.auditAlert = null;
+      renderT12();
+    }
+
+    function clearT12() {
+      stateT12.inPtr = 0;
+      stateT12.outPtr = 0;
+      stateT12.buffer = Array(stateT12.size).fill(null);
+      stateT12.auditMsg = "Bufer reiniciado a estado vacio (in == out == 0).";
+      stateT12.auditAlert = null;
+      renderT12();
+    }
+
+    function exampleT12() {
+      stateT12.size = 8;
+      stateT12.inPtr = 7;
+      stateT12.outPtr = 0;
+      stateT12.buffer = ["A", "B", "C", "D", "E", "F", "G", null];
+      stateT12.auditMsg = "Cargado ejercicio al borde de capacidad: 7 elementos en N=8. Condicion de lleno activada.";
+      stateT12.auditAlert = "El proximo intento de produccion activara la condicion de lleno ((7+1)%8 == 0).";
+      renderT12();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 13: HILOS (RECURSOS COMPARTIDOS Y LEY DE AMDAHL)
+    // ==========================================================================
+    function renderT13() {
+      document.getElementById("lab-heading").textContent = "Laboratorio de Hilos, Recursos Compartidos y Ley de Amdahl";
+      document.getElementById("lab-subheading").textContent = "Calculo de aceleracion teorica (Speedup) frente a fraccion paralelizable y ahorro de memoria respecto a procesos.";
+      document.getElementById("viz-title-label").textContent = "Estructura de Memoria del Proceso Multihilo y Curva de Rendimiento";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <div class="input-group">
+            <label>Numero de Nucleos/Hilos (N):</label>
+            <input type="number" min="1" max="64" value="${stateT13.threadsN}" class="input-field" style="width:70px;" onchange="changeT13N(this.value)">
+          </div>
+          <div class="input-group">
+            <label>Fraccion Paralelizable (P):</label>
+            <select class="select-field" onchange="changeT13P(this.value)">
+              <option value="0.50" ${stateT13.fractionP === 0.5 ? "selected" : ""}>P = 0.50 (50% paralela)</option>
+              <option value="0.75" ${stateT13.fractionP === 0.75 ? "selected" : ""}>P = 0.75 (75% paralela)</option>
+              <option value="0.90" ${stateT13.fractionP === 0.9 ? "selected" : ""}>P = 0.90 (90% paralela)</option>
+              <option value="0.95" ${stateT13.fractionP === 0.95 ? "selected" : ""}>P = 0.95 (95% paralela)</option>
+            </select>
+          </div>
+        </div>
+      `;
+
+      const N = stateT13.threadsN;
+      const P = stateT13.fractionP;
+      const S = (1 / ((1 - P) + (P / N))).toFixed(2);
+      const Smax = (1 / (1 - P)).toFixed(2);
+      const efficiency = ((S / N) * 100).toFixed(1);
+
+      // Visualizacion
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="threads-layout">
+          <div style="background-color:var(--bg-subcard); border:1px solid var(--border); border-radius:4px; padding:0.75rem;">
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:#93c5fd; border-bottom:1px solid var(--border); padding-bottom:0.35rem;">
+              ESPACIO COMPARTIDO (1 Instancia en RAM)
+            </div>
+            <div style="font-family:var(--font-mono); font-size:0.75rem; margin-top:0.4rem; color:#cbd5e1;">
+              <code>.text</code> Codigo binario | <code>.data</code> Variables globales | <code>Heap</code> malloc()
+            </div>
+            <div class="thread-stack-list">
+              <span style="font-size:0.7rem; color:var(--text-sub);">PILAS PRIVADAS POR HILO (Stack propio):</span>
+              ${[...Array(Math.min(N, 6))].map((_, i) => `
+                <div class="stack-item">
+                  <span>Hilo TID #${i + 1}</span>
+                  <span>Stack Pointer: 0x7fff00${i}0 | PC propio</span>
+                </div>
+              `).join("")}
+              ${N > 6 ? `<div style="font-size:0.7rem; color:var(--text-sub); text-align:center;">+ ${N - 6} hilos mas...</div>` : ""}
+            </div>
+          </div>
+
+          <div style="background-color:var(--bg-subcard); border:1px solid var(--border); border-radius:4px; padding:0.75rem;">
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:#93c5fd; border-bottom:1px solid var(--border); padding-bottom:0.35rem;">
+              DESGLOSE TEMPORAL DE EJECUCION (LEY DE AMDAHL)
+            </div>
+            <div style="margin-top:0.6rem; font-size:0.78rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span>Parte Serie (1 - P = ${(1 - P).toFixed(2)})</span>
+                <span class="mono">${((1 - P) * 100).toFixed(0)}% del tiempo base</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+                <span>Parte Paralela (P / N = (${P} / ${N}))</span>
+                <span class="mono">${((P / N) * 100).toFixed(2)}% del tiempo base</span>
+              </div>
+            </div>
+            <div class="amdahl-meter">
+              <div class="amdahl-fill" style="width:${Math.min((S / Smax) * 100, 100)}%;"></div>
+            </div>
+            <p style="font-size:0.7rem; color:var(--text-sub); margin-top:0.35rem;">Aceleracion alcanzada: ${S}x de un maximo teorico de ${Smax}x.</p>
+          </div>
+        </div>
+      `;
+
+      // Tabla de Escala de Amdahl
+      const checkpoints = [1, 2, 4, 8, 16, 32, 64];
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Nucleos (N)</th>
+            <th>Fraccion Serie (1 - P)</th>
+            <th>Fraccion Paralela (P / N)</th>
+            <th>Tiempo Total Paralelo</th>
+            <th>Aceleracion (Speedup S)</th>
+            <th>Eficiencia (S / N)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${checkpoints.map(nVal => {
+            const partP = P / nVal;
+            const tTotal = (1 - P) + partP;
+            const speed = (1 / tTotal).toFixed(2);
+            const eff = ((speed / nVal) * 100).toFixed(1);
+            const isSelected = nVal === N;
+
+            return `
+              <tr style="${isSelected ? 'background-color:rgba(37,99,235,0.12);' : ''}">
+                <td class="mono"><strong>${nVal} ${isSelected ? '(Seleccionado)' : ''}</strong></td>
+                <td class="mono">${(1 - P).toFixed(2)}</td>
+                <td class="mono">${partP.toFixed(4)}</td>
+                <td class="mono">${tTotal.toFixed(4)}</td>
+                <td class="mono"><strong>${speed}x</strong></td>
+                <td class="mono">${eff}%</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      `;
+
+      // 3 KPIs
+      const memSavedMB = ((N - 1) * 3.9).toFixed(1); // 4MB por proc vs 100KB por thread
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Speedup Teórico (S)</span>
+          <span class="kpi-val">${S}x</span>
+          <span class="kpi-sub">Aceleracion frente a 1 nucleo</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Limite Asintotico (S_max)</span>
+          <span class="kpi-val">${Smax}x</span>
+          <span class="kpi-sub">Maximo posible con N &rarr; &infin;</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Ahorro RAM vs Procesos</span>
+          <span class="kpi-val">~${memSavedMB} MB</span>
+          <span class="kpi-sub">Al compartir codigo y memoria global</span>
+        </div>
+      `;
+
+      // Auditoria Matematica
+      const audit = document.getElementById("audit-content");
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Formula de Amdahl:</strong> S(N) = 1 / ((1 - P) + (P / N))</div>
+        <div class="audit-line"><strong>Sustitucion:</strong> S(${N}) = 1 / ((1 - ${P}) + (${P} / ${N})) = 1 / (${(1 - P).toFixed(2)} + ${(P / N).toFixed(4)}) = 1 / ${((1 - P) + (P / N)).toFixed(4)} = <span class="audit-highlight">${S}x</span></div>
+        <div class="audit-line"><strong>Conclusi&oacute;n Docente:</strong> Aunque aumentemos los procesadores al infinito, la aceleracion NUNCA podra superar 1 / (1 - ${P}) = <strong>${Smax}x</strong>. El cuello de botella esta fijado por la fraccion estrictamente secuencial (${((1 - P) * 100).toFixed(0)}%).</div>
+      `;
+    }
+
+    function changeT13N(val) {
+      stateT13.threadsN = Math.max(1, parseInt(val, 10));
+      renderT13();
+    }
+
+    function changeT13P(val) {
+      stateT13.fractionP = parseFloat(val);
+      renderT13();
+    }
+
+    function exampleT13() {
+      stateT13.threadsN = 8;
+      stateT13.fractionP = 0.75;
+      renderT13();
+    }
+
+    // ==========================================================================
+    // SIMULADOR TEMA 14: SINCRONIZACION (MICROINSTRUCCIONES Y MUTEX)
+    // ==========================================================================
+    const microstepsWithoutMutex = [
+      { thread: 1, text: "R1 = count (Hilo 1 lee 5 en su registro R1)", r1: 5, r2: 0, count: 5 },
+      { thread: 1, text: "R1 = R1 + 1 (Hilo 1 incrementa R1 = 6 localmente)", r1: 6, r2: 0, count: 5 },
+      { thread: 2, text: "INTERRUPCION: Hilo 2 lee count: R2 = count (Lee 5)", r1: 6, r2: 5, count: 5 },
+      { thread: 2, text: "R2 = R2 - 1 (Hilo 2 decrementa R2 = 4 localmente)", r1: 6, r2: 4, count: 5 },
+      { thread: 1, text: "REANUDA H1: count = R1 (Hilo 1 escribe 6 en RAM)", r1: 6, r2: 4, count: 6 },
+      { thread: 2, text: "REANUDA H2: count = R2 (Hilo 2 escribe 4 en RAM - SOBREESCRITURA)", r1: 6, r2: 4, count: 4 }
+    ];
+
+    const microstepsWithMutex = [
+      { thread: 1, text: "Hilo 1 ejecuta acquire(mutex) -> Mutex BLOQUEADO", r1: 0, r2: 0, count: 5, lock: true },
+      { thread: 1, text: "Hilo 1: R1 = count (Lee 5 en exclusion mutua)", r1: 5, r2: 0, count: 5, lock: true },
+      { thread: 1, text: "Hilo 1: R1 = R1 + 1 (R1 = 6)", r1: 6, r2: 0, count: 5, lock: true },
+      { thread: 1, text: "Hilo 1: count = R1 (RAM = 6) y ejecuta release(mutex)", r1: 6, r2: 0, count: 6, lock: false },
+      { thread: 2, text: "Hilo 2 adquiere mutex, R2 = count (Lee 6 ya actualizado)", r1: 6, r2: 6, count: 6, lock: true },
+      { thread: 2, text: "Hilo 2: R2 = R2 - 1 (R2 = 5), count = R2 (RAM = 5) y release(mutex)", r1: 6, r2: 5, count: 5, lock: false }
+    ];
+
+    function renderT14() {
+      document.getElementById("lab-heading").textContent = "Laboratorio de Concurrencia y Sincronizacion a Nivel Maquina";
+      document.getElementById("lab-subheading").textContent = "Descomposicion de count++ y count-- en microinstrucciones, demostracion de condicion de carrera y solucion con cerrojo Mutex.";
+      document.getElementById("viz-title-label").textContent = "Registros de CPU, Cerrojo Mutex y Variable Compartida en Memoria RAM";
+
+      // Controles
+      const controls = document.getElementById("lab-controls");
+      controls.innerHTML = `
+        <div class="form-row">
+          <div class="input-group">
+            <label>Mecanismo de Proteccion:</label>
+            <select class="select-field" onchange="changeT14Mutex(this.value === 'true')">
+              <option value="false" ${!stateT14.useMutex ? "selected" : ""}>Sin Sincronizacion (Demostrar Condicion de Carrera)</option>
+              <option value="true" ${stateT14.useMutex ? "selected" : ""}>Con Cerrojo Mutex (Garantizar Exclusion Mutua)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-primary btn-xs" onclick="stepT14()">Paso a Paso ➔</button>
+          <button class="btn btn-secondary btn-xs" onclick="runAllT14()">Ejecutar Completo</button>
+          <button class="btn btn-secondary btn-xs" onclick="resetT14()">Reiniciar</button>
+        </div>
+      `;
+
+      // Visualizacion
+      const steps = stateT14.useMutex ? microstepsWithMutex : microstepsWithoutMutex;
+      const current = stateT14.stepIndex > 0 ? steps[stateT14.stepIndex - 1] : { r1: 0, r2: 0, count: 5, lock: false };
+      const isCorrupt = !stateT14.useMutex && stateT14.stepIndex === 6;
+
+      const viz = document.getElementById("viz-content");
+      viz.innerHTML = `
+        <div class="interleave-grid">
+          <div class="thread-col">
+            <h4>HILO 1 (count++)</h4>
+            <div style="font-family:var(--font-mono); font-size:0.75rem; margin-bottom:0.5rem;">
+              Registro Privado R1: <strong style="color:#93c5fd;">${current.r1}</strong>
+            </div>
+            <div class="micro-step ${stateT14.stepIndex >= 1 ? (stateT14.stepIndex === 1 ? 'step-active' : 'step-done') : ''}">1. R1 = count</div>
+            <div class="micro-step ${stateT14.stepIndex >= 2 ? (stateT14.stepIndex === 2 ? 'step-active' : 'step-done') : ''}">2. R1 = R1 + 1</div>
+            <div class="micro-step ${stateT14.stepIndex >= 5 ? (stateT14.stepIndex === 5 ? 'step-active' : 'step-done') : ''}">3. count = R1</div>
+          </div>
+
+          <div class="thread-col" style="text-align:center;">
+            <h4>MEMORIA RAM COMPARTIDA</h4>
+            <div style="margin:0.75rem 0;">
+              <span style="font-size:0.7rem; color:var(--text-sub);">VARIABLE count EN RAM:</span>
+              <div style="font-family:var(--font-mono); font-size:2.2rem; font-weight:800; color:${isCorrupt ? 'var(--state-error)' : 'var(--state-active)'};">
+                ${current.count}
+              </div>
+            </div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; padding:0.3rem; border-radius:3px; background-color:var(--bg-subcard); border:1px solid var(--border);">
+              Cerrojo Mutex: <strong style="color:${current.lock ? 'var(--state-error)' : 'var(--state-active)'};">${current.lock ? 'BLOQUEADO' : 'LIBRE'}</strong>
+            </div>
+          </div>
+
+          <div class="thread-col">
+            <h4>HILO 2 (count--)</h4>
+            <div style="font-family:var(--font-mono); font-size:0.75rem; margin-bottom:0.5rem;">
+              Registro Privado R2: <strong style="color:#fde68a;">${current.r2}</strong>
+            </div>
+            <div class="micro-step ${stateT14.stepIndex >= 3 ? (stateT14.stepIndex === 3 ? 'step-active' : 'step-done') : ''}">1. R2 = count</div>
+            <div class="micro-step ${stateT14.stepIndex >= 4 ? (stateT14.stepIndex === 4 ? 'step-active' : 'step-done') : ''}">2. R2 = R2 - 1</div>
+            <div class="micro-step ${stateT14.stepIndex >= 6 ? (stateT14.stepIndex === 6 ? 'step-active' : 'step-done') : ''}">3. count = R2</div>
+          </div>
+        </div>
+      `;
+
+      // Tabla de Seguimiento
+      const table = document.getElementById("lab-table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Paso</th>
+            <th>Hilo Ejecutor</th>
+            <th>Microinstruccion Ejecutada</th>
+            <th>R1 Local</th>
+            <th>R2 Local</th>
+            <th>count en RAM</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${steps.map((st, i) => {
+            const isDone = i < stateT14.stepIndex;
+            const isCurrent = i === stateT14.stepIndex - 1;
+
+            return `
+              <tr style="${isCurrent ? 'background-color:rgba(37,99,235,0.15);' : ''}">
+                <td class="mono">Paso ${i + 1}</td>
+                <td class="mono">Hilo ${st.thread}</td>
+                <td class="mono">${st.text}</td>
+                <td class="mono">${isDone ? st.r1 : '—'}</td>
+                <td class="mono">${isDone ? st.r2 : '—'}</td>
+                <td class="mono"><strong>${isDone ? st.count : '—'}</strong></td>
+                <td>
+                  <span class="badge-status ${isCurrent ? 'status-running' : (isDone ? 'status-ready' : 'status-terminated')}">
+                    ${isCurrent ? 'Ejecutando' : (isDone ? 'Completado' : 'Pendiente')}
+                  </span>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      `;
+
+      // 3 KPIs
+      document.getElementById("lab-kpis").innerHTML = `
+        <div class="kpi-box">
+          <span class="kpi-heading">Valor Final count</span>
+          <span class="kpi-val" style="color:${isCorrupt ? 'var(--state-error)' : 'var(--state-active)'};">${current.count}</span>
+          <span class="kpi-sub">${isCorrupt ? 'Corrupcion por carrera' : 'Valor teorico correcto: 5'}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Paso de Secuencia</span>
+          <span class="kpi-val">${stateT14.stepIndex} / 6</span>
+          <span class="kpi-sub">Microinstrucciones despachadas</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-heading">Exclusion Mutua</span>
+          <span class="kpi-val" style="color:${stateT14.useMutex ? 'var(--state-active)' : 'var(--state-error)'};">${stateT14.useMutex ? 'Garantizada' : 'Violada'}</span>
+          <span class="kpi-sub">${stateT14.useMutex ? 'Sin colisiones en seccion critica' : 'Acceso concurrente simultaneo'}</span>
+        </div>
+      `;
+
+      // Auditoria Logica
+      const audit = document.getElementById("audit-content");
+      audit.innerHTML = `
+        <div class="audit-line"><strong>Estado de Secuencia:</strong> ${stateT14.lastStepText}</div>
+        ${isCorrupt ? `
+          <div class="audit-alert">CONDICION DE CARRERA DEMOSTRADA: Al intercalar las lecturas en registros antes de las escrituras, el Hilo 2 leyo el valor antiguo (5) y sobreescribio en el Paso 6 el incremento que el Hilo 1 habia depositado en el Paso 5. Resultado final: 4 (deberia ser 5).</div>
+        ` : stateT14.useMutex && stateT14.stepIndex === 6 ? `
+          <div class="audit-line" style="color:#86efac;">EXCLUSION MUTUA VERIFICADA: El Mutex forzo la ejecucion completa de count++ antes de permitir la entrada de count--. El valor final en memoria es exactamente 5.</div>
+        ` : `
+          <div class="audit-line">Avanza con el boton "Paso a Paso" para observar la manipulacion de registros CPU.</div>
+        `}
+      `;
+    }
+
+    function changeT14Mutex(val) {
+      stateT14.useMutex = val;
+      stateT14.stepIndex = 0;
+      stateT14.lastStepText = val ? "Modo Mutex activado. Listo para paso a paso." : "Modo Sin Sincronizacion activado. Listo para paso a paso.";
+      renderT14();
+    }
+
+    function stepT14() {
+      if (stateT14.stepIndex < 6) {
+        stateT14.stepIndex++;
+        const steps = stateT14.useMutex ? microstepsWithMutex : microstepsWithoutMutex;
+        stateT14.lastStepText = steps[stateT14.stepIndex - 1].text;
+      }
+      renderT14();
+    }
+
+    function runAllT14() {
+      stateT14.stepIndex = 6;
+      const steps = stateT14.useMutex ? microstepsWithMutex : microstepsWithoutMutex;
+      stateT14.lastStepText = steps[5].text;
+      renderT14();
+    }
+
+    function resetT14() {
+      stateT14.stepIndex = 0;
+      stateT14.lastStepText = "Secuencia reiniciada. count = 5.";
+      renderT14();
+    }
+
+    function exampleT14() {
+      stateT14.useMutex = false;
+      stateT14.stepIndex = 6;
+      stateT14.lastStepText = "Caso clasico de Silberschatz / ULL ESIT: Hilo 2 sobreescribe Hilo 1 resultando en count = 4.";
+      renderT14();
+    }
+
+    // --------------------------------------------------------------------------
+    // INICIALIZACION
+    // --------------------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+      loadTopic(9);
+    });
+  </script>
+</body>
+</html>
