@@ -3,37 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistemas Operativos - Gestión de Procesos (Temas 9-14) | ULL ESIT</title>
+  <title>Sistemas Operativos - Gestión de Procesos y Componentes del Sistema | ULL ESIT</title>
   
-  <!-- Tipografía moderna Google Fonts: Inter & JetBrains Mono para código -->
+  <!-- Tipografía moderna Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       VARIABLES Y PALETA DE COLOR TÉCNICA PREMIUM (ESTILO APPLE / VERCEL)
+       VARIABLES Y PALETA DE COLOR TÉCNICA SOFISTICADA (ESMERALDA & CIAN NEÓN)
        ========================================================================== */
     :root {
-      --bg-dark: #080c14;
-      --bg-card: rgba(15, 23, 42, 0.72);
-      --bg-card-hover: rgba(22, 34, 60, 0.82);
-      --bg-card-active: rgba(30, 48, 80, 0.85);
-      --bg-surface: rgba(11, 17, 32, 0.8);
-      --bg-subcard: rgba(13, 20, 36, 0.65);
-      --bg-code: rgba(4, 8, 16, 0.9);
+      --bg-overlay-1: rgba(8, 12, 24, 0.82);
+      --bg-overlay-2: rgba(12, 18, 34, 0.94);
+      --bg-glass-card: rgba(15, 23, 42, 0.72);
+      --bg-glass-card-hover: rgba(22, 36, 62, 0.85);
+      --bg-glass-subcard: rgba(11, 19, 36, 0.65);
+      --bg-glass-code: rgba(4, 9, 20, 0.9);
       
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-medium: rgba(255, 255, 255, 0.15);
-      --border-accent: rgba(56, 189, 248, 0.35);
+      --border-subtle: rgba(255, 255, 255, 0.12);
+      --border-medium: rgba(255, 255, 255, 0.18);
+      --border-accent-emerald: rgba(16, 185, 129, 0.45);
+      --border-accent-cyan: rgba(56, 189, 248, 0.45);
 
-      --neon-cyan: #38bdf8;
-      --neon-blue: #3b82f6;
-      --neon-purple: #a855f7;
       --neon-emerald: #10b981;
+      --neon-emerald-glow: rgba(16, 185, 129, 0.35);
+      --neon-cyan: #38bdf8;
+      --neon-cyan-glow: rgba(56, 189, 248, 0.35);
       --neon-amber: #f59e0b;
       --neon-rose: #f43f5e;
-      --neon-red: #ef4444;
+      --neon-purple: #a855f7;
 
       --text-primary: #f8fafc;
       --text-secondary: #cbd5e1;
@@ -56,7 +56,7 @@
     }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: #070b14;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 16px;
@@ -66,73 +66,91 @@
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      position: relative;
     }
 
-    /* Canvas de fondo 4K interactivo */
-    #bg-canvas {
+    /* ==========================================================================
+       FONDO DE ALTA CALIDAD CON IMAGEN TEMÁTICA Y OVERLAY DE CONTRASTE
+       ========================================================================== */
+    .bg-image-wrapper {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       z-index: 0;
-      pointer-events: none;
     }
 
-    /* Scrollbars modernos de bajo contraste */
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--bg-overlay-1) 0%, var(--bg-overlay-2) 100%);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1;
+    }
+
+    /* Scrollbars elegantes */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(10, 15, 29, 0.6);
+      background: rgba(10, 15, 30, 0.6);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.18);
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 189, 248, 0.4);
+      background: var(--neon-emerald);
     }
 
     /* ==========================================================================
-       SIDEBAR DE NAVEGACIÓN GLASSMORPHISM
+       BARRA LATERAL DE NAVEGACIÓN GLASSMORPHISM
        ========================================================================== */
     .sidebar {
       position: relative;
       z-index: 10;
       width: var(--sidebar-width);
-      background: rgba(11, 17, 32, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(12, 19, 36, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       height: 100vh;
       user-select: none;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 12px 0 35px rgba(0, 0, 0, 0.55);
     }
 
     .sidebar-header {
       padding: 1.5rem 1.4rem;
       border-bottom: 1px solid var(--border-subtle);
-      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
     }
 
     .brand-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: var(--neon-cyan);
+      color: var(--neon-emerald);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 3px 8px;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid var(--border-accent-emerald);
+      padding: 4px 10px;
       border-radius: 6px;
       margin-bottom: 0.6rem;
     }
@@ -142,14 +160,8 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--neon-emerald);
-      box-shadow: 0 0 8px var(--neon-emerald);
-      animation: pulse-dot 2s infinite ease-in-out;
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
     }
 
     .sidebar-header h1 {
@@ -161,9 +173,9 @@
     }
 
     .sidebar-header p {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-top: 0.25rem;
+      margin-top: 0.3rem;
     }
 
     .sidebar-nav {
@@ -172,7 +184,7 @@
       padding: 1rem 0.8rem;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .nav-label {
@@ -182,7 +194,7 @@
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      padding: 0.5rem 0.6rem 0.2rem;
+      padding: 0.6rem 0.7rem 0.2rem;
     }
 
     .nav-topic-card {
@@ -200,17 +212,17 @@
     }
 
     .nav-topic-card:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
       color: #fff;
       transform: translateX(3px);
     }
 
     .nav-topic-card.active {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(59, 130, 246, 0.12) 100%);
-      border: 1px solid var(--border-accent);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(56, 189, 248, 0.12) 100%);
+      border: 1px solid var(--border-accent-emerald);
       color: #fff;
-      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 4px 22px rgba(16, 185, 129, 0.16);
     }
 
     .nav-topic-num {
@@ -223,16 +235,16 @@
       font-family: var(--font-mono);
       font-size: 0.8rem;
       font-weight: 700;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
       flex-shrink: 0;
       transition: all 0.2s ease;
     }
 
     .nav-topic-card.active .nav-topic-num {
-      background: var(--neon-cyan);
-      color: #040810;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      background: var(--neon-emerald);
+      color: #040914;
+      box-shadow: 0 0 14px var(--neon-emerald-glow);
     }
 
     .nav-topic-info {
@@ -256,13 +268,13 @@
     }
 
     .nav-topic-card.active .nav-topic-sub {
-      color: #7dd3fc;
+      color: #a7f3d0;
     }
 
     .sidebar-footer {
       padding: 1.2rem 1.4rem;
       border-top: 1px solid var(--border-subtle);
-      background: rgba(4, 8, 16, 0.6);
+      background: rgba(8, 14, 28, 0.7);
       font-size: 0.78rem;
       color: var(--text-dim);
       display: flex;
@@ -270,13 +282,8 @@
       align-items: center;
     }
 
-    .sidebar-footer a {
-      color: var(--neon-cyan);
-      text-decoration: none;
-    }
-
     /* ==========================================================================
-       ÁREA PRINCIPAL DE CONTENIDO
+       VIEWPORT PRINCIPAL
        ========================================================================== */
     .main-viewport {
       position: relative;
@@ -288,18 +295,17 @@
       overflow: hidden;
     }
 
-    /* Header superior tipo Keynote */
     .top-header {
       padding: 1rem 2.2rem;
-      background: rgba(11, 17, 32, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(12, 19, 36, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
     }
 
     .header-info {
@@ -312,9 +318,9 @@
       font-family: var(--font-mono);
       font-size: 0.85rem;
       font-weight: 700;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--neon-emerald);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--border-accent-emerald);
       padding: 4px 12px;
       border-radius: 8px;
     }
@@ -326,10 +332,9 @@
       letter-spacing: -0.02em;
     }
 
-    /* Selector de pestañas para Zoom */
     .view-switcher {
       display: flex;
-      background: rgba(4, 8, 16, 0.85);
+      background: rgba(4, 9, 20, 0.85);
       padding: 4px;
       border-radius: 12px;
       border: 1px solid var(--border-subtle);
@@ -357,10 +362,10 @@
     }
 
     .switch-btn.active {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
+      color: #a7f3d0;
+      border: 1px solid var(--border-accent-emerald);
+      box-shadow: 0 2px 14px rgba(16, 185, 129, 0.25);
     }
 
     .header-controls {
@@ -377,7 +382,7 @@
       height: 36px;
       border-radius: 10px;
       border: 1px solid var(--border-subtle);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
       color: #fff;
       font-size: 1rem;
       cursor: pointer;
@@ -385,12 +390,11 @@
     }
 
     .nav-arrow-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
 
-    /* Contenedor con scroll del contenido */
     .content-scroll-container {
       flex: 1;
       overflow-y: auto;
@@ -400,7 +404,6 @@
       gap: 2rem;
     }
 
-    /* Animación de entrada de contenidos */
     .fade-enter {
       animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -417,22 +420,21 @@
     }
 
     /* ==========================================================================
-       TARJETAS GLASSMORPHISM & PRESENTACIÓN DE TEORÍA (ZOOM OPTIMIZED)
+       PANEL Y TARJETAS GLASSMORPHISM CON EFECTO FOCO PRESENTADOR
        ========================================================================== */
     .glass-panel {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: var(--bg-glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
       overflow: hidden;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .glass-panel:hover {
       border-color: var(--border-medium);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
     }
 
     .panel-header {
@@ -441,7 +443,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
     }
 
     .panel-header-left {
@@ -457,10 +459,11 @@
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--neon-cyan);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--neon-emerald);
       font-size: 0.95rem;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      font-weight: 700;
+      border: 1px solid var(--border-accent-emerald);
     }
 
     .panel-title {
@@ -478,16 +481,22 @@
       padding: 1.6rem;
     }
 
-    /* Rejilla de diapositivas de teoría */
+    /* REJILLA DE TEORÍA CON FOCO DE PRESENTADOR */
     .theory-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 1.4rem;
+      gap: 1.5rem;
+    }
+
+    /* Foco de Presentador: al hacer hover o clic en una tarjeta, se resalta y las demás se atenúan levemente */
+    .theory-grid:hover .slide-card:not(:hover):not(.focused) {
+      opacity: 0.55;
+      filter: blur(0.5px);
     }
 
     .slide-card {
-      background: rgba(13, 20, 36, 0.7);
-      backdrop-filter: blur(12px);
+      background: rgba(11, 19, 36, 0.75);
+      backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 1.8rem;
@@ -496,7 +505,8 @@
       gap: 1rem;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .slide-card::before {
@@ -506,14 +516,17 @@
       left: 0;
       width: 4px;
       height: 100%;
-      background: linear-gradient(180deg, var(--neon-cyan) 0%, var(--neon-blue) 100%);
+      background: linear-gradient(180deg, var(--neon-emerald) 0%, var(--neon-cyan) 100%);
       opacity: 0.8;
     }
 
-    .slide-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(56, 189, 248, 0.35);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.12);
+    .slide-card:hover, .slide-card.focused {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--border-accent-emerald);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.2);
+      opacity: 1 !important;
+      filter: none !important;
+      z-index: 5;
     }
 
     .slide-meta {
@@ -526,7 +539,7 @@
       font-family: var(--font-mono);
       font-size: 0.8rem;
       font-weight: 700;
-      color: var(--neon-cyan);
+      color: var(--neon-emerald);
       letter-spacing: 0.05em;
     }
 
@@ -545,7 +558,7 @@
     }
 
     .slide-text {
-      font-size: 1.15rem; /* Letra grande y legible en Zoom */
+      font-size: 1.15rem; /* Texto grande y legible para Zoom */
       color: var(--text-secondary);
       line-height: 1.7;
     }
@@ -557,35 +570,182 @@
 
     .slide-text code {
       font-family: var(--font-mono);
-      background: var(--bg-code);
-      color: #7dd3fc;
+      background: var(--bg-glass-code);
+      color: #a7f3d0;
       padding: 3px 8px;
       border-radius: 6px;
       font-size: 0.95em;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     /* ==========================================================================
-       MODO LABORATORIO: SIMULADORES Y PANELES INTERACTIVOS
+       UX MODO LABORATORIO: BOTONES AUTO-DEMO GIGANTES PROTAGONISTAS
        ========================================================================== */
-    .lab-hero-bar {
+    .auto-demo-bar-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      padding: 1.6rem 2rem;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%);
+      border: 1px solid var(--border-accent-emerald);
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .auto-demo-title-wrap {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.2rem;
-      padding: 1.4rem 1.8rem;
-      background: rgba(13, 20, 36, 0.85);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-md);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
-    .demo-buttons-group {
+    .auto-demo-title-wrap h4 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
       display: flex;
       align-items: center;
+      gap: 8px;
+    }
+
+    .auto-demo-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--neon-emerald);
+      background: rgba(16, 185, 129, 0.2);
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .auto-demo-buttons-giant {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .btn-giant-demo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 1rem 1.4rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(13, 148, 136, 0.15) 100%);
+      color: #fff;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-giant-demo:hover {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.35) 0%, rgba(56, 189, 248, 0.25) 100%);
+      border-color: var(--neon-emerald);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-giant-demo:active {
+      transform: scale(0.98);
+    }
+
+    .btn-giant-demo.secondary-cyan {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(14, 116, 144, 0.15) 100%);
+    }
+
+    .btn-giant-demo.secondary-cyan:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.32) 0%, rgba(16, 185, 129, 0.25) 100%);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 10px 28px rgba(56, 189, 248, 0.35);
+    }
+
+    .giant-demo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+      color: var(--neon-emerald);
+    }
+
+    .btn-giant-demo.secondary-cyan .giant-demo-icon {
+      color: var(--neon-cyan);
+    }
+
+    .giant-demo-texts {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .giant-demo-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .giant-demo-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* INPUTS SECUNDARIOS EN SEGUNDO PLANO */
+    .secondary-inputs-panel {
+      display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      align-items: center;
+      gap: 16px;
+      padding: 1rem 1.4rem;
+      background: rgba(8, 14, 28, 0.6);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-subtle);
+      margin-top: 1rem;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+    }
+
+    .secondary-inputs-panel:hover {
+      opacity: 1;
+      border-style: solid;
+      border-color: var(--border-medium);
+    }
+
+    .input-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .input-item label {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-field, .select-field {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--neon-emerald);
+      box-shadow: 0 0 10px var(--neon-emerald-glow);
     }
 
     .btn {
@@ -593,73 +753,14 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 0.65rem 1.25rem;
+      padding: 0.55rem 1.1rem;
       font-family: var(--font-sans);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 600;
       border-radius: var(--radius-sm);
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
-      user-select: none;
-    }
-
-    .btn:active {
-      transform: scale(0.97);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
-      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
-      color: #040810;
-    }
-
-    .btn-demo-highlight {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(217, 70, 239, 0.2) 100%);
-      color: #f5d0fe;
-      border: 1px solid rgba(217, 70, 239, 0.4);
-      box-shadow: 0 4px 15px rgba(217, 70, 239, 0.2);
-    }
-
-    .btn-demo-highlight:hover {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(217, 70, 239, 0.35) 100%);
-      border-color: rgba(217, 70, 239, 0.7);
-      color: #fff;
-      box-shadow: 0 6px 22px rgba(217, 70, 239, 0.4);
-    }
-
-    .btn-demo-cyan {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
-      color: #a5f3fc;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
-    }
-
-    .btn-demo-cyan:hover {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.4) 0%, rgba(56, 189, 248, 0.35) 100%);
-      border-color: rgba(56, 189, 248, 0.7);
-      color: #fff;
-      box-shadow: 0 6px 22px rgba(56, 189, 248, 0.4);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-primary);
-      border-color: var(--border-medium);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .btn-emerald {
@@ -670,7 +771,30 @@
 
     .btn-emerald:hover {
       background: rgba(16, 185, 129, 0.35);
-      border-color: rgba(16, 185, 129, 0.7);
+      border-color: var(--neon-emerald);
+      color: #fff;
+    }
+
+    .btn-cyan {
+      background: rgba(56, 189, 248, 0.2);
+      color: #a5f3fc;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-cyan:hover {
+      background: rgba(56, 189, 248, 0.35);
+      border-color: var(--neon-cyan);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
       color: #fff;
     }
 
@@ -682,56 +806,11 @@
 
     .btn-danger:hover {
       background: rgba(239, 68, 68, 0.35);
-      border-color: rgba(239, 68, 68, 0.7);
+      border-color: var(--neon-rose);
       color: #fff;
     }
 
-    /* Formularios e inputs flexibles */
-    .controls-grid {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      padding: 1.2rem 1.6rem;
-      background: rgba(8, 14, 26, 0.7);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      margin-top: 1rem;
-    }
-
-    .input-item {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .input-item label {
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .input-field, .select-field {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid var(--border-medium);
-      color: #fff;
-      padding: 0.55rem 0.9rem;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-mono);
-      font-size: 0.92rem;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    .input-field:focus, .select-field:focus {
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-    }
-
-    /* KPIs numéricos para Zoom */
+    /* KPIs NUMÉRICOS PARA ZOOM */
     .kpi-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -740,14 +819,12 @@
     }
 
     .kpi-card {
-      background: rgba(13, 20, 36, 0.7);
+      background: rgba(11, 19, 36, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 1.4rem;
       display: flex;
       flex-direction: column;
-      position: relative;
-      overflow: hidden;
     }
 
     .kpi-title {
@@ -774,10 +851,10 @@
       margin-top: 0.35rem;
     }
 
-    /* Auditoría matemática y técnica */
+    /* TERMINAL DE AUDITORÍA */
     .audit-terminal {
-      background: var(--bg-code);
-      border: 1px solid rgba(56, 189, 248, 0.2);
+      background: var(--bg-glass-code);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: var(--radius-sm);
       padding: 1.4rem;
       font-family: var(--font-mono);
@@ -785,12 +862,11 @@
       color: #e2e8f0;
       margin-top: 1.4rem;
       line-height: 1.7;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
     }
 
     .audit-header-tag {
       font-size: 0.75rem;
-      color: var(--neon-cyan);
+      color: var(--neon-emerald);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: 0.6rem;
@@ -802,7 +878,7 @@
     .audit-header-tag::before {
       content: '>';
       font-weight: 800;
-      color: var(--neon-emerald);
+      color: var(--neon-cyan);
     }
 
     .audit-alert-box {
@@ -811,7 +887,7 @@
       border-radius: 8px;
       font-size: 0.9rem;
       border: 1px solid rgba(239, 68, 68, 0.4);
-      background: rgba(239, 68, 68, 0.12);
+      background: rgba(239, 68, 68, 0.15);
       color: #fca5a5;
     }
 
@@ -821,11 +897,10 @@
       border-radius: 8px;
       font-size: 0.9rem;
       border: 1px solid rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.12);
+      background: rgba(16, 185, 129, 0.15);
       color: #86efac;
     }
 
-    /* Tablas de seguimiento con alto contraste */
     .data-table-wrap {
       overflow-x: auto;
       margin-top: 1.4rem;
@@ -842,7 +917,7 @@
 
     .data-table th {
       background: rgba(15, 23, 42, 0.9);
-      color: var(--neon-cyan);
+      color: var(--neon-emerald);
       font-family: var(--font-mono);
       font-size: 0.78rem;
       font-weight: 700;
@@ -855,12 +930,8 @@
     .data-table td {
       padding: 0.85rem 1.2rem;
       border-bottom: 1px solid var(--border-subtle);
-      background: rgba(13, 20, 36, 0.5);
+      background: rgba(11, 19, 36, 0.5);
       color: var(--text-secondary);
-    }
-
-    .data-table tr:hover td {
-      background: rgba(56, 189, 248, 0.08);
     }
 
     .badge {
@@ -879,23 +950,18 @@
     .badge-terminated { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
     .badge-error { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-    /* ==========================================================================
-       ESPECÍFICOS DE SIMULADORES (T9 AL T14)
-       ========================================================================== */
-
-    /* TEMA 9: Grafo 5 Estados + PCB */
+    /* ESTILOS DE CADA SIMULADOR */
     .t9-layout {
       display: grid;
       grid-template-columns: 1.6fr 1.2fr;
       gap: 1.4rem;
       align-items: stretch;
+      margin-top: 1.4rem;
     }
-    @media (max-width: 1100px) {
-      .t9-layout { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 1100px) { .t9-layout { grid-template-columns: 1fr; } }
 
     .state-graph-container {
-      background: rgba(8, 14, 26, 0.85);
+      background: rgba(8, 14, 28, 0.85);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       padding: 1.4rem;
@@ -907,8 +973,8 @@
     }
 
     .pcb-live-card {
-      background: var(--bg-code);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: var(--bg-glass-code);
+      border: 1px solid var(--border-accent-emerald);
       border-radius: var(--radius-md);
       padding: 1.4rem;
       display: flex;
@@ -919,7 +985,7 @@
     .pcb-code-block {
       font-family: var(--font-mono);
       font-size: 0.88rem;
-      color: #7dd3fc;
+      color: #a7f3d0;
       line-height: 1.6;
       background: rgba(0, 0, 0, 0.5);
       padding: 1rem;
@@ -928,9 +994,8 @@
       flex: 1;
     }
 
-    /* TEMA 10: Gantt Proporcional Interactivo */
     .gantt-live-wrapper {
-      background: rgba(8, 14, 26, 0.9);
+      background: rgba(8, 14, 28, 0.9);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       padding: 1.8rem;
@@ -944,7 +1009,6 @@
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
       background: #020617;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
       position: relative;
     }
 
@@ -978,7 +1042,6 @@
       padding: 0 4px;
     }
 
-    /* TEMA 11: Buzón Espacio Kernel vs Usuario */
     .ipc-architecture-view {
       display: grid;
       grid-template-columns: 1fr 1.6fr 1fr;
@@ -986,12 +1049,10 @@
       margin-top: 1rem;
       align-items: center;
     }
-    @media (max-width: 900px) {
-      .ipc-architecture-view { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 900px) { .ipc-architecture-view { grid-template-columns: 1fr; } }
 
     .ipc-space-box {
-      background: rgba(13, 20, 36, 0.8);
+      background: rgba(11, 19, 36, 0.85);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       padding: 1.4rem;
@@ -1003,11 +1064,11 @@
     }
 
     .kernel-mailbox-box {
-      background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+      background: linear-gradient(180deg, rgba(20, 32, 54, 0.95) 0%, rgba(11, 19, 36, 0.98) 100%);
+      border: 1px solid var(--border-accent-emerald);
       border-radius: var(--radius-md);
       padding: 1.6rem;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
     }
 
     .mailbox-slot-grid {
@@ -1030,38 +1091,30 @@
 
     .mailbox-cell.filled {
       border-style: solid;
-      border-color: var(--neon-cyan);
-      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--neon-emerald);
+      background: rgba(16, 185, 129, 0.22);
       color: #fff;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-      animation: popIn 0.3s ease;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
     }
 
-    @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* TEMA 12: Anillo Circular Productor-Consumidor */
     .ring-buffer-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      background: rgba(8, 14, 26, 0.85);
+      background: rgba(8, 14, 28, 0.85);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       margin-top: 1rem;
     }
 
-    /* TEMA 13: Ley de Amdahl y Memoria Hilos */
     .amdahl-slider-row {
       display: flex;
       align-items: center;
       gap: 1.4rem;
       margin-top: 1rem;
-      background: rgba(8, 14, 26, 0.8);
+      background: rgba(8, 14, 28, 0.8);
       padding: 1.2rem 1.6rem;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-subtle);
@@ -1069,7 +1122,7 @@
 
     .range-slider {
       flex: 1;
-      accent-color: var(--neon-cyan);
+      accent-color: var(--neon-emerald);
       height: 8px;
       cursor: pointer;
     }
@@ -1080,23 +1133,18 @@
       gap: 1.4rem;
       margin-top: 1.4rem;
     }
-    @media (max-width: 900px) {
-      .threads-vs-process-split { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 900px) { .threads-vs-process-split { grid-template-columns: 1fr; } }
 
-    /* TEMA 14: Sincronización y Race Condition */
     .sync-split-code-view {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.4rem;
       margin-top: 1rem;
     }
-    @media (max-width: 900px) {
-      .sync-split-code-view { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 900px) { .sync-split-code-view { grid-template-columns: 1fr; } }
 
     .thread-code-card {
-      background: rgba(8, 14, 26, 0.9);
+      background: rgba(8, 14, 28, 0.9);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       padding: 1.4rem;
@@ -1115,7 +1163,7 @@
     }
     .mutex-locked {
       background: rgba(16, 185, 129, 0.2);
-      border: 1px solid rgba(16, 185, 129, 0.5);
+      border: 1px solid var(--border-accent-emerald);
       color: #86efac;
     }
     .mutex-unlocked {
@@ -1127,21 +1175,22 @@
 </head>
 <body>
 
-  <!-- CANVAS FONDO INTERACTIVO 4K CON PARTÍCULAS -->
-  <canvas id="bg-canvas"></canvas>
+  <!-- IMAGEN DE FONDO TEMÁTICA DE HARDWARE / CIRCUITOS Y OVERLAY DE CONTRASTE -->
+  <div class="bg-image-wrapper"></div>
+  <div class="bg-overlay"></div>
 
   <!-- ====================================================================
-       1. SIDEBAR DE NAVEGACIÓN
+       1. SIDEBAR DE NAVEGACIÓN GLASSMORPHISM
        ==================================================================== -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="brand-badge">ULL ESIT • Cátedra SSOO</div>
       <h1>Gestión de Procesos</h1>
-      <p>Plataforma de Exposición y Demos en Vivo</p>
+      <p>Componentes del Sistema y Ejecución</p>
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-label">Temas a Exponer (9 al 14)</div>
+      <div class="nav-label">Módulo Temático (ULL ESIT)</div>
 
       <button class="nav-topic-card active" onclick="selectTopic(9)" id="nav-btn-9">
         <div class="nav-topic-num">09</div>
@@ -1193,8 +1242,8 @@
     </nav>
 
     <div class="sidebar-footer">
-      <span>ULL ESIT • 2026</span>
-      <span>Presentación Zoom 4K</span>
+      <span>ULL ESIT • SSOO</span>
+      <span>Apuntes Oficiales</span>
     </div>
   </aside>
 
@@ -1202,27 +1251,24 @@
        2. VIEWPORT PRINCIPAL
        ==================================================================== -->
   <main class="main-viewport">
-    
-    <!-- HEADER SUPERIOR CON SELECTOR DE VISTA -->
     <header class="top-header">
       <div class="header-info">
         <span class="header-badge" id="current-badge">Tema 9</span>
         <h2 class="header-title" id="current-title">Procesos</h2>
       </div>
 
-      <!-- Selector de Modo Zoom: Teoría vs Laboratorio -->
       <div class="view-switcher">
         <button class="switch-btn active" id="btn-mode-presentation" onclick="switchMode('presentation')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
           </svg>
-          Modo Presentación (Teoría)
+          Teoría Fundamental
         </button>
         <button class="switch-btn" id="btn-mode-lab" onclick="switchMode('lab')">
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
           </svg>
-          Modo Laboratorio (Práctica en Vivo)
+          Laboratorio Experimental
         </button>
       </div>
 
@@ -1232,112 +1278,39 @@
       </div>
     </header>
 
-    <!-- CONTENEDOR CON SCROLL DE CONTENIDO -->
-    <div class="content-scroll-container" id="content-container">
-      <!-- Se inyecta dinámicamente -->
-    </div>
+    <div class="content-scroll-container" id="content-container"></div>
   </main>
 
   <!-- ====================================================================
-       3. SCRIPTS Y MOTORES DE SIMULACIÓN
+       3. LÓGICA Y CONTENIDOS OFICIALES ULL ESIT
        ==================================================================== -->
   <script>
     // --------------------------------------------------------------------------
-    // 1. FONDO INTERACTIVO 4K CON CANVAS
-    // --------------------------------------------------------------------------
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    const PARTICLE_COUNT = 55;
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.45;
-        this.vy = (Math.random() - 0.5) * 0.45;
-        this.radius = Math.random() * 2 + 1;
-        this.alpha = Math.random() * 0.5 + 0.2;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(56, 189, 248, ${this.alpha})`;
-        ctx.fill();
-      }
-    }
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(new Particle());
-    }
-
-    function animateBg() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Dibujar líneas conectivas
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 140) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(56, 189, 248, ${0.15 * (1 - dist / 140)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-
-      requestAnimationFrame(animateBg);
-    }
-    animateBg();
-
-    // --------------------------------------------------------------------------
-    // 2. BASE DE CONOCIMIENTO TEÓRICA EXACTA (ULL ESIT - TEMAS 9 AL 14)
+    // BASE DE CONOCIMIENTO RIGUROSA: APUNTES OFICIALES ULL ESIT
+    // (Integración de Componentes del Sistema: CPU, Memoria Principal, E/S, Almacenamiento)
     // --------------------------------------------------------------------------
     const THEORY_DATA = {
       9: {
         indicator: "Tema 9",
-        title: "Procesos",
+        title: "Procesos y Componentes del Sistema",
         cards: [
           {
+            tag: "TEORÍA FUNDAMENTAL",
             num: "01",
-            title: "Concepto y Espacio de Memoria",
-            body: "Un <strong>proceso</strong> es un programa en ejecución (entidad activa). Su espacio de direcciones contiene: segmento de <strong>Texto</strong> (código máquina de solo lectura), <strong>Datos</strong> (.data inicializados, .bss sin inicializar), <strong>Heap</strong> (memoria dinámica con <code>malloc()</code> creciente hacia arriba) y <strong>Stack</strong> (registros de activación y variables locales creciente hacia abajo)."
+            title: "El Proceso como Unidad de Trabajo Activa",
+            body: "El <strong>proceso</strong> es la unidad de trabajo en cualquier sistema operativo moderno: es quien realiza las tareas de los usuarios y a quien se le asigna el tiempo de CPU y los recursos del sistema. A diferencia del <strong>programa</strong> (entidad pasiva almacenada en disco como archivo ejecutable), el proceso es una <strong>entidad activa</strong> cargada en la memoria principal. Dos usuarios ejecutando el mismo programa constituyen dos procesos distintos, pues cada uno mantiene su propio contador de programa (PC) y registros en CPU."
           },
           {
+            tag: "ARQUITECTURA DE SISTEMA",
             num: "02",
-            title: "Bloque de Control de Proceso (PCB)",
-            body: "Estructura del kernel (<code>task_struct</code> en Linux) que almacena el descriptor del proceso: <strong>PID</strong> (identificador único), <strong>PC</strong> (Program Counter / dirección de la siguiente instrucción), <strong>Registros CPU</strong>, punteros de memoria y estado contable. El <em>cambio de contexto</em> es sobrecarga pura: salva el PCB saliente y carga el entrante."
+            title: "Relación con la Memoria Principal y CPU",
+            body: "La <strong>memoria principal</strong> es fundamental porque es el único almacenamiento al que la CPU tiene acceso directo. Para que las instrucciones de un proceso se ejecuten, o para operar con datos de almacenamiento secundario (disco o USB), deben copiarse antes a la memoria principal. El <strong>PCB (task_struct)</strong> almacena en memoria el descriptor del proceso: PID, Program Counter, banco de registros CPU y mapa de páginas virtuales. Los recursos se asignan al crearse y dinámicamente durante su ejecución."
           },
           {
+            tag: "RESPONSABILIDADES DEL KERNEL",
             num: "03",
-            title: "Diagrama de 5 Estados y Reglas",
-            body: "Estados formales: <strong>Nuevo</strong> (creándose) &rarr; <strong>Preparado</strong> (esperando CPU) &harr; <strong>Ejecutando</strong> (instrucciones en CPU) &rarr; <strong>Esperando</strong> (bloqueado por E/S) &rarr; <strong>Terminado</strong>. <em>Regla de transición:</em> Ningún proceso puede pasar de Esperando a Ejecutando directamente; siempre debe reincorporarse a la cola de Preparados tras el evento."
+            title: "Ciclo de 5 Estados y Responsabilidades",
+            body: "El componente de gestión de procesos de la ULL ESIT asume 5 responsabilidades centrales: <em>1. Crear y terminar procesos, 2. Suspender y reanudar, 3. Sincronización, 4. Comunicación IPC, 5. Tratamiento de interbloqueos</em>. Los estados formales son: <strong>Nuevo</strong> &rarr; <strong>Preparado</strong> &harr; <strong>Ejecutando</strong> &rarr; <strong>Esperando (E/S)</strong> &rarr; <strong>Terminado</strong>. Un proceso desbloqueado por E/S jamás ingresa directo a la CPU; siempre pasa a la cola de Preparados."
           }
         ]
       },
@@ -1346,115 +1319,130 @@
         title: "Planificación de la CPU",
         cards: [
           {
+            tag: "TEORÍA FUNDAMENTAL",
             num: "01",
-            title: "Alternancia de Ráfagas y Despacho",
-            body: "La ejecución alterna ráfagas de CPU y de E/S. El <strong>Planificador</strong> selecciona qué proceso preparado obtiene la CPU; el <strong>Despachador</strong> aplica el cambio de contexto. Puede ser <em>No Apropiativo</em> (el proceso retiene la CPU hasta cederla o terminar) o <em>Apropiativo</em> (desalojo forzado por temporizador o prioridad)."
+            title: "Alternancia de Ráfagas y Despachador",
+            body: "El ciclo de ejecución de un proceso alterna ráfagas de cómputo en CPU y de espera de E/S. El <strong>Planificador de CPU</strong> decide qué proceso de la cola de Preparados toma el procesador para maximizar el aprovechamiento de la memoria principal y el rendimiento. El <strong>Despachador</strong> aplica el cambio de contexto guardando el PCB saliente y cargando el nuevo. La planificación puede ser <em>No Apropiativa</em> (cooperativa) o <em>Apropiativa</em> (desalojo por temporizador o prioridad)."
           },
           {
+            tag: "MÉTRICAS FORMALES",
             num: "02",
-            title: "Métricas Analíticas del Temario",
-            body: "Tiempo de Retorno (Turnaround): <code>T_ret = T_fin - T_llegada</code>.<br>Tiempo de Espera (Waiting): <code>T_esp = T_ret - T_ráfaga</code>.<br>Tiempo Medio de Espera: <code>TME = (1/n) &Sigma; T_esp</code>.<br>Utilización de CPU: <code>U = (&Sigma; T_ráfaga / T_total) &times; 100%</code>."
+            title: "Ecuaciones Analíticas de Rendimiento",
+            body: "Tiempo de Retorno (Turnaround): <code>T_ret = T_fin - T_llegada</code>.<br>Tiempo de Espera (Waiting): <code>T_esp = T_ret - T_ráfaga</code>.<br>Tiempo Medio de Espera: <code>TME = (1/n) &Sigma; T_esp</code>.<br>Tiempo Medio de Retorno: <code>TMR = (1/n) &Sigma; T_ret</code>.<br>Utilización de CPU: <code>U = (&Sigma; T_ráfaga / T_total) &times; 100%</code>. El objetivo del sistema operativo es minimizar el TME global."
           },
           {
+            tag: "ALGORITMOS DE CÁTEDRA",
             num: "03",
             title: "Algoritmos y Efecto Convoy",
-            body: "<strong>FCFS:</strong> Orden estricto de llegada; genera el <em>Efecto Convoy</em> cuando un proceso largo bloquea a procesos cortos detrás. <strong>SJF:</strong> Mínima ráfaga primero (óptimo en TME). <strong>SRTF:</strong> SJF apropiativo con desalojo ante llegadas cortas. <strong>Round Robin:</strong> Cola circular con quantum <code>q</code>."
+            body: "<strong>FCFS:</strong> Atiende por estricto orden de llegada; produce el <em>Efecto Convoy</em> cuando un proceso con ráfaga CPU prolongada bloquea procesos cortos de E/S detrás. <strong>SJF:</strong> Prioriza la menor ráfaga (óptimo en TME pero no apropiativo). <strong>SRTF:</strong> SJF apropiativo con desalojo ante llegadas con menor tiempo restante. <strong>Round Robin:</strong> Asigna un quantum temporal <code>q</code> en cola circular."
           }
         ]
       },
       11: {
         indicator: "Tema 11",
-        title: "Paso de mensajes",
+        title: "Paso de Mensajes (IPC)",
         cards: [
           {
+            tag: "ARQUITECTURA DE NÚCLEO",
             num: "01",
-            title: "Comunicación Indirecta por Buzón",
-            body: "Mecanismo IPC donde los procesos intercambian información sin compartir espacio de direcciones. Los mensajes se depositan en <strong>buzones (mailboxes)</strong> o puertos gestionados directamente en el espacio de memoria del kernel mediante primitivas <code>send(buzón, msg)</code> y <code>receive(buzón, &msg)</code>."
+            title: "Comunicación Indirecta por Buzón de Kernel",
+            body: "Mecanismo IPC donde procesos sin espacio de direcciones compartido intercambian información. Los mensajes se depositan en <strong>buzones (mailboxes)</strong> en el espacio de memoria del kernel mediante primitivas del sistema <code>send(buzón, msg)</code> y <code>receive(buzón, &msg)</code>. Esto asegura aislamiento total de memoria y protección entre usuarios."
           },
           {
+            tag: "TEORÍA FUNDAMENTAL",
             num: "02",
             title: "Semántica de Sincronización",
-            body: "<strong>Bloqueante (Síncrono):</strong> El emisor se suspende si el buzón está lleno; el receptor se suspende si el buzón está vacío. <strong>No Bloqueante (Asíncrono):</strong> El emisor deposita o recibe error de rechazo; el receptor toma el mensaje o continúa de inmediato si no hay datos disponibles."
+            body: "<strong>Bloqueante (Síncrono):</strong> El emisor se suspende si el buzón está lleno; el receptor se bloquea si el buzón está vacío hasta que se deposite un mensaje. <strong>No Bloqueante (Asíncrono):</strong> El emisor envía el paquete o recibe error de rechazo; el receptor extrae el mensaje o recibe un puntero nulo de forma inmediata sin suspender el proceso."
           },
           {
+            tag: "ANÁLISIS DE HARDWARE",
             num: "03",
-            title: "Sobrecarga de Copias y Capacidad",
-            body: "Cada mensaje implica <strong>2 copias de memoria</strong>: Espacio Usuario &rarr; Espacio Kernel &rarr; Espacio Usuario, más 2 cambios de modo Ring 3 &harr; Ring 0. <em>Capacidad:</em> Cero (Rendezvous estricto), Acotada (cola finita de <code>N</code> mensajes) o Ilimitada."
+            title: "Sobrecarga de Doble Copia y Capacidad",
+            body: "Cada mensaje requiere <strong>2 copias físicas de memoria</strong>: Espacio de Usuario (Ring 3) &rarr; Espacio de Kernel (Ring 0) &rarr; Espacio de Usuario (Ring 3), más dos cambios de contexto de modo privilegiado. La capacidad del enlace puede ser: <em>Capacidad Cero</em> (Rendezvous estricto), <em>Acotada</em> (cola de N mensajes) o <em>Ilimitada</em>."
           }
         ]
       },
       12: {
         indicator: "Tema 12",
-        title: "Memoria compartida",
+        title: "Memoria Compartida",
         cards: [
           {
+            tag: "ARQUITECTURA DE MEMORIA",
             num: "01",
-            title: "Acceso Directo a Velocidad RAM",
-            body: "Dos o más procesos mapean la misma región de memoria física (marcos de página) en sus espacios de direcciones virtuales (mediante <code>shm_open()</code> y <code>mmap()</code> en POSIX). Es el mecanismo IPC más rápido posible al <strong>eliminar la intervención del kernel</strong> en cada transferencia de datos."
+            title: "Mapeo Virtual a Velocidad de Bus",
+            body: "Dos o más procesos mapean las mismas páginas de memoria principal física en sus respectivas tablas de páginas virtuales (mediante <code>shm_open()</code> y <code>mmap()</code>). Es el mecanismo de comunicación entre procesos más veloz al <strong>suprimir la intervención del kernel</strong> y las copias intermedias tras el establecimiento inicial de la región."
           },
           {
+            tag: "ESTRUCTURA DE DATOS",
             num: "02",
             title: "Búfer Circular Productor-Consumidor",
-            body: "Estructura clásica de tamaño <code>BUFFER_SIZE = N</code> implementada con dos índices compartidos: <code>in</code> (posición de inserción del productor) y <code>out</code> (posición de extracción del consumidor). Los punteros avanzan mediante aritmética modular: <code>(idx + 1) % N</code>."
+            body: "Estructura de tamaño <code>BUFFER_SIZE = N</code> implementada en memoria compartida con dos índices enteros: <code>in</code> (índice donde escribe el productor) y <code>out</code> (índice donde lee el consumidor). Los punteros avanzan mediante aritmética modular: <code>(idx + 1) % N</code>, evitando el desplazamiento de bloques."
           },
           {
+            tag: "REGLA FORMAL ULL",
             num: "03",
-            title: "Condiciones de Vacío y Lleno",
-            body: "Búfer Vacío: <code>in == out</code>.<br>Búfer Lleno: <code>(in + 1) % N == out</code>.<br><em>Regla de implementación:</em> La capacidad máxima de almacenamiento es <code>N - 1</code> elementos para evitar la ambigüedad aritmética entre búfer lleno y vacío."
+            title: "Condiciones Matemáticas de Lleno y Vacío",
+            body: "Búfer Vacío: <code>in == out</code>.<br>Búfer Lleno: <code>(in + 1) % N == out</code>.<br><em>Regla de implementación de cátedra:</em> La capacidad de almacenamiento utilizable es exactamente <code>N - 1</code> elementos. Si se permitiesen N elementos, la condición de lleno coincidiría con la de vacío (in == out), generando ambigüedad aritmética."
           }
         ]
       },
       13: {
         indicator: "Tema 13",
-        title: "Hilos",
+        title: "Hilos y Paralelismo",
         cards: [
           {
+            tag: "ARQUITECTURA DE PROCESO",
             num: "01",
-            title: "Unidad Básica de CPU (Thread)",
-            body: "Flujo de control secuencial dentro de un proceso. <strong>Recursos compartidos:</strong> Segmento de código (.text), variables globales (.data), memoria dinámica (Heap) y archivos abiertos. <strong>Recursos privados por hilo:</strong> Identificador TID, Contador de Programa (PC), banco de registros y Pila propia (Stack)."
+            title: "Unidad Básica de Utilización de CPU",
+            body: "Un hilo (thread) es la unidad básica de ejecución en CPU. Dentro de un mismo proceso, los hilos <strong>comparten:</strong> el segmento de código (<code>.text</code>), variables globales (<code>.data</code>), memoria dinámica (<code>Heap</code>) y descriptores de archivos abiertos. Por el contrario, cada hilo dispone de <strong>recursos privados:</strong> TID único, Program Counter (PC), banco de registros de CPU y Pila propia (<code>Stack</code>)."
           },
           {
+            tag: "TEORÍA FUNDAMENTAL",
             num: "02",
-            title: "Ley de Amdahl y Speedup",
-            body: "Calcula la aceleración teórica al usar <code>N</code> núcleos sobre una aplicación con fracción paralelizable <code>P</code> (y fracción serie <code>1 - P</code>):<br><code>S(N) = 1 / ((1 - P) + (P / N))</code>.<br>Límite teórico cuando <code>N &rarr; &infin;</code>: <code>S_max = 1 / (1 - P)</code>."
+            title: "Ley de Amdahl y Límite Teórico",
+            body: "Formula la aceleración máxima al emplear <code>N</code> núcleos en una tarea con fracción paralelizable <code>P</code> (y fracción serie <code>1 - P</code>):<br><code>S(N) = 1 / ((1 - P) + (P / N))</code>.<br>Límite asintótico cuando <code>N &rarr; &infin;</code>: <code>S_max = 1 / (1 - P)</code>. Demuestra que la fracción serie impone un techo insalvable al rendimiento independientemente del hardware disponible."
           },
           {
+            tag: "ECONOMÍA DE SISTEMA",
             num: "03",
-            title: "Economía de Recursos vs Procesos",
-            body: "Crear un hilo consume órdenes de magnitud menos memoria que un proceso completo (un hilo requiere solo su stack ~64 KB - 1 MB frente a ~4 MB de tablas de página y PCB por proceso independiente). El cambio de contexto entre hilos del mismo proceso no invalida la caché TLB."
+            title: "Eficiencia de Recursos frente a Procesos",
+            body: "La creación de un hilo demanda entre 64 KB y 1 MB (únicamente su pila y estructura de control), frente a los más de 4 MB que consume un proceso independiente con sus tablas de páginas de memoria principal. Además, la conmutación entre hilos del mismo proceso no invalida la caché de traducción de direcciones (TLB), minimizando la sobrecarga."
           }
         ]
       },
       14: {
         indicator: "Tema 14",
-        title: "Sincronización",
+        title: "Sincronización de Procesos",
         cards: [
           {
+            tag: "TEORÍA FUNDAMENTAL",
             num: "01",
-            title: "Condición de Carrera (Race Condition)",
-            body: "Ocurre cuando varios hilos leen y escriben datos compartidos concurrentemente y el resultado final depende del orden de intercalación de instrucciones. La instrucción <code>count++</code> se descompone en 3 microinstrucciones de máquina: <code>R1 = count</code>, <code>R1 = R1 + 1</code>, <code>count = R1</code>."
+            title: "Condición de Carrera y Microinstrucciones",
+            body: "Una <strong>condición de carrera</strong> surge cuando varios hilos acceden y manipulan concurrentemente datos compartidos en memoria principal, dependiendo el resultado del orden de intercalación. Una instrucción de alto nivel como <code>count++</code> se traduce a 3 microinstrucciones de máquina: <code>R1 = count</code>, <code>R1 = R1 + 1</code>, <code>count = R1</code>. Si se interrumpe la CPU antes de la escritura en RAM, ocurre corrupción."
           },
           {
+            tag: "CRITERIOS DE CÁTEDRA",
             num: "02",
-            title: "Problema de la Sección Crítica",
-            body: "Fragmento de código que manipula datos compartidos. Debe garantizar 3 requisitos formales: <strong>1. Exclusión Mutua</strong> (un solo hilo dentro a la vez), <strong>2. Progreso</strong> (la selección no se pospone indefinidamente), <strong>3. Espera Acotada</strong> (límite de entradas de otros hilos antes de concederla)."
+            title: "Requisitos de la Sección Crítica",
+            body: "Toda solución formal al problema de la sección crítica debe satisfacer 3 condiciones obligatorias: <strong>1. Exclusión Mutua:</strong> Solo un proceso/hilo puede ejecutar en la sección crítica a la vez. <strong>2. Progreso:</strong> Si ningún proceso está en su sección crítica, solo los que deseen entrar participan en la selección. <strong>3. Espera Acotada:</strong> Existe un límite en el número de veces que otros procesos acceden antes de conceder la entrada."
           },
           {
+            tag: "MECANISMOS DE BLOQUEO",
             num: "03",
-            title: "Cerrojo Mutex y Consistencia",
-            body: "Primitiva con dos estados (<code>LIBRE</code> / <code>BLOQUEADO</code>) y operaciones atómicas <code>acquire()</code> y <code>release()</code>. Al encapsular la sección crítica con un Mutex, las 3 microinstrucciones se ejecutan con exclusión mutua garantizada, evitando la pérdida de actualizaciones."
+            title: "Cerrojo Mutex y Consistencia Atómica",
+            body: "Primitiva de sincronización binaria con dos estados: <code>LIBRE</code> y <code>BLOQUEADO</code>, operada mediante llamadas atómicas de hardware <code>acquire()</code> y <code>release()</code>. Al proteger la sección crítica con Mutex, se fuerza la atomicidad lógica de las 3 microinstrucciones, garantizando la consistencia exacta de las variables en memoria principal."
           }
         ]
       }
     };
 
     // --------------------------------------------------------------------------
-    // 3. ESTADOS GLOBALES DE LOS SIMULADORES
+    // ESTADOS GLOBALES DE LOS SIMULADORES
     // --------------------------------------------------------------------------
     let currentTopic = 9;
-    let currentMode = 'presentation'; // 'presentation' | 'lab'
+    let currentMode = 'presentation';
 
-    // Tema 9: Procesos
+    // Tema 9
     const stateT9 = {
       processes: [
         { pid: 101, state: "Preparado", pc: "0x00401A20", cpuTime: 4, priority: 2 },
@@ -1463,12 +1451,12 @@
       ],
       nextPid: 104,
       contextSwitches: 6,
-      lastAction: "Inicialización del sistema",
-      auditMsg: "Kernel inicializado con 3 procesos activos. P102 posee la CPU en modo usuario.",
+      lastAction: "Inicialización del sistema operativo",
+      auditMsg: "Kernel inicializado con 3 procesos. P102 en modo usuario en CPU.",
       auditAlert: null
     };
 
-    // Tema 10: Planificación CPU
+    // Tema 10
     const stateT10 = {
       algorithm: "RR",
       quantum: 2,
@@ -1487,7 +1475,7 @@
       auditMsg: ""
     };
 
-    // Tema 11: Paso de Mensajes
+    // Tema 11
     const stateT11 = {
       mode: "blocking",
       capacity: 3,
@@ -1498,11 +1486,11 @@
       p1State: "Activo",
       p3State: "Activo",
       totalCopies: 4,
-      auditMsg: "Buzón con 2 mensajes almacenados en espacio de núcleo. Modo bloqueante activo.",
+      auditMsg: "Buzón con 2 mensajes en memoria de kernel. Modo bloqueante activo.",
       auditAlert: null
     };
 
-    // Tema 12: Memoria Compartida
+    // Tema 12
     const stateT12 = {
       size: 8,
       inPtr: 3,
@@ -1512,14 +1500,14 @@
       auditAlert: null
     };
 
-    // Tema 13: Hilos y Ley de Amdahl
+    // Tema 13
     const stateT13 = {
       threadsN: 8,
       fractionP: 0.75,
       auditMsg: ""
     };
 
-    // Tema 14: Sincronización
+    // Tema 14
     const stateT14 = {
       useMutex: false,
       stepIndex: 0,
@@ -1527,14 +1515,14 @@
       r1: 0,
       r2: 0,
       mutexLocked: false,
-      lastStepText: "Secuencia no iniciada. count = 5.",
+      lastStepText: "Secuencia no iniciada. count = 5 en memoria.",
       auditAlert: null
     };
 
     const microstepsWithoutMutex = [
-      { thread: 1, text: "R1 = count (Hilo 1 lee 5 en su registro R1)", r1: 5, r2: 0, count: 5 },
+      { thread: 1, text: "R1 = count (Hilo 1 carga 5 en registro CPU R1)", r1: 5, r2: 0, count: 5 },
       { thread: 1, text: "R1 = R1 + 1 (Hilo 1 incrementa R1 = 6 localmente)", r1: 6, r2: 0, count: 5 },
-      { thread: 2, text: "INTERRUPCIÓN: Hilo 2 lee count: R2 = count (Lee 5)", r1: 6, r2: 5, count: 5 },
+      { thread: 2, text: "INTERRUPCIÓN: Hilo 2 lee count: R2 = count (Lee 5 antiguo)", r1: 6, r2: 5, count: 5 },
       { thread: 2, text: "R2 = R2 - 1 (Hilo 2 decrementa R2 = 4 localmente)", r1: 6, r2: 4, count: 5 },
       { thread: 1, text: "REANUDA H1: count = R1 (Hilo 1 escribe 6 en RAM)", r1: 6, r2: 4, count: 6 },
       { thread: 2, text: "REANUDA H2: count = R2 (Hilo 2 escribe 4 en RAM - SOBREESCRITURA)", r1: 6, r2: 4, count: 4 }
@@ -1550,7 +1538,7 @@
     ];
 
     // --------------------------------------------------------------------------
-    // 4. CONTROL DE NAVEGACIÓN Y VISTAS
+    // NAVEGACIÓN Y VISTAS
     // --------------------------------------------------------------------------
     function selectTopic(t) {
       currentTopic = t;
@@ -1591,7 +1579,7 @@
     }
 
     // --------------------------------------------------------------------------
-    // 5. RENDER MODO PRESENTACIÓN (DIAPOSITIVAS DE TEORÍA EN ALTO CONTRASTE)
+    // MODO PRESENTACIÓN (TEORÍA FORMAL ULL ESIT CON FOCO DE PRESENTADOR)
     // --------------------------------------------------------------------------
     function renderPresentationView(container) {
       const data = THEORY_DATA[currentTopic];
@@ -1608,19 +1596,19 @@
             </div>
             <div>
               <h3 class="panel-title">${data.indicator}: ${data.title}</h3>
-              <p class="panel-subtitle">Diapositivas de síntesis de cátedra ULL ESIT optimizadas para Zoom</p>
+              <p class="panel-subtitle">Apuntes Oficiales de Cátedra ULL ESIT • Haz clic en una tarjeta para activar el Foco de Presentador</p>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="switchMode('lab')">
-            Ir al Simulador en Vivo &rarr;
+          <button class="btn btn-emerald" onclick="switchMode('lab')">
+            Laboratorio Experimental &rarr;
           </button>
         </div>
         <div class="panel-body">
-          <div class="theory-grid">
-            ${data.cards.map(c => `
-              <div class="slide-card">
+          <div class="theory-grid" id="presentation-grid">
+            ${data.cards.map((c, idx) => `
+              <div class="slide-card" onclick="toggleFocusCard(this)" title="Clic para enfocar/desenfocar">
                 <div class="slide-meta">
-                  <span class="slide-tag">CONCEPTO FORMAL</span>
+                  <span class="slide-tag">${c.tag}</span>
                   <span class="slide-num">${c.num}</span>
                 </div>
                 <h4 class="slide-heading">${c.title}</h4>
@@ -1633,8 +1621,16 @@
       container.appendChild(headerBox);
     }
 
+    function toggleFocusCard(card) {
+      const isFocused = card.classList.contains('focused');
+      document.querySelectorAll('.slide-card').forEach(c => c.classList.remove('focused'));
+      if (!isFocused) {
+        card.classList.add('focused');
+      }
+    }
+
     // --------------------------------------------------------------------------
-    // 6. RENDER MODO LABORATORIO (PRÁCTICA EN VIVO)
+    // MODO LABORATORIO (PRÁCTICA EN VIVO CON AUTO-DEMOS GIGANTES)
     // --------------------------------------------------------------------------
     function renderLabView(container) {
       if (currentTopic === 9) renderLabT9(container);
@@ -1646,7 +1642,7 @@
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 9: PROCESOS (5 ESTADOS + GRAFO SVG + PCB DINÁMICO)
+    // TEMA 9: PROCESOS Y PCB
     // ==========================================================================
     function renderLabT9(container) {
       const activeRunning = stateT9.processes.find(p => p.state === "Ejecutando");
@@ -1660,99 +1656,127 @@
           <div class="panel-header-left">
             <div class="panel-icon-pill">09</div>
             <div>
-              <h3 class="panel-title">Laboratorio: Ciclo de Vida de Procesos y PCB</h3>
-              <p class="panel-subtitle">Transiciones formales de 5 estados (ULL ESIT) y seguimiento de registros</p>
+              <h3 class="panel-title">Laboratorio: Ciclo de Vida de Procesos y Descriptor PCB</h3>
+              <p class="panel-subtitle">Transiciones legales entre los 5 estados según la cátedra de la ULL ESIT</p>
             </div>
-          </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT9_CicloNormal()">Demo 1: Ciclo Normal Completo</button>
-            <button class="btn btn-demo-cyan" onclick="demoT9_BloqueoIO()">Demo 2: Bloqueo de E/S y Retorno</button>
           </div>
         </div>
 
         <div class="panel-body">
-          <!-- Botones de Transición Legal -->
-          <div class="lab-hero-bar">
-            <div style="font-size:0.95rem; font-weight:600; color:#fff;">Acciones del Kernel:</div>
-            <div class="demo-buttons-group">
-              <button class="btn btn-primary" onclick="actionT9_Admitir()">+ Admitir Proceso</button>
-              <button class="btn btn-emerald" onclick="actionT9_Despachar()">Despachar a CPU</button>
-              <button class="btn btn-secondary" onclick="actionT9_Quantum()">Fin de Quantum</button>
-              <button class="btn btn-secondary" onclick="actionT9_PedirIO()">Solicitar E/S</button>
-              <button class="btn btn-secondary" onclick="actionT9_FinIO()">Finalizar E/S</button>
-              <button class="btn btn-danger" onclick="actionT9_Terminar()">Terminar exit()</button>
+          <!-- BOTONES AUTO-DEMO GIGANTES PROTAGONISTAS -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
+            </div>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT9_CicloNormal()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Cargar Ciclo Normal de CPU</span>
+                  <span class="giant-demo-desc">3 procesos alternando entre Preparado y Ejecución continua</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT9_BloqueoIO()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Demostrar Bloqueo por E/S</span>
+                  <span class="giant-demo-desc">Procesos suspendidos y reincorporación legal a Preparados</span>
+                </div>
+              </button>
             </div>
           </div>
 
-          <!-- Grafo SVG de Estados + Inspección PCB -->
-          <div class="t9-layout" style="margin-top:1.4rem;">
-            <!-- Grafo SVG 5 Estados -->
+          <!-- INPUTS SECUNDARIOS Y ACCIONES INDIVIDUALES (EN SEGUNDO PLANO) -->
+          <div class="secondary-inputs-panel">
+            <span style="font-family:var(--font-mono); font-size:0.78rem; font-weight:700; color:var(--text-muted);">
+              Controles Manuales del Kernel:
+            </span>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <button class="btn btn-secondary" onclick="actionT9_Admitir()">+ Admitir Nuevo</button>
+              <button class="btn btn-emerald" onclick="actionT9_Despachar()">Despachar CPU</button>
+              <button class="btn btn-secondary" onclick="actionT9_Quantum()">Fin Quantum</button>
+              <button class="btn btn-secondary" onclick="actionT9_PedirIO()">Pedir E/S</button>
+              <button class="btn btn-secondary" onclick="actionT9_FinIO()">Fin E/S</button>
+              <button class="btn btn-danger" onclick="actionT9_Terminar()">exit()</button>
+            </div>
+          </div>
+
+          <!-- GRAFO SVG 5 ESTADOS + PCB DINÁMICO -->
+          <div class="t9-layout">
             <div class="state-graph-container">
-              <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--neon-cyan); margin-bottom:1rem; font-weight:700;">
-                GRAFO FORMAL DE 5 ESTADOS (ULL ESIT)
+              <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--neon-emerald); margin-bottom:1rem; font-weight:700;">
+                DIAGRAMA FORMAL DE 5 ESTADOS (ULL ESIT)
               </div>
               
               <svg viewBox="0 0 680 260" style="width:100%; height:auto;">
                 <defs>
-                  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <marker id="arr-em" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                  </marker>
+                  <marker id="arr-cy" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
                   </marker>
-                  <marker id="arrow-warn" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <marker id="arr-am" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
                   </marker>
-                  <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <marker id="arr-re" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                     <path d="M 0 1 L 8 5 L 0 9 z" fill="#ef4444" />
                   </marker>
                 </defs>
 
-                <!-- Flechas / Transiciones -->
-                <!-- Nuevo -> Preparado -->
-                <path d="M 100 80 L 190 80" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)" fill="none" />
+                <!-- Transiciones -->
+                <path d="M 100 80 L 190 80" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-cy)" fill="none" />
                 <text x="145" y="70" fill="#94a3b8" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Admitir</text>
 
-                <!-- Preparado -> Ejecutando -->
-                <path d="M 290 70 L 380 70" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow)" fill="none" />
+                <path d="M 290 70 L 380 70" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-em)" fill="none" />
                 <text x="335" y="60" fill="#86efac" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Despachar</text>
 
-                <!-- Ejecutando -> Preparado (Quantum) -->
-                <path d="M 380 90 L 290 90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)" fill="none" />
+                <path d="M 380 90 L 290 90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-cy)" fill="none" />
                 <text x="335" y="110" fill="#94a3b8" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Fin Quantum</text>
 
-                <!-- Ejecutando -> Esperando (E/S) -->
-                <path d="M 430 115 L 430 185" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-warn)" fill="none" />
+                <path d="M 430 115 L 430 185" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arr-am)" fill="none" />
                 <text x="450" y="155" fill="#fde68a" font-size="12" font-family="var(--font-mono)">Petición E/S</text>
 
-                <!-- Esperando -> Preparado (Fin E/S) -->
-                <path d="M 380 215 L 240 215 L 240 115" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)" fill="none" />
-                <text x="300" y="235" fill="#7dd3fc" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
+                <path d="M 380 215 L 240 215 L 240 115" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-em)" fill="none" />
+                <text x="300" y="235" fill="#86efac" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
 
-                <!-- Ejecutando -> Terminado -->
-                <path d="M 480 80 L 570 80" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrow-red)" fill="none" />
+                <path d="M 480 80 L 570 80" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arr-re)" fill="none" />
                 <text x="525" y="70" fill="#fca5a5" font-size="12" font-family="var(--font-mono)" text-anchor="middle">exit()</text>
 
                 <!-- Nodos -->
-                <!-- Nuevo -->
                 <rect x="20" y="55" width="80" height="50" rx="10" fill="rgba(15,23,42,0.9)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
                 <text x="60" y="85" fill="#fff" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Nuevo</text>
 
-                <!-- Preparado -->
-                <rect x="190" y="55" width="100" height="50" rx="10" fill="rgba(56,189,248,0.15)" stroke="#38bdf8" stroke-width="2"/>
+                <rect x="190" y="55" width="100" height="50" rx="10" fill="rgba(56,189,248,0.18)" stroke="#38bdf8" stroke-width="2"/>
                 <text x="240" y="85" fill="#7dd3fc" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Preparado</text>
 
-                <!-- Ejecutando -->
                 <rect x="380" y="55" width="100" height="50" rx="10" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="2.5"/>
                 <text x="430" y="85" fill="#86efac" font-size="13" font-family="var(--font-sans)" font-weight="800" text-anchor="middle">Ejecutando</text>
 
-                <!-- Esperando -->
                 <rect x="380" y="190" width="100" height="50" rx="10" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="2"/>
                 <text x="430" y="220" fill="#fde68a" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Esperando</text>
 
-                <!-- Terminado -->
-                <rect x="570" y="55" width="90" height="50" rx="10" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="2"/>
+                <rect x="570" y="55" width="90" height="50" rx="10" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="2"/>
                 <text x="615" y="85" fill="#fca5a5" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Terminado</text>
               </svg>
 
-              <!-- Procesos en cada estado -->
               <div style="display:flex; justify-content:space-between; margin-top:1rem; font-family:var(--font-mono); font-size:0.8rem;">
                 <div style="color:#7dd3fc;">Preparados: ${readyProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Vacía'}</div>
                 <div style="color:#86efac;">En CPU: ${activeRunning ? `PID_${activeRunning.pid}` : 'IDLE'}</div>
@@ -1760,11 +1784,11 @@
               </div>
             </div>
 
-            <!-- Bloque PCB en Código en Vivo -->
+            <!-- PCB DINÁMICO EN CÓDIGO -->
             <div class="pcb-live-card">
               <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-family:var(--font-mono); font-size:0.82rem; font-weight:700; color:var(--neon-cyan);">
-                  INSPECTOR DE PCB (task_struct)
+                <span style="font-family:var(--font-mono); font-size:0.82rem; font-weight:700; color:var(--neon-emerald);">
+                  BLOQUE DE CONTROL (task_struct)
                 </span>
                 <span class="badge ${activeRunning ? 'badge-running' : 'badge-waiting'}">
                   ${activeRunning ? 'CPU ACTIVA' : 'CPU IDLE'}
@@ -1773,23 +1797,23 @@
               
               <div class="pcb-code-block">
                 ${activeRunning ? `
-<span style="color:#94a3b8;">/* Descriptor del Proceso en CPU */</span>
+<span style="color:#94a3b8;">/* Estructura en Memoria Principal */</span>
 struct task_struct {
   pid_t pid           = <strong style="color:#fff;">${activeRunning.pid}</strong>;
   long state          = <span style="color:#86efac;">TASK_RUNNING</span>;
   void *pc            = <span style="color:#f5d0fe;">${activeRunning.pc}</span>;
   unsigned int ticks  = ${activeRunning.cpuTime} u.t.;
   int priority        = ${activeRunning.priority};
-  struct mm_struct *mm; /* Espacio Virtual */
+  struct mm_struct *mm; /* Tablas de Páginas */
 };
                 ` : `
-<span style="color:#94a3b8;">/* CPU en reposo (Inactiva) */</span>
+<span style="color:#94a3b8;">/* CPU en espera de procesos preparados */</span>
 struct task_struct *current = NULL;
                 `}
               </div>
 
               <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
-                <strong>Nota de Cátedra:</strong> Todo cambio de contexto guarda los registros y el <em>Program Counter</em> en este bloque antes de ceder la CPU.
+                <strong>Nota ULL ESIT:</strong> Cada cambio de contexto implica salvar este descriptor en la memoria principal antes de ceder la CPU.
               </div>
             </div>
           </div>
@@ -1797,23 +1821,23 @@ struct task_struct *current = NULL;
           <!-- KPIs -->
           <div class="kpi-row">
             <div class="kpi-card">
-              <span class="kpi-title">Procesos en Memoria</span>
+              <span class="kpi-title">Procesos en Memoria Principal</span>
               <span class="kpi-number">${stateT9.processes.filter(p => p.state !== 'Terminado').length}</span>
-              <span class="kpi-subtext">Total activos en el kernel</span>
+              <span class="kpi-subtext">Activos en el espacio del kernel</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Cambios de Contexto</span>
-              <span class="kpi-number" style="color:var(--neon-cyan);">${stateT9.contextSwitches}</span>
-              <span class="kpi-subtext">Sobrecarga de conmutación de PCB</span>
+              <span class="kpi-number" style="color:var(--neon-emerald);">${stateT9.contextSwitches}</span>
+              <span class="kpi-subtext">Sobrecarga pura de conmutación de PCB</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Cola de Preparados</span>
-              <span class="kpi-number" style="color:var(--neon-emerald);">${readyProcesses.length}</span>
-              <span class="kpi-subtext">Procesos listos para CPU</span>
+              <span class="kpi-number" style="color:var(--neon-cyan);">${readyProcesses.length}</span>
+              <span class="kpi-subtext">Compitiendo por el tiempo de CPU</span>
             </div>
           </div>
 
-          <!-- Tabla de Procesos -->
+          <!-- TABLA -->
           <div class="data-table-wrap">
             <table class="data-table">
               <thead>
@@ -1823,7 +1847,7 @@ struct task_struct *current = NULL;
                   <th>Program Counter (PC)</th>
                   <th>Tiempo CPU</th>
                   <th>Prioridad</th>
-                  <th>Acción Rápida</th>
+                  <th>Acción Directa</th>
                 </tr>
               </thead>
               <tbody>
@@ -1839,7 +1863,7 @@ struct task_struct *current = NULL;
                     <td style="font-family:var(--font-mono);">${p.cpuTime} u.t.</td>
                     <td style="font-family:var(--font-mono);">${p.priority}</td>
                     <td>
-                      ${p.state === 'Preparado' ? `<button class="btn btn-secondary" style="padding:3px 8px; font-size:0.75rem;" onclick="dispatchSpecificPid(${p.pid})">Despachar</button>` : ''}
+                      ${p.state === 'Preparado' ? `<button class="btn btn-emerald" style="padding:3px 8px; font-size:0.75rem;" onclick="dispatchSpecificPid(${p.pid})">Despachar</button>` : ''}
                       ${p.state === 'Esperando' ? `<button class="btn btn-secondary" style="padding:3px 8px; font-size:0.75rem;" onclick="unblockSpecificPid(${p.pid})">Fin E/S</button>` : ''}
                       ${p.state === 'Ejecutando' ? `<span style="color:var(--neon-emerald); font-size:0.8rem; font-family:var(--font-mono);">En CPU</span>` : ''}
                       ${p.state === 'Terminado' ? `<span style="color:var(--text-dim); font-size:0.8rem;">Liberado</span>` : ''}
@@ -1850,7 +1874,7 @@ struct task_struct *current = NULL;
             </table>
           </div>
 
-          <!-- Terminal de Auditoría -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
             <div class="audit-header-tag">Auditoría del Planificador y Kernel ULL ESIT</div>
             <div><strong>Última Transición:</strong> ${stateT9.lastAction}</div>
@@ -1862,15 +1886,14 @@ struct task_struct *current = NULL;
       container.appendChild(panel);
     }
 
-    // Funciones del Tema 9
     function demoT9_CicloNormal() {
       stateT9.processes = [
         { pid: 101, state: "Preparado", pc: "0x00401A20", cpuTime: 4, priority: 2 },
         { pid: 102, state: "Ejecutando", pc: "0x00402F00", cpuTime: 12, priority: 1 },
         { pid: 103, state: "Preparado", pc: "0x00400810", cpuTime: 2, priority: 3 }
       ];
-      stateT9.lastAction = "Demo Cargada: Ciclo normal con alternancia de CPU";
-      stateT9.auditMsg = "Ejecución continua sin bloqueos por E/S. P102 en CPU.";
+      stateT9.lastAction = "Auto-Demo: Ciclo normal de cómputo en CPU cargado y ejecutado";
+      stateT9.auditMsg = "3 procesos en memoria principal alternando ráfagas de CPU. P102 en ejecución.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1881,17 +1904,17 @@ struct task_struct *current = NULL;
         { pid: 102, state: "Esperando", pc: "0x00402F00", cpuTime: 8, priority: 1 },
         { pid: 103, state: "Esperando", pc: "0x00400810", cpuTime: 2, priority: 3 }
       ];
-      stateT9.lastAction = "Demo Cargada: Procesos suspendidos esperando periféricos";
-      stateT9.auditMsg = "Dos procesos en estado Esperando aguardando interrupciones de periféricos de E/S.";
-      stateT9.auditAlert = "REGLA FORMAL: Al recibir señal de fin de E/S, el proceso no puede volver directamente a la CPU; debe reingresar a Preparado.";
+      stateT9.lastAction = "Auto-Demo: Suspensión por dispositivos periféricos de E/S";
+      stateT9.auditMsg = "Dos procesos bloqueados en espera de interrupción de hardware.";
+      stateT9.auditAlert = "REGLA DE CÁTEDRA: Al concluir la E/S, el proceso pasa obligatoriamente a Preparado para volver a ser planificado.";
       renderView();
     }
 
     function actionT9_Admitir() {
       const pid = stateT9.nextPid++;
       stateT9.processes.push({ pid, state: "Preparado", pc: "0x00400000", cpuTime: 0, priority: 2 });
-      stateT9.lastAction = `Admitir: Creado PID_${pid} en estado Preparado (Nuevo -> Preparado)`;
-      stateT9.auditMsg = "Transición LEGAL. Proceso cargado en memoria principal y encolado en cola de listos.";
+      stateT9.lastAction = `Admitir: Creado PID_${pid} en Preparado (Nuevo -> Preparado)`;
+      stateT9.auditMsg = "Proceso cargado en memoria principal y descriptor PCB enlazado en cola de listos.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1900,7 +1923,7 @@ struct task_struct *current = NULL;
       const running = stateT9.processes.find(p => p.state === "Ejecutando");
       const ready = stateT9.processes.find(p => p.state === "Preparado");
       if (!ready) {
-        stateT9.lastAction = "Despachar rechazado: Cola de preparados vacía.";
+        stateT9.lastAction = "Despacho rechazado: Cola de preparados vacía.";
         stateT9.auditAlert = "ERROR DE TRANSICIÓN: No hay procesos en cola de preparados. La CPU pasa a IDLE.";
         renderView();
         return;
@@ -1908,8 +1931,8 @@ struct task_struct *current = NULL;
       if (running) running.state = "Preparado";
       ready.state = "Ejecutando";
       stateT9.contextSwitches++;
-      stateT9.lastAction = `Despacho: PID_${ready.pid} pasa a Ejecutando (Preparado -> Ejecutando)`;
-      stateT9.auditMsg = "Transición LEGAL. Salva registros salientes y carga el PCB de PID_" + ready.pid;
+      stateT9.lastAction = `Despacho: PID_${ready.pid} pasa a Ejecutando`;
+      stateT9.auditMsg = "Transición LEGAL. Se cargan registros de PID_" + ready.pid + " en los registros físicos de la CPU.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1930,9 +1953,9 @@ struct task_struct *current = NULL;
         stateT9.lastAction = `Fin Quantum: PID_${running.pid} desalojado. PID_${next.pid} despachado.`;
       } else {
         running.state = "Ejecutando";
-        stateT9.lastAction = `Fin Quantum: PID_${running.pid} reanuda (es el único preparado).`;
+        stateT9.lastAction = `Fin Quantum: PID_${running.pid} reanuda (único proceso preparado).`;
       }
-      stateT9.auditMsg = "Transición LEGAL: Desalojo apropiativo por temporizador de reloj.";
+      stateT9.auditMsg = "Transición LEGAL: Desalojo apropiativo forzado por temporizador de reloj.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1949,7 +1972,7 @@ struct task_struct *current = NULL;
       const next = stateT9.processes.find(p => p.state === "Preparado");
       if (next) next.state = "Ejecutando";
       stateT9.lastAction = `Petición E/S: PID_${running.pid} bloqueado (Ejecutando -> Esperando)`;
-      stateT9.auditMsg = "Transición LEGAL: Proceso extraído de la CPU a la cola del dispositivo.";
+      stateT9.auditMsg = "Transición voluntaria. Proceso aguarda fin de operación de disco o red.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1962,8 +1985,8 @@ struct task_struct *current = NULL;
         return;
       }
       waiting.state = "Preparado";
-      stateT9.lastAction = `Fin E/S: PID_${waiting.pid} pasa a Preparado (Esperando -> Preparado)`;
-      stateT9.auditMsg = "Transición LEGAL: Interrupción de E/S completa. El proceso compite nuevamente en la cola de preparados.";
+      stateT9.lastAction = `Fin E/S: PID_${waiting.pid} pasa a Preparado`;
+      stateT9.auditMsg = "Interrupción de periférico recibida. Proceso encolado en cola de listos.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -1978,8 +2001,8 @@ struct task_struct *current = NULL;
       running.state = "Terminado";
       const next = stateT9.processes.find(p => p.state === "Preparado");
       if (next) next.state = "Ejecutando";
-      stateT9.lastAction = `Terminación: PID_${running.pid} finaliza (Ejecutando -> Terminado)`;
-      stateT9.auditMsg = "Transición LEGAL: Recursos y memoria liberados por el kernel.";
+      stateT9.lastAction = `Terminación: PID_${running.pid} ejecuta exit()`;
+      stateT9.auditMsg = "Recursos de memoria principal reclamados por el sistema operativo.";
       stateT9.auditAlert = null;
       renderView();
     }
@@ -2000,14 +2023,14 @@ struct task_struct *current = NULL;
       const target = stateT9.processes.find(p => p.pid === pid);
       if (target && target.state === "Esperando") {
         target.state = "Preparado";
-        stateT9.lastAction = `Interrupción: PID_${pid} desbloqueado a Preparado.`;
+        stateT9.lastAction = `Interrupción E/S: PID_${pid} pasa a Preparado.`;
         stateT9.auditAlert = null;
         renderView();
       }
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 10: PLANIFICACIÓN CPU (GANTT DINÁMICO + CONVOY + DEMOS)
+    // TEMA 10: PLANIFICACIÓN DE CPU
     // ==========================================================================
     function calculateScheduleT10() {
       const procs = stateT10.processes.map(p => ({
@@ -2152,7 +2175,6 @@ struct task_struct *current = NULL;
       stateT10.tme = (totalWaiting / n).toFixed(2);
       stateT10.cpuUtil = time > 0 ? ((totalBurst / time) * 100).toFixed(1) + "%" : "100%";
 
-      // Comprobar Efecto Convoy
       stateT10.hasConvoy = false;
       if (alg === "FCFS" && stateT10.evaluated.length >= 2) {
         const first = stateT10.evaluated[0];
@@ -2166,7 +2188,7 @@ struct task_struct *current = NULL;
     function renderLabT10(container) {
       calculateScheduleT10();
       const totalTime = stateT10.gantt.length > 0 ? stateT10.gantt[stateT10.gantt.length - 1].end : 1;
-      const colorMap = { P1: "#0284c7", P2: "#10b981", P3: "#a855f7", P4: "#f59e0b", P5: "#06b6d4", P6: "#ec4899", IDLE: "#475569" };
+      const colorMap = { P1: "#10b981", P2: "#38bdf8", P3: "#a855f7", P4: "#f59e0b", P5: "#06b6d4", P6: "#ec4899", IDLE: "#475569" };
 
       const panel = document.createElement('div');
       panel.className = 'glass-panel';
@@ -2176,25 +2198,60 @@ struct task_struct *current = NULL;
             <div class="panel-icon-pill">10</div>
             <div>
               <h3 class="panel-title">Laboratorio: Planificación de CPU y Diagrama de Gantt</h3>
-              <p class="panel-subtitle">Simulador proporcional en vivo de FCFS, SJF, SRTF y Round Robin</p>
+              <p class="panel-subtitle">Simulador proporcional de despacho temporal, métricas analíticas y detección de anomalías</p>
             </div>
-          </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT10_Convoy()">Demo 1: Demostrar Efecto Convoy</button>
-            <button class="btn btn-demo-cyan" onclick="demoT10_SRTF()">Demo 2: Demostrar SRTF Óptimo</button>
           </div>
         </div>
 
         <div class="panel-body">
-          <!-- Controles de Configuración -->
-          <div class="controls-grid">
+          <!-- BOTONES AUTO-DEMO GIGANTES -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
+            </div>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT10_Convoy()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Demostrar Efecto Convoy (FCFS)</span>
+                  <span class="giant-demo-desc">P1 domina la CPU (24 u.t.) disparando el TME de procesos cortos</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT10_SRTF()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Demostrar SRTF Óptimo</span>
+                  <span class="giant-demo-desc">Desalojo dinámico por menor tiempo restante minimizando TME</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- INPUTS SECUNDARIOS EN SEGUNDO PLANO -->
+          <div class="secondary-inputs-panel">
             <div class="input-item">
-              <label>Algoritmo de Despacho:</label>
+              <label>Algoritmo:</label>
               <select class="select-field" onchange="changeT10Alg(this.value)">
-                <option value="FCFS" ${stateT10.algorithm === "FCFS" ? "selected" : ""}>FCFS (First-Come, First-Served)</option>
-                <option value="SJF" ${stateT10.algorithm === "SJF" ? "selected" : ""}>SJF (Shortest Job First - No apropiativo)</option>
-                <option value="SRTF" ${stateT10.algorithm === "SRTF" ? "selected" : ""}>SRTF (SJF Apropiativo / Desalojo)</option>
-                <option value="RR" ${stateT10.algorithm === "RR" ? "selected" : ""}>Round Robin (Quantum q)</option>
+                <option value="FCFS" ${stateT10.algorithm === "FCFS" ? "selected" : ""}>FCFS</option>
+                <option value="SJF" ${stateT10.algorithm === "SJF" ? "selected" : ""}>SJF (No Apropiativo)</option>
+                <option value="SRTF" ${stateT10.algorithm === "SRTF" ? "selected" : ""}>SRTF (Apropiativo)</option>
+                <option value="RR" ${stateT10.algorithm === "RR" ? "selected" : ""}>Round Robin</option>
               </select>
             </div>
 
@@ -2205,14 +2262,13 @@ struct task_struct *current = NULL;
               </div>
             ` : ''}
 
-            <!-- Inputs Flexibles para casos del profesor -->
-            <div class="input-item">
-              <label>Nuevo Proceso:</label>
+            <div class="input-item" style="margin-left:auto;">
+              <label>Insertar Caso Manual (Profesor):</label>
               <div style="display:flex; gap:6px;">
                 <input type="text" id="t10-in-pid" value="P${stateT10.processes.length + 1}" class="input-field" style="width:60px;" placeholder="PID">
-                <input type="number" min="0" id="t10-in-arr" value="${stateT10.processes.length}" class="input-field" style="width:60px;" placeholder="Llegada">
-                <input type="number" min="1" id="t10-in-bst" value="4" class="input-field" style="width:60px;" placeholder="Ráfaga">
-                <button class="btn btn-primary" onclick="addProcessT10()">+ Agregar</button>
+                <input type="number" min="0" id="t10-in-arr" value="${stateT10.processes.length}" class="input-field" style="width:60px;" placeholder="T_ll">
+                <input type="number" min="1" id="t10-in-bst" value="4" class="input-field" style="width:60px;" placeholder="T_raf">
+                <button class="btn btn-emerald" onclick="addProcessT10()">+ Agregar</button>
               </div>
             </div>
           </div>
@@ -2220,16 +2276,16 @@ struct task_struct *current = NULL;
           <!-- DIAGRAMA DE GANTT PROPORCIONAL -->
           <div class="gantt-live-wrapper">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-cyan);">
+              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-emerald);">
                 DIAGRAMA DE GANTT PROPORCIONAL (Tiempo Total: ${totalTime} u.t.)
               </span>
-              <span style="font-size:0.8rem; color:var(--text-muted);">Pasa el cursor sobre cada bloque para inspección</span>
+              <span style="font-size:0.8rem; color:var(--text-muted);">Inspección precisa de ranuras de despacho</span>
             </div>
 
             <div class="gantt-chart-bar">
               ${stateT10.gantt.map(g => {
                 const pct = (g.duration / totalTime) * 100;
-                const bg = colorMap[g.pid] || "#3b82f6";
+                const bg = colorMap[g.pid] || "#10b981";
                 return `
                   <div class="gantt-block" style="width:${pct}%; background-color:${bg};" title="${g.pid}: [${g.start} - ${g.end}] (${g.duration} u.t.)">
                     ${g.pid}
@@ -2248,22 +2304,22 @@ struct task_struct *current = NULL;
           <div class="kpi-row">
             <div class="kpi-card">
               <span class="kpi-title">Tiempo Medio Espera (TME)</span>
-              <span class="kpi-number" style="color:var(--neon-cyan);">${stateT10.tme} <span style="font-size:1.1rem;">u.t.</span></span>
+              <span class="kpi-number" style="color:var(--neon-emerald);">${stateT10.tme} <span style="font-size:1.1rem;">u.t.</span></span>
               <span class="kpi-subtext">Fórmula: (1/n) &Sigma; T_espera</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Tiempo Medio Retorno (TMR)</span>
-              <span class="kpi-number" style="color:var(--neon-purple);">${stateT10.tmr} <span style="font-size:1.1rem;">u.t.</span></span>
+              <span class="kpi-number" style="color:var(--neon-cyan);">${stateT10.tmr} <span style="font-size:1.1rem;">u.t.</span></span>
               <span class="kpi-subtext">Fórmula: (1/n) &Sigma; T_retorno</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Utilización de CPU</span>
               <span class="kpi-number" style="color:var(--neon-emerald);">${stateT10.cpuUtil}</span>
-              <span class="kpi-subtext">Tiempo de cómputo útil</span>
+              <span class="kpi-subtext">Aprovechamiento de cómputo útil</span>
             </div>
           </div>
 
-          <!-- Tabla de Métricas por Proceso -->
+          <!-- TABLA DE PROCESOS -->
           <div class="data-table-wrap">
             <table class="data-table">
               <thead>
@@ -2274,7 +2330,7 @@ struct task_struct *current = NULL;
                   <th>T. Fin (T_fin)</th>
                   <th>T. Retorno (T_ret = T_fin - T_ll)</th>
                   <th>T. Espera (T_esp = T_ret - T_raf)</th>
-                  <th>Eliminar</th>
+                  <th>Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -2285,7 +2341,7 @@ struct task_struct *current = NULL;
                     <td style="font-family:var(--font-mono);">${p.burst}</td>
                     <td style="font-family:var(--font-mono);">${p.finish}</td>
                     <td style="font-family:var(--font-mono); color:#fff; font-weight:700;">${p.turnaround} u.t.</td>
-                    <td style="font-family:var(--font-mono); color:var(--neon-cyan); font-weight:700;">${p.waiting} u.t.</td>
+                    <td style="font-family:var(--font-mono); color:var(--neon-emerald); font-weight:700;">${p.waiting} u.t.</td>
                     <td>
                       <button class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;" onclick="removeProcessT10('${p.pid}')">&times;</button>
                     </td>
@@ -2295,18 +2351,18 @@ struct task_struct *current = NULL;
             </table>
           </div>
 
-          <!-- Auditoría Matemática y Alerta Convoy -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Comprobación Analítica de Rendimiento</div>
+            <div class="audit-header-tag">Auditoría Analítica de Cátedra</div>
             <div><strong>Cálculo TMR:</strong> (${stateT10.evaluated.map(p => p.turnaround).join(' + ')}) / ${stateT10.evaluated.length} = <strong style="color:#fff;">${stateT10.tmr} u.t.</strong></div>
-            <div><strong>Cálculo TME:</strong> (${stateT10.evaluated.map(p => p.waiting).join(' + ')}) / ${stateT10.evaluated.length} = <strong style="color:var(--neon-cyan);">${stateT10.tme} u.t.</strong></div>
+            <div><strong>Cálculo TME:</strong> (${stateT10.evaluated.map(p => p.waiting).join(' + ')}) / ${stateT10.evaluated.length} = <strong style="color:var(--neon-emerald);">${stateT10.tme} u.t.</strong></div>
             ${stateT10.hasConvoy ? `
               <div class="audit-alert-box">
-                <strong>ALERTA DE EFECTO CONVOY (FCFS):</strong> El proceso P1 monopoliza la CPU con una ráfaga dominante (${stateT10.evaluated[0].burst} u.t.), forzando a procesos más cortos a sufrir tiempos de espera desproporcionados (TME = ${stateT10.tme} u.t.). Solución: cambiar a Round Robin o SRTF.
+                <strong>EFECTO CONVOY DETECTADO EN FCFS:</strong> El proceso P1 domina la CPU con una ráfaga de ${stateT10.evaluated[0].burst} u.t., castigando la cola completa. Recomendación ULL: evaluar SRTF o Round Robin.
               </div>
             ` : `
               <div class="audit-success-box">
-                Planificación optimizada. No se detecta monopolización crítica de la CPU.
+                Secuencia balanceada sin monopolización crítica de la CPU.
               </div>
             `}
           </div>
@@ -2360,7 +2416,7 @@ struct task_struct *current = NULL;
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 11: PASO DE MENSAJES (BUZÓN KERNEL + COPIAS DE MEMORIA)
+    // TEMA 11: PASO DE MENSAJES
     // ==========================================================================
     function renderLabT11(container) {
       const panel = document.createElement('div');
@@ -2371,27 +2427,62 @@ struct task_struct *current = NULL;
             <div class="panel-icon-pill">11</div>
             <div>
               <h3 class="panel-title">Laboratorio: Paso de Mensajes (Buzón FIFO en Espacio Kernel)</h3>
-              <p class="panel-subtitle">Sobrecarga de doble copia de memoria y semántica Bloqueante vs No Bloqueante</p>
+              <p class="panel-subtitle">Sobrecarga de doble copia de memoria y semántica de bloqueo síncrono</p>
             </div>
-          </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT11_BloqueoLleno()">Demo 1: Bloqueo de Emisor (Lleno)</button>
-            <button class="btn btn-demo-cyan" onclick="demoT11_BloqueoVacio()">Demo 2: Bloqueo de Receptor (Vacío)</button>
           </div>
         </div>
 
         <div class="panel-body">
-          <!-- Controles -->
-          <div class="controls-grid">
+          <!-- AUTO-DEMOS GIGANTES -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
+            </div>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT11_BloqueoLleno()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Bloquear Emisor (Buzón Lleno)</span>
+                  <span class="giant-demo-desc">P1 suspendido al invocar send() sobre capacidad colmada</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT11_BloqueoVacio()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Bloquear Receptor (Buzón Vacío)</span>
+                  <span class="giant-demo-desc">P3 suspendido en receive() hasta llegada de nuevo mensaje</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- INPUTS SECUNDARIOS -->
+          <div class="secondary-inputs-panel">
             <div class="input-item">
-              <label>Semántica de Sincronización:</label>
+              <label>Modo IPC:</label>
               <select class="select-field" onchange="changeT11Mode(this.value)">
                 <option value="blocking" ${stateT11.mode === "blocking" ? "selected" : ""}>Bloqueante (Síncrono)</option>
                 <option value="nonblocking" ${stateT11.mode === "nonblocking" ? "selected" : ""}>No Bloqueante (Asíncrono)</option>
               </select>
             </div>
             <div class="input-item">
-              <label>Capacidad del Buzón (N slots):</label>
+              <label>Capacidad Buzón:</label>
               <select class="select-field" onchange="changeT11Cap(this.value)">
                 <option value="2" ${stateT11.capacity === 2 ? "selected" : ""}>N = 2</option>
                 <option value="3" ${stateT11.capacity === 3 ? "selected" : ""}>N = 3</option>
@@ -2399,29 +2490,27 @@ struct task_struct *current = NULL;
               </select>
             </div>
             <div class="input-item" style="margin-left:auto;">
-              <label>Acciones IPC:</label>
+              <label>Primitivas:</label>
               <div style="display:flex; gap:8px;">
-                <button class="btn btn-primary" onclick="sendT11('P1')">P1: send(msg)</button>
-                <button class="btn btn-secondary" onclick="sendT11('P2')">P2: send(msg)</button>
+                <button class="btn btn-secondary" onclick="sendT11('P1')">P1: send()</button>
+                <button class="btn btn-secondary" onclick="sendT11('P2')">P2: send()</button>
                 <button class="btn btn-emerald" onclick="receiveT11()">P3: receive()</button>
               </div>
             </div>
           </div>
 
-          <!-- ARQUITECTURA VISUAL: Espacio Usuario -> Kernel -> Espacio Usuario -->
+          <!-- ESQUEMA ARQUITECTÓNICO DE MEMORIA -->
           <div class="ipc-architecture-view">
-            <!-- Emisor -->
             <div class="ipc-space-box">
-              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--neon-cyan);">ESPACIO USUARIO (Ring 3)</span>
+              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--neon-emerald);">ESPACIO USUARIO (Ring 3)</span>
               <strong style="font-size:1.15rem; color:#fff;">Emisores P1 y P2</strong>
               <div style="font-size:0.85rem; color:var(--text-muted);">Estado P1:</div>
               <span class="badge ${stateT11.p1State === 'Bloqueado' ? 'badge-error' : 'badge-running'}">${stateT11.p1State}</span>
             </div>
 
-            <!-- Buzón Kernel -->
             <div class="kernel-mailbox-box">
               <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.6rem;">
-                <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-cyan);">
+                <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-emerald);">
                   BUZÓN KERNEL (Ring 0)
                 </span>
                 <span style="font-family:var(--font-mono); font-size:0.8rem; color:#fff;">
@@ -2436,16 +2525,15 @@ struct task_struct *current = NULL;
                     <div class="mailbox-cell ${msg ? 'filled' : ''}">
                       <div style="color:var(--text-dim); font-size:0.7rem;">Slot #${idx}</div>
                       <strong style="display:block; margin:4px 0;">${msg ? msg.id : 'VACÍO'}</strong>
-                      <span style="font-size:0.72rem; color:var(--neon-cyan);">${msg ? msg.sender : '—'}</span>
+                      <span style="font-size:0.72rem; color:var(--neon-emerald);">${msg ? msg.sender : '—'}</span>
                     </div>
                   `;
                 }).join('')}
               </div>
             </div>
 
-            <!-- Receptor -->
             <div class="ipc-space-box">
-              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--neon-emerald);">ESPACIO USUARIO (Ring 3)</span>
+              <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--neon-cyan);">ESPACIO USUARIO (Ring 3)</span>
               <strong style="font-size:1.15rem; color:#fff;">Receptor P3</strong>
               <div style="font-size:0.85rem; color:var(--text-muted);">Estado P3:</div>
               <span class="badge ${stateT11.p3State === 'Bloqueado' ? 'badge-error' : 'badge-running'}">${stateT11.p3State}</span>
@@ -2457,11 +2545,11 @@ struct task_struct *current = NULL;
             <div class="kpi-card">
               <span class="kpi-title">Mensajes en Buzón</span>
               <span class="kpi-number">${stateT11.mailbox.length} / ${stateT11.capacity}</span>
-              <span class="kpi-subtext">Capacidad de almacenamiento</span>
+              <span class="kpi-subtext">Capacidad acotada en kernel</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Copias de Memoria Totales</span>
-              <span class="kpi-number" style="color:var(--neon-cyan);">${stateT11.totalCopies}</span>
+              <span class="kpi-number" style="color:var(--neon-emerald);">${stateT11.totalCopies}</span>
               <span class="kpi-subtext">2 copias por cada mensaje entregado</span>
             </div>
             <div class="kpi-card">
@@ -2469,16 +2557,16 @@ struct task_struct *current = NULL;
               <span class="kpi-number" style="color:${(stateT11.p1State === 'Bloqueado' || stateT11.p3State === 'Bloqueado') ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">
                 ${(stateT11.p1State === "Bloqueado" ? 1 : 0) + (stateT11.p3State === "Bloqueado" ? 1 : 0)}
               </span>
-              <span class="kpi-subtext">Bloqueo por sincronización IPC</span>
+              <span class="kpi-subtext">Suspensión por semántica síncrona</span>
             </div>
           </div>
 
-          <!-- Auditoría -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Auditoría de Paso de Mensajes</div>
+            <div class="audit-header-tag">Auditoría de Comunicación entre Procesos</div>
             <div><strong>Modo Activo:</strong> ${stateT11.mode === 'blocking' ? 'Bloqueante (Síncrono)' : 'No Bloqueante (Asíncrono)'}</div>
             <div><strong>Diagnóstico:</strong> ${stateT11.auditMsg}</div>
-            <div><strong>Sobrecarga:</strong> Cada mensaje completado realiza 2 copias físicas (Usuario &rarr; Kernel &rarr; Usuario) más 2 conmutaciones de modo privilegiado.</div>
+            <div><strong>Sobrecarga:</strong> Cada mensaje completado realiza 2 copias físicas (Usuario &rarr; Kernel &rarr; Usuario) más 2 cambios de modo privilegiado Ring 3 &harr; Ring 0.</div>
             ${stateT11.auditAlert ? `<div class="audit-alert-box">${stateT11.auditAlert}</div>` : ''}
           </div>
         </div>
@@ -2495,8 +2583,8 @@ struct task_struct *current = NULL;
       ];
       stateT11.p1State = "Activo";
       stateT11.p3State = "Activo";
-      stateT11.auditMsg = "Buzón al 100% de capacidad. El próximo send() suspenderá al emisor.";
-      stateT11.auditAlert = "CONDICIÓN DE LLENO: Al intentar enviar otro mensaje, P1 quedará bloqueado de inmediato.";
+      stateT11.auditMsg = "Buzón al 100% de capacidad. Próximo send() suspenderá al emisor en cola del buzón.";
+      stateT11.auditAlert = "CONDICIÓN DE LLENO ALCANZADA: En modo bloqueante, el emisor queda en estado Esperando.";
       renderView();
     }
 
@@ -2506,8 +2594,8 @@ struct task_struct *current = NULL;
       stateT11.mailbox = [];
       stateT11.p1State = "Activo";
       stateT11.p3State = "Activo";
-      stateT11.auditMsg = "Buzón totalmente vacío (0 slots). El próximo receive() suspenderá al receptor.";
-      stateT11.auditAlert = "CONDICIÓN DE VACÍO: Al intentar extraer un mensaje, P3 quedará bloqueado esperando datos.";
+      stateT11.auditMsg = "Buzón vacío. Próximo receive() suspenderá a P3 hasta la llegada de nuevos datos.";
+      stateT11.auditAlert = "CONDICIÓN DE VACÍO ALCANZADA: Receptor suspendido esperando que un emisor ejecute send().";
       renderView();
     }
 
@@ -2534,7 +2622,7 @@ struct task_struct *current = NULL;
           stateT11.auditMsg = `Buzón LLENO (${stateT11.capacity}/${stateT11.capacity}). ${sender} queda suspendido en la cola de espera del buzón.`;
           stateT11.auditAlert = `BLOQUEO SÍNCRONO: Emisor ${sender} suspendido hasta que P3 extraiga un mensaje.`;
         } else {
-          stateT11.auditMsg = `Buzón LLENO. En modo Asíncrono, ${sender} recibe error EAGAIN sin suspenderse.`;
+          stateT11.auditMsg = `Buzón LLENO. En modo Asíncrono, ${sender} recibe código de error EAGAIN sin suspenderse.`;
           stateT11.auditAlert = "RECHAZO ASÍNCRONO: Mensaje descartado por falta de espacio.";
         }
         renderView();
@@ -2572,7 +2660,7 @@ struct task_struct *current = NULL;
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 12: MEMORIA COMPARTIDA (ANILLO BUFFER CIRCULAR in / out)
+    // TEMA 12: MEMORIA COMPARTIDA
     // ==========================================================================
     function renderLabT12(container) {
       const count = stateT12.buffer.filter(x => x !== null).length;
@@ -2588,38 +2676,71 @@ struct task_struct *current = NULL;
             <div class="panel-icon-pill">12</div>
             <div>
               <h3 class="panel-title">Laboratorio: Memoria Compartida (Búfer Circular)</h3>
-              <p class="panel-subtitle">Verificación de condiciones de vacío (in == out) y lleno ((in + 1) % N == out)</p>
+              <p class="panel-subtitle">Verificación aritmética de condiciones de lleno y vacío de la ULL ESIT</p>
             </div>
-          </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT12_Llenar()">Demo 1: Llenar Búfer al Borde</button>
-            <button class="btn btn-demo-cyan" onclick="demoT12_Vaciar()">Demo 2: Vaciar Búfer</button>
           </div>
         </div>
 
         <div class="panel-body">
-          <!-- Barra de Acciones del Productor / Consumidor -->
-          <div class="lab-hero-bar">
-            <div style="font-size:0.95rem; font-weight:600; color:#fff;">Operaciones de Memoria Directa (Sin Kernel):</div>
-            <div class="demo-buttons-group">
-              <button class="btn btn-primary" onclick="produceT12()">+ Producir Elemento (in++)</button>
-              <button class="btn btn-emerald" onclick="consumeT12()">- Consumir Elemento (out++)</button>
+          <!-- AUTO-DEMOS GIGANTES -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
+            </div>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT12_Llenar()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Llenar Búfer al Límite (N - 1)</span>
+                  <span class="giant-demo-desc">7 celdas ocupadas en N=8. Demuestra ((in+1)%N == out)</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT12_Vaciar()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Vaciar Búfer por Completo</span>
+                  <span class="giant-demo-desc">Demuestra la condición de vacío in == out (Consumidor bloqueado)</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- INPUTS SECUNDARIOS -->
+          <div class="secondary-inputs-panel">
+            <span style="font-family:var(--font-mono); font-size:0.78rem; font-weight:700; color:var(--text-muted);">
+              Acceso Directo a RAM:
+            </span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-emerald" onclick="produceT12()">+ Producir (in++)</button>
+              <button class="btn btn-cyan" onclick="consumeT12()">- Consumir (out++)</button>
               <button class="btn btn-secondary" onclick="clearT12()">Resetear Búfer</button>
             </div>
           </div>
 
-          <!-- REPRESENTACIÓN RADIAL / CIRCULAR EN SVG -->
+          <!-- ANILLO RADIAL EN SVG -->
           <div class="ring-buffer-container">
             <svg viewBox="0 0 460 460" style="width:360px; height:360px;">
-              <!-- Círculo Guía -->
               <circle cx="230" cy="230" r="140" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" stroke-dasharray="6,6" />
-
-              <!-- Centro del Anillo -->
-              <circle cx="230" cy="230" r="60" fill="rgba(15,23,42,0.9)" stroke="rgba(56,189,248,0.3)" stroke-width="2" />
+              <circle cx="230" cy="230" r="60" fill="rgba(15,23,42,0.9)" stroke="var(--border-accent-emerald)" stroke-width="2" />
               <text x="230" y="225" fill="#fff" font-size="14" font-weight="700" text-anchor="middle" font-family="var(--font-sans)">BÚFER SHM</text>
-              <text x="230" y="245" fill="var(--neon-cyan)" font-size="12" font-family="var(--font-mono)" text-anchor="middle">N = ${stateT12.size}</text>
+              <text x="230" y="245" fill="var(--neon-emerald)" font-size="12" font-family="var(--font-mono)" text-anchor="middle">N = ${stateT12.size}</text>
 
-              <!-- Celdas del Búfer Circular en arco -->
               ${[...Array(stateT12.size)].map((_, i) => {
                 const angle = (i * (360 / stateT12.size) - 90) * (Math.PI / 180);
                 const cx = 230 + 140 * Math.cos(angle);
@@ -2629,31 +2750,28 @@ struct task_struct *current = NULL;
                 const isOut = stateT12.outPtr === i;
 
                 let strokeColor = "rgba(255,255,255,0.2)";
-                let fillColor = "rgba(13,20,36,0.9)";
+                let fillColor = "rgba(11,19,36,0.9)";
                 if (val !== null) {
-                  strokeColor = "#38bdf8";
-                  fillColor = "rgba(56,189,248,0.25)";
+                  strokeColor = "#10b981";
+                  fillColor = "rgba(16,185,129,0.25)";
                 }
 
                 return `
-                  <!-- Celda -->
                   <circle cx="${cx}" cy="${cy}" r="28" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2.5" />
                   <text x="${cx}" y="${cy - 2}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="var(--font-mono)">
                     #${i}
                   </text>
-                  <text x="${cx}" y="${cy + 13}" fill="${val ? '#7dd3fc' : '#64748b'}" font-size="9" text-anchor="middle" font-family="var(--font-mono)">
+                  <text x="${cx}" y="${cy + 13}" fill="${val ? '#a7f3d0' : '#64748b'}" font-size="9" text-anchor="middle" font-family="var(--font-mono)">
                     ${val ? val : 'NULL'}
                   </text>
 
-                  <!-- Puntero in (Productor) -->
                   ${isIn ? `
-                    <circle cx="${cx}" cy="${cy}" r="34" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" />
-                    <text x="${cx}" y="${cy - 38}" fill="#38bdf8" font-size="12" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">in &darr;</text>
+                    <circle cx="${cx}" cy="${cy}" r="34" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,4" />
+                    <text x="${cx}" y="${cy - 38}" fill="#10b981" font-size="12" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">in &darr;</text>
                   ` : ''}
 
-                  <!-- Puntero out (Consumidor) -->
                   ${isOut ? `
-                    <text x="${cx}" y="${cy + 46}" fill="#10b981" font-size="12" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">&uarr; out</text>
+                    <text x="${cx}" y="${cy + 46}" fill="#38bdf8" font-size="12" font-weight="800" text-anchor="middle" font-family="var(--font-mono)">&uarr; out</text>
                   ` : ''}
                 `;
               }).join('')}
@@ -2669,23 +2787,23 @@ struct task_struct *current = NULL;
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Puntero in (Productor)</span>
-              <span class="kpi-number" style="color:var(--neon-cyan);">#${stateT12.inPtr}</span>
-              <span class="kpi-subtext">Siguiente celda de inserción</span>
+              <span class="kpi-number" style="color:var(--neon-emerald);">#${stateT12.inPtr}</span>
+              <span class="kpi-subtext">Siguiente celda de escritura</span>
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Puntero out (Consumidor)</span>
-              <span class="kpi-number" style="color:var(--neon-emerald);">#${stateT12.outPtr}</span>
-              <span class="kpi-subtext">Siguiente celda de extracción</span>
+              <span class="kpi-number" style="color:var(--neon-cyan);">#${stateT12.outPtr}</span>
+              <span class="kpi-subtext">Siguiente celda de lectura</span>
             </div>
           </div>
 
-          <!-- Auditoría Matemática -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Comprobación Matemática ULL ESIT</div>
+            <div class="audit-header-tag">Comprobación Matemática de Cátedra ULL ESIT</div>
             <div><strong>Comprobación de Vacío:</strong> (in == out) &rArr; (${stateT12.inPtr} == ${stateT12.outPtr}) = <strong style="color:${isEmpty ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">${isEmpty ? 'VERDADERO (Búfer Vacío)' : 'FALSO'}</strong></div>
             <div><strong>Comprobación de Lleno:</strong> ((in + 1) % N == out) &rArr; ((${stateT12.inPtr} + 1) % ${stateT12.size} == ${stateT12.outPtr}) &rArr; (${nextIn} == ${stateT12.outPtr}) = <strong style="color:${isFull ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">${isFull ? 'VERDADERO (Búfer Lleno)' : 'FALSO'}</strong></div>
             <div style="margin-top:0.4rem; color:var(--text-muted);">
-              <strong>Regla Académica:</strong> Se reservan N = ${stateT12.size} celdas, pero se limitan a N - 1 = ${stateT12.size - 1} elementos para que la condición de lleno no se solape aritméticamente con la de vacío.
+              <strong>Fundamento Formal:</strong> Se reservan N = ${stateT12.size} celdas pero se acota el límite a N - 1 = ${stateT12.size - 1} elementos para que la condición de lleno no se solape con la de vacío.
             </div>
             ${stateT12.auditAlert ? `<div class="audit-alert-box">${stateT12.auditAlert}</div>` : ''}
           </div>
@@ -2699,8 +2817,8 @@ struct task_struct *current = NULL;
       stateT12.inPtr = 7;
       stateT12.outPtr = 0;
       stateT12.buffer = ["A", "B", "C", "D", "E", "F", "G", null];
-      stateT12.auditMsg = "Búfer cargado con 7 elementos (N=8). Próximo intento de inserción activará lleno.";
-      stateT12.auditAlert = "CONDICIÓN DE LLENO ACTIVADA: ((7 + 1) % 8 == 0). El productor debe esperar.";
+      stateT12.auditMsg = "Búfer cargado con 7 elementos. Condición de lleno alcanzada ((7+1)%8 == 0).";
+      stateT12.auditAlert = "CONDICIÓN DE LLENO ACTIVADA: El productor debe suspenderse antes de sobreescribir datos.";
       renderView();
     }
 
@@ -2708,15 +2826,15 @@ struct task_struct *current = NULL;
       stateT12.inPtr = 0;
       stateT12.outPtr = 0;
       stateT12.buffer = Array(stateT12.size).fill(null);
-      stateT12.auditMsg = "Búfer vaciado por completo (in == out == 0).";
-      stateT12.auditAlert = "CONDICIÓN DE VACÍO ACTIVADA: (in == out). El consumidor debe esperar.";
+      stateT12.auditMsg = "Búfer reiniciado a estado vacío (in == out == 0).";
+      stateT12.auditAlert = "CONDICIÓN DE VACÍO ACTIVADA: El consumidor no puede extraer elementos.";
       renderView();
     }
 
     function produceT12() {
       const isFull = (stateT12.inPtr + 1) % stateT12.size === stateT12.outPtr;
       if (isFull) {
-        stateT12.auditAlert = `RECHAZADO: Búfer LLENO. ((in + 1) % ${stateT12.size} == out). El productor no puede sobreescribir datos.`;
+        stateT12.auditAlert = `RECHAZADO: Búfer LLENO. ((in + 1) % ${stateT12.size} == out).`;
         renderView();
         return;
       }
@@ -2729,7 +2847,7 @@ struct task_struct *current = NULL;
     function consumeT12() {
       const isEmpty = stateT12.inPtr === stateT12.outPtr;
       if (isEmpty) {
-        stateT12.auditAlert = "RECHAZADO: Búfer VACÍO. (in == out). No hay elementos para consumir.";
+        stateT12.auditAlert = "RECHAZADO: Búfer VACÍO. (in == out).";
         renderView();
         return;
       }
@@ -2748,7 +2866,7 @@ struct task_struct *current = NULL;
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 13: HILOS VS PROCESOS (LEY DE AMDAHL INTERACTIVA)
+    // TEMA 13: HILOS Y LEY DE AMDAHL
     // ==========================================================================
     function renderLabT13(container) {
       const N = stateT13.threadsN;
@@ -2764,21 +2882,56 @@ struct task_struct *current = NULL;
           <div class="panel-header-left">
             <div class="panel-icon-pill">13</div>
             <div>
-              <h3 class="panel-title">Laboratorio: Hilos, Memoria y Curva de Amdahl</h3>
-              <p class="panel-subtitle">Deslizador interactivo de fracción paralelizable (P) y aceleración Speedup</p>
+              <h3 class="panel-title">Laboratorio: Hilos, Memoria y Curva de Rendimiento de Amdahl</h3>
+              <p class="panel-subtitle">Deslizador interactivo de fracción paralelizable P y cálculo de Speedup teórico</p>
             </div>
-          </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT13_AltaParalelizacion()">Demo 1: Alta Paralelización (P = 0.95)</button>
-            <button class="btn btn-demo-cyan" onclick="demoT13_CuelloBotella()">Demo 2: Cuello de Botella Serie (P = 0.50)</button>
           </div>
         </div>
 
         <div class="panel-body">
-          <!-- Slider Interactivo de Fracción Paralela -->
+          <!-- AUTO-DEMOS GIGANTES -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
+            </div>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT13_AltaParalelizacion()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Alta Paralelización (P = 0.95 en 16 Cores)</span>
+                  <span class="giant-demo-desc">Aceleración masiva cercana al límite teórico de 20x</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT13_CuelloBotella()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Cuello de Botella Secuencial (P = 0.50)</span>
+                  <span class="giant-demo-desc">Demuestra el tope insalvable de 2x sin importar cuántos núcleos agregues</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- SLIDER SECUNDARIO -->
           <div class="amdahl-slider-row">
             <div style="font-family:var(--font-mono); font-size:0.9rem; font-weight:700; color:#fff;">
-              Fracción Paralelizable (P): <span style="color:var(--neon-cyan);">${(P * 100).toFixed(0)}%</span>
+              Fracción Paralela (P): <span style="color:var(--neon-emerald);">${(P * 100).toFixed(0)}%</span>
             </div>
             <input type="range" min="0.10" max="0.99" step="0.01" value="${P}" class="range-slider" oninput="changeT13P(this.value)">
             <div style="font-family:var(--font-mono); font-size:0.9rem; font-weight:700; color:#fff;">
@@ -2794,12 +2947,11 @@ struct task_struct *current = NULL;
             </div>
           </div>
 
-          <!-- Comparativa Memoria: Proceso vs Hilos -->
+          <!-- COMPARATIVA DE MEMORIA Y RENDIMIENTO -->
           <div class="threads-vs-process-split">
-            <!-- Espacio de Memoria Multihilo -->
-            <div style="background:rgba(8,14,26,0.85); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:1.4rem;">
-              <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-cyan);">
-                ESPACIO DE MEMORIA COMPARTIDO (1 Solo Proceso)
+            <div style="background:rgba(8,14,28,0.85); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:1.4rem;">
+              <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-emerald);">
+                ESPACIO DE MEMORIA COMPARTIDO (1 Solo Proceso en RAM)
               </span>
               <div style="font-family:var(--font-mono); font-size:0.82rem; margin:0.8rem 0; color:#cbd5e1; background:rgba(0,0,0,0.4); padding:0.8rem; border-radius:6px;">
                 <code>.text</code> Código (Solo Lectura) | <code>.data</code> Variables Globales | <code>Heap</code> malloc()
@@ -2810,33 +2962,31 @@ struct task_struct *current = NULL;
               </div>
               <div style="display:flex; flex-direction:column; gap:6px;">
                 ${[...Array(Math.min(N, 5))].map((_, idx) => `
-                  <div style="display:flex; justify-content:space-between; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:6px 12px; font-family:var(--font-mono); font-size:0.82rem;">
+                  <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:6px; padding:6px 12px; font-family:var(--font-mono); font-size:0.82rem;">
                     <span>Hilo TID #${idx + 1}</span>
-                    <span style="color:var(--neon-cyan);">Stack: 0x7fff00${idx}0 | PC propio</span>
+                    <span style="color:var(--neon-emerald);">Stack: 0x7fff00${idx}0 | PC propio</span>
                   </div>
                 `).join('')}
                 ${N > 5 ? `<div style="text-align:center; font-size:0.75rem; color:var(--text-dim);">+ ${N - 5} hilos adicionales compartiendo Heap...</div>` : ''}
               </div>
             </div>
 
-            <!-- Curva de Amdahl -->
-            <div style="background:rgba(8,14,26,0.85); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:1.4rem; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="background:rgba(8,14,28,0.85); border:1px solid var(--border-medium); border-radius:var(--radius-md); padding:1.4rem; display:flex; flex-direction:column; justify-content:space-between;">
               <div>
-                <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-purple);">
+                <span style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:var(--neon-cyan);">
                   ACELERACIÓN SEGÚN LEY DE AMDAHL
                 </span>
                 <div style="margin-top:1rem; font-family:var(--font-mono); font-size:0.88rem; line-height:1.7;">
                   <div>Fracción Serie (1 - P): <strong style="color:#fff;">${((1 - P) * 100).toFixed(0)}%</strong></div>
                   <div>Fracción Paralela (P / N): <strong style="color:var(--neon-cyan);">${((P / N) * 100).toFixed(1)}%</strong></div>
                   <div>Aceleración Alcanzada: <strong style="color:var(--neon-emerald); font-size:1.2rem;">${S}x</strong></div>
-                  <div>Límite Teórico (N &rarr; &infin;): <strong style="color:var(--neon-purple); font-size:1.2rem;">${Smax}x</strong></div>
+                  <div>Límite Teórico (N &rarr; &infin;): <strong style="color:var(--neon-cyan); font-size:1.2rem;">${Smax}x</strong></div>
                 </div>
               </div>
 
-              <!-- Barra de Rendimiento -->
               <div style="margin-top:1.2rem;">
                 <div style="height:14px; background:rgba(255,255,255,0.1); border-radius:7px; overflow:hidden;">
-                  <div style="height:100%; width:${Math.min((S / Smax) * 100, 100)}%; background:linear-gradient(90deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);"></div>
+                  <div style="height:100%; width:${Math.min((S / Smax) * 100, 100)}%; background:linear-gradient(90deg, var(--neon-emerald) 0%, var(--neon-cyan) 100%);"></div>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-dim); margin-top:4px;">
                   <span>0x</span>
@@ -2861,16 +3011,16 @@ struct task_struct *current = NULL;
             </div>
             <div class="kpi-card">
               <span class="kpi-title">Ahorro de Memoria RAM</span>
-              <span class="kpi-number" style="color:var(--neon-purple); font-size:1.8rem;">~90%</span>
-              <span class="kpi-subtext">Respecto a N procesos completos</span>
+              <span class="kpi-number" style="color:var(--neon-emerald); font-size:1.8rem;">~90%</span>
+              <span class="kpi-subtext">Frente a N procesos independientes</span>
             </div>
           </div>
 
-          <!-- Auditoría -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
             <div class="audit-header-tag">Fórmula Formal de Amdahl (ULL ESIT)</div>
             <div><code>S(N) = 1 / ((1 - P) + (P / N))</code> &rArr; <code>1 / (${(1 - P).toFixed(2)} + (${P} / ${N})) = ${S}x</code>.</div>
-            <div><strong>Conclusión de Rendimiento:</strong> Aunque añadas infinitos procesadores, la aceleración jamás superará <strong style="color:var(--neon-purple);">${Smax}x</strong> debido a que el ${((1 - P) * 100).toFixed(0)}% del código es estrictamente secuencial.</div>
+            <div><strong>Conclusión de Rendimiento:</strong> Aunque añadas infinitos procesadores, la aceleración jamás superará <strong style="color:var(--neon-cyan);">${Smax}x</strong> debido a que el ${((1 - P) * 100).toFixed(0)}% del código es estrictamente secuencial.</div>
           </div>
         </div>
       `;
@@ -2900,7 +3050,7 @@ struct task_struct *current = NULL;
     }
 
     // ==========================================================================
-    // SIMULADOR TEMA 14: SINCRONIZACIÓN (RACE CONDITIONS VS MUTEX)
+    // TEMA 14: SINCRONIZACIÓN Y MUTEX
     // ==========================================================================
     function renderLabT14(container) {
       const steps = stateT14.useMutex ? microstepsWithMutex : microstepsWithoutMutex;
@@ -2918,34 +3068,66 @@ struct task_struct *current = NULL;
               <p class="panel-subtitle">Descomposición de count++ y count-- en microinstrucciones de ensamblador</p>
             </div>
           </div>
-          <div class="demo-buttons-group">
-            <button class="btn btn-demo-highlight" onclick="demoT14_SinMutex()">Demo 1: Ejecutar SIN Mutex (Carrera)</button>
-            <button class="btn btn-emerald" onclick="demoT14_ConMutex()">Demo 2: Ejecutar CON Mutex (Protegido)</button>
-          </div>
         </div>
 
         <div class="panel-body">
-          <!-- Controles de Paso a Paso -->
-          <div class="lab-hero-bar">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <span class="mutex-lock-badge ${stateT14.useMutex ? 'mutex-locked' : 'mutex-unlocked'}">
-                ${stateT14.useMutex ? 'MUTEX ACTIVADO' : 'MUTEX DESACTIVADO'}
-              </span>
-              <span style="font-size:0.88rem; color:var(--text-muted);">Paso actual: ${stateT14.stepIndex} / 6</span>
+          <!-- AUTO-DEMOS GIGANTES -->
+          <div class="auto-demo-bar-hero">
+            <div class="auto-demo-title-wrap">
+              <h4>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Escenarios Precargados (Auto-Demos en 1 Clic)
+              </h4>
+              <span class="auto-demo-badge">A prueba de fallos para Zoom</span>
             </div>
-            <div class="demo-buttons-group">
-              <button class="btn btn-primary" onclick="stepT14()">Paso a Paso &rarr;</button>
+
+            <div class="auto-demo-buttons-giant">
+              <button class="btn-giant-demo" onclick="demoT14_SinMutex()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Demostrar Carrera SIN Mutex</span>
+                  <span class="giant-demo-desc">Intercalación destructiva: count termina en 4 (debería ser 5)</span>
+                </div>
+              </button>
+
+              <button class="btn-giant-demo secondary-cyan" onclick="demoT14_ConMutex()">
+                <div class="giant-demo-icon">
+                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div class="giant-demo-texts">
+                  <span class="giant-demo-title">Demostrar Protección CON Mutex</span>
+                  <span class="giant-demo-desc">Exclusión mutua garantizada: count finaliza consistente en 5</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- INPUTS SECUNDARIOS -->
+          <div class="secondary-inputs-panel">
+            <span class="mutex-lock-badge ${stateT14.useMutex ? 'mutex-locked' : 'mutex-unlocked'}">
+              ${stateT14.useMutex ? 'MUTEX ACTIVADO' : 'MUTEX DESACTIVADO'}
+            </span>
+            <span style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-muted);">Paso actual: ${stateT14.stepIndex} / 6</span>
+            <div style="display:flex; gap:8px; margin-left:auto;">
+              <button class="btn btn-emerald" onclick="stepT14()">Paso a Paso &rarr;</button>
               <button class="btn btn-secondary" onclick="runAllT14()">Ejecutar Todo</button>
               <button class="btn btn-secondary" onclick="resetT14()">Reiniciar</button>
             </div>
           </div>
 
-          <!-- CÓDIGO DIVIDIDO A DOS COLUMNAS (HILO A vs HILO B) -->
+          <!-- DOS COLUMNAS DE CÓDIGO (HILO A vs HILO B) -->
           <div class="sync-split-code-view">
-            <!-- Hilo 1: Incrementador count++ -->
-            <div class="thread-code-card" style="border-color:${current.thread === 1 ? 'var(--neon-cyan)' : 'var(--border-subtle)'};">
+            <div class="thread-code-card" style="border-color:${current.thread === 1 ? 'var(--neon-emerald)' : 'var(--border-subtle)'};">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
-                <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-cyan);">HILO 1 (count++)</span>
+                <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-emerald);">HILO 1 (count++)</span>
                 <span class="badge badge-ready">Registro R1 = ${stateT14.r1}</span>
               </div>
               <div class="pcb-code-block">
@@ -2957,7 +3139,6 @@ ${stateT14.useMutex ? '<span style="color:#86efac;">pthread_mutex_unlock(&m);</s
               </div>
             </div>
 
-            <!-- Hilo 2: Decrementador count-- -->
             <div class="thread-code-card" style="border-color:${current.thread === 2 ? 'var(--neon-rose)' : 'var(--border-subtle)'};">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
                 <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-rose);">HILO 2 (count--)</span>
@@ -2977,36 +3158,36 @@ ${stateT14.useMutex ? '<span style="color:#86efac;">pthread_mutex_unlock(&m);</s
           <div class="kpi-row">
             <div class="kpi-card">
               <span class="kpi-title">Valor en RAM de count</span>
-              <span class="kpi-number" style="color:${isCorrupt ? 'var(--neon-red)' : 'var(--neon-emerald)'};">
+              <span class="kpi-number" style="color:${isCorrupt ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">
                 ${current.count}
               </span>
               <span class="kpi-subtext">${isCorrupt ? '¡CORRUPCIÓN DE MEMORIA!' : 'Valor teórico esperado: 5'}</span>
             </div>
             <div class="kpi-card">
-              <span class="kpi-title">Estado de Exclusión Mutua</span>
-              <span class="kpi-number" style="color:${stateT14.useMutex ? 'var(--neon-emerald)' : 'var(--neon-red)'}; font-size:1.8rem;">
+              <span class="kpi-title">Exclusión Mutua</span>
+              <span class="kpi-number" style="color:${stateT14.useMutex ? 'var(--neon-emerald)' : 'var(--neon-rose)'}; font-size:1.8rem;">
                 ${stateT14.useMutex ? 'GARANTIZADA' : 'VIOLADA'}
               </span>
-              <span class="kpi-subtext">${stateT14.useMutex ? 'Sección crítica protegida' : 'Intercalación no controlada'}</span>
+              <span class="kpi-subtext">${stateT14.useMutex ? 'Sección crítica protegida' : 'Intercalación destructiva'}</span>
             </div>
             <div class="kpi-card">
-              <span class="kpi-title">Progreso de Instrucciones</span>
+              <span class="kpi-title">Instrucciones Ejecutadas</span>
               <span class="kpi-number">${stateT14.stepIndex} / 6</span>
               <span class="kpi-subtext">Microinstrucciones despachadas</span>
             </div>
           </div>
 
-          <!-- Auditoría -->
+          <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Auditoría de Microinstrucciones en Memoria</div>
+            <div class="audit-header-tag">Auditoría de Microinstrucciones en Memoria Principal</div>
             <div><strong>Paso Actual:</strong> ${stateT14.lastStepText}</div>
             ${isCorrupt ? `
               <div class="audit-alert-box">
-                <strong>CONDICIÓN DE CARRERA CONFIRMADA:</strong> Debido a que el Hilo 2 leyó count (5) antes de que el Hilo 1 depositara su valor incrementado (6), la última escritura del Hilo 2 sobreescribió en la RAM el valor 4. El incremento se perdió por completo.
+                <strong>CONDICIÓN DE CARRERA CONFIRMADA:</strong> Debido a que el Hilo 2 leyó count (5) antes de que el Hilo 1 depositara su valor incrementado (6), la última escritura del Hilo 2 sobreescribió en la memoria RAM el valor 4. El incremento se perdió por completo.
               </div>
             ` : stateT14.useMutex && stateT14.stepIndex === 6 ? `
               <div class="audit-success-box">
-                <strong>SINCRONIZACIÓN EXITOSA:</strong> El Mutex forzó la ejecución atómica de la sección crítica. El valor final en memoria es exactamente 5.
+                <strong>SINCRONIZACIÓN EXITOSA:</strong> El Mutex forzó la ejecución atómica de la sección crítica. El valor final en memoria principal es exactamente 5.
               </div>
             ` : `
               <div style="color:var(--text-muted); margin-top:0.4rem;">
@@ -3068,7 +3249,7 @@ ${stateT14.useMutex ? '<span style="color:#86efac;">pthread_mutex_unlock(&m);</s
       stateT14.r1 = 0;
       stateT14.r2 = 0;
       stateT14.count = 5;
-      stateT14.lastStepText = "Secuencia reiniciada. count = 5.";
+      stateT14.lastStepText = "Secuencia reiniciada. count = 5 en memoria.";
       renderView();
     }
 
