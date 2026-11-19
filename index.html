@@ -15,35 +15,52 @@
        VARIABLES Y PALETA DE COLOR TÉCNICA SOFISTICADA (ESMERALDA & CIAN NEÓN)
        ========================================================================== */
     :root {
-      --bg-overlay-1: rgba(8, 12, 24, 0.82);
-      --bg-overlay-2: rgba(12, 18, 34, 0.94);
-      --bg-glass-card: rgba(15, 23, 42, 0.72);
-      --bg-glass-card-hover: rgba(22, 36, 62, 0.85);
-      --bg-glass-subcard: rgba(11, 19, 36, 0.65);
-      --bg-glass-code: rgba(4, 9, 20, 0.9);
-      
-      --border-subtle: rgba(255, 255, 255, 0.12);
-      --border-medium: rgba(255, 255, 255, 0.18);
-      --border-accent-emerald: rgba(16, 185, 129, 0.45);
-      --border-accent-cyan: rgba(56, 189, 248, 0.45);
+      /* PALETA PREMIUM DARK MODE (#09090b a #18181b) */
+      --bg-base: #09090b;
+      --bg-surface: #121215;
+      --bg-card: rgba(24, 24, 27, 0.65);
+      --bg-card-hover: rgba(39, 39, 42, 0.65);
+      --bg-subcard: rgba(18, 18, 21, 0.7);
+      --bg-code: rgba(10, 10, 12, 0.85);
 
+      /* BORDES ELEGANTES Y SUTILES */
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-medium: rgba(255, 255, 255, 0.14);
+      --border-focus: rgba(255, 255, 255, 0.22);
+      
+      /* ACENTOS SOFISTICADOS (ÍNDIGO MODERNO Y ESMERALDA SUAVE) */
+      --accent-primary: #6366f1;
+      --accent-primary-subtle: rgba(99, 102, 241, 0.15);
+      --accent-emerald: #10b981;
+      --accent-emerald-subtle: rgba(16, 185, 129, 0.14);
+      --accent-rose: #f43f5e;
+      --accent-rose-subtle: rgba(244, 63, 94, 0.14);
+      --accent-amber: #f59e0b;
+      --accent-amber-subtle: rgba(245, 158, 11, 0.14);
+      --accent-cyan: #38bdf8;
+      --accent-cyan-subtle: rgba(56, 189, 248, 0.14);
+
+      /* COMPATIBILIDAD CON VARIABLES PREVIAS */
       --neon-emerald: #10b981;
-      --neon-emerald-glow: rgba(16, 185, 129, 0.35);
+      --neon-emerald-glow: rgba(16, 185, 129, 0.2);
       --neon-cyan: #38bdf8;
-      --neon-cyan-glow: rgba(56, 189, 248, 0.35);
+      --neon-cyan-glow: rgba(56, 189, 248, 0.2);
       --neon-amber: #f59e0b;
       --neon-rose: #f43f5e;
-      --neon-purple: #a855f7;
+      --neon-purple: #818cf8;
+      --border-accent-emerald: rgba(16, 185, 129, 0.3);
+      --border-accent-cyan: rgba(56, 189, 248, 0.3);
 
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      /* TIPOGRAFÍA NÍTIDA PARA PANTALLA COMPARTIDA */
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --text-dim: #52525b;
 
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-      --sidebar-width: 320px;
+      --sidebar-width: 300px;
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
@@ -56,10 +73,10 @@
     }
 
     body {
-      background-color: #060913;
+      background-color: var(--bg-base);
       color: var(--text-primary);
       font-family: var(--font-sans);
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.6;
       display: flex;
       min-height: 100vh;
@@ -70,48 +87,38 @@
       position: relative;
     }
 
-    /* ==========================================================================
-       FONDO DE ALTA CALIDAD CON IMAGEN TEMÁTICA Y OVERLAY DE CONTRASTE
-       ========================================================================== */
+    /* FONDO SUTIL DARK PREMIUM (SIN DISTRACCIONES) */
     .bg-image-wrapper {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
-                  radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
-                  radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.6) 0%, transparent 70%),
-                  #070b14;
+      background: radial-gradient(circle at 18% 12%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+                  radial-gradient(circle at 82% 88%, rgba(16, 185, 129, 0.03) 0%, transparent 50%),
+                  var(--bg-base);
       z-index: 0;
       pointer-events: none;
     }
 
     .bg-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(ellipse at 50% 0%, rgba(30, 41, 59, 0.25) 0%, transparent 60%);
-      z-index: 1;
-      pointer-events: none;
+      display: none;
     }
 
-    /* Scrollbars elegantes */
+    /* Scrollbars elegantes y minimalistas */
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(10, 15, 30, 0.6);
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.18);
-      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: var(--neon-emerald);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     /* ==========================================================================
@@ -122,62 +129,28 @@
       top: 0;
       z-index: 20;
       width: var(--sidebar-width);
-      background: rgba(10, 16, 32, 0.92);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: rgba(15, 15, 18, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       height: 100vh;
       user-select: none;
-      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
     }
 
     .sidebar-header {
-      padding: 1.5rem 1.4rem;
+      padding: 1.8rem 1.6rem 1.4rem 1.6rem;
       border-bottom: 1px solid var(--border-subtle);
-      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
-    }
-
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--neon-emerald);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: rgba(16, 185, 129, 0.14);
-      border: 1px solid var(--border-accent-emerald);
-      padding: 4px 10px;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-    }
-
-    .brand-badge::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--neon-cyan);
-      box-shadow: 0 0 10px var(--neon-cyan);
     }
 
     .sidebar-header h1 {
       font-size: 1.15rem;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.02em;
-      color: #fff;
-      line-height: 1.3;
-    }
-
-    .sidebar-header p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
+      color: var(--text-primary);
+      line-height: 1.25;
     }
 
     .sidebar-nav {
@@ -191,62 +164,59 @@
 
     .nav-label {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.7rem;
+      font-weight: 600;
       color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 0.6rem 0.7rem 0.2rem;
+      letter-spacing: 0.1em;
+      padding: 1rem 0.8rem 0.4rem;
     }
 
     .nav-topic-card {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 0.9rem;
       background: transparent;
       border: 1px solid transparent;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       color: var(--text-secondary);
       text-align: left;
     }
 
     .nav-topic-card:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      transform: translateX(3px);
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border-subtle);
+      color: var(--text-primary);
     }
 
     .nav-topic-card.active {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(56, 189, 248, 0.12) 100%);
-      border: 1px solid var(--border-accent-emerald);
-      color: #fff;
-      box-shadow: 0 4px 22px rgba(16, 185, 129, 0.16);
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: var(--text-primary);
     }
 
     .nav-topic-num {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
       color: var(--text-muted);
       flex-shrink: 0;
       transition: all 0.2s ease;
     }
 
     .nav-topic-card.active .nav-topic-num {
-      background: var(--neon-emerald);
-      color: #040914;
-      box-shadow: 0 0 14px var(--neon-emerald-glow);
+      background: var(--accent-primary);
+      color: #ffffff;
     }
 
     .nav-topic-info {
@@ -257,7 +227,7 @@
     }
 
     .nav-topic-title {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
@@ -265,19 +235,18 @@
     }
 
     .nav-topic-sub {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
     }
 
     .nav-topic-card.active .nav-topic-sub {
-      color: #a7f3d0;
+      color: #c7d2fe;
     }
 
     .sidebar-footer {
-      padding: 1.2rem 1.4rem;
+      padding: 1.2rem 1.6rem;
       border-top: 1px solid var(--border-subtle);
-      background: rgba(8, 14, 28, 0.7);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-dim);
       display: flex;
       justify-content: space-between;
@@ -304,76 +273,74 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      padding: 1rem 2.2rem;
-      background: rgba(10, 16, 32, 0.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      padding: 1.1rem 2.4rem;
+      background: rgba(15, 15, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
     }
 
     .header-info {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .header-badge {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--neon-emerald);
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--border-accent-emerald);
-      padding: 4px 12px;
-      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 10px;
+      border-radius: 6px;
     }
 
     .header-title {
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
       letter-spacing: -0.02em;
     }
 
     .view-switcher {
       display: flex;
-      background: rgba(4, 9, 20, 0.85);
-      padding: 4px;
-      border-radius: 12px;
+      background: rgba(24, 24, 27, 0.7);
+      padding: 3px;
+      border-radius: 10px;
       border: 1px solid var(--border-subtle);
-      gap: 4px;
+      gap: 3px;
     }
 
     .switch-btn {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 18px;
+      padding: 7px 16px;
       border: none;
       background: transparent;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       font-family: var(--font-sans);
-      font-size: 0.92rem;
-      font-weight: 600;
-      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: 7px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s ease;
     }
 
     .switch-btn:hover {
-      color: #fff;
+      color: var(--text-primary);
     }
 
     .switch-btn.active {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(56, 189, 248, 0.2) 100%);
-      color: #a7f3d0;
-      border: 1px solid var(--border-accent-emerald);
-      box-shadow: 0 2px 14px rgba(16, 185, 129, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid var(--border-subtle);
     }
 
     .header-controls {
@@ -430,14 +397,14 @@
        PANEL Y TARJETAS GLASSMORPHISM CON EFECTO FOCO PRESENTADOR
        ========================================================================== */
     .glass-panel {
-      background: var(--bg-glass-card);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
       overflow: hidden;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease;
     }
 
     .glass-panel:hover {
@@ -445,12 +412,12 @@
     }
 
     .panel-header {
-      padding: 1.25rem 1.6rem;
+      padding: 1.25rem 1.8rem;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .panel-header-left {
@@ -466,17 +433,17 @@
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--neon-emerald);
-      font-size: 0.95rem;
-      font-weight: 700;
-      border: 1px solid var(--border-accent-emerald);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
     }
 
     .panel-title {
       font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
     .panel-subtitle {
@@ -485,7 +452,7 @@
     }
 
     .panel-body {
-      padding: 1.6rem;
+      padding: 1.8rem;
     }
 
     /* REJILLA DE TEORÍA CON FOCO DE PRESENTADOR */
@@ -495,15 +462,13 @@
       gap: 1.5rem;
     }
 
-    /* Foco de Presentador: al hacer hover o clic en una tarjeta, se resalta y las demás se atenúan levemente */
     .theory-grid:hover .slide-card:not(:hover):not(.focused) {
-      opacity: 0.55;
-      filter: blur(0.5px);
+      opacity: 0.45;
     }
 
     .slide-card {
-      background: rgba(11, 19, 36, 0.75);
-      backdrop-filter: blur(16px);
+      background: var(--bg-subcard);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 1.8rem;
@@ -513,26 +478,15 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .slide-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(180deg, var(--neon-emerald) 0%, var(--neon-cyan) 100%);
-      opacity: 0.8;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .slide-card:hover, .slide-card.focused {
-      transform: translateY(-6px) scale(1.02);
-      border-color: var(--border-accent-emerald);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.2);
+      transform: translateY(-4px);
+      border-color: var(--border-medium);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
       opacity: 1 !important;
-      filter: none !important;
       z-index: 5;
     }
 
@@ -544,45 +498,46 @@
 
     .slide-tag {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--neon-emerald);
-      letter-spacing: 0.05em;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     .slide-num {
       font-family: var(--font-mono);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: rgba(255, 255, 255, 0.2);
+      font-size: 1rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.15);
     }
 
     .slide-heading {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #fff;
-      line-height: 1.3;
+      color: #ffffff;
+      line-height: 1.35;
     }
 
     .slide-text {
-      font-size: 1.15rem; /* Texto grande y legible para Zoom */
-      color: var(--text-secondary);
-      line-height: 1.7;
+      font-size: 1.05rem;
+      color: #a1a1aa;
+      line-height: 1.65;
     }
 
     .slide-text strong {
-      color: #fff;
+      color: #ffffff;
       font-weight: 600;
     }
 
     .slide-text code {
       font-family: var(--font-mono);
-      background: var(--bg-glass-code);
-      color: #a7f3d0;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.95em;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: var(--bg-code);
+      color: #e4e4e7;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.9em;
+      border: 1px solid var(--border-subtle);
     }
 
     /* ==========================================================================
@@ -592,11 +547,10 @@
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
-      padding: 1.6rem 2rem;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%);
-      border: 1px solid var(--border-accent-emerald);
+      padding: 1.4rem 1.6rem;
+      background: rgba(24, 24, 27, 0.5);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .auto-demo-title-wrap {
@@ -606,9 +560,9 @@
     }
 
     .auto-demo-title-wrap h4 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -616,73 +570,73 @@
 
     .auto-demo-badge {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--neon-emerald);
-      background: rgba(16, 185, 129, 0.2);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
       padding: 3px 8px;
-      border-radius: 6px;
+      border-radius: 5px;
       text-transform: uppercase;
     }
 
     .auto-demo-buttons-giant {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
     .btn-giant-demo {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 1rem 1.4rem;
+      padding: 1rem 1.3rem;
       border-radius: var(--radius-sm);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(13, 148, 136, 0.15) 100%);
-      color: #fff;
+      border: 1px solid var(--border-subtle);
+      background: rgba(39, 39, 42, 0.45);
+      color: var(--text-primary);
       font-family: var(--font-sans);
       cursor: pointer;
       text-align: left;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     }
 
     .btn-giant-demo:hover {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.35) 0%, rgba(56, 189, 248, 0.25) 100%);
-      border-color: var(--neon-emerald);
+      background: rgba(45, 45, 52, 0.75);
+      border-color: var(--border-medium);
       transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
 
     .btn-giant-demo:active {
-      transform: scale(0.98);
+      transform: translateY(0);
     }
 
     .btn-giant-demo.secondary-cyan {
-      border-color: rgba(56, 189, 248, 0.4);
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(14, 116, 144, 0.15) 100%);
+      border-color: var(--border-subtle);
+      background: rgba(39, 39, 42, 0.45);
     }
 
     .btn-giant-demo.secondary-cyan:hover {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.32) 0%, rgba(16, 185, 129, 0.25) 100%);
-      border-color: var(--neon-cyan);
-      box-shadow: 0 10px 28px rgba(56, 189, 248, 0.35);
+      background: rgba(45, 45, 52, 0.75);
+      border-color: var(--border-medium);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
 
     .giant-demo-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
       flex-shrink: 0;
-      color: var(--neon-emerald);
+      color: var(--accent-primary);
     }
 
     .btn-giant-demo.secondary-cyan .giant-demo-icon {
-      color: var(--neon-cyan);
+      color: var(--text-primary);
     }
 
     .giant-demo-texts {
@@ -691,14 +645,15 @@
     }
 
     .giant-demo-title {
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--text-primary);
       line-height: 1.3;
     }
 
     .giant-demo-desc {
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
@@ -1179,33 +1134,39 @@
       color: #fca5a5;
     }
   
-    /* ENHANCED STATE GRAPH & GANTT STYLES FOR ZOOM */
+    /* ESTILOS REFINADOS PARA EL DIAGRAMA SVG (ENFOQUE DIRIGIDO) */
+    .state-graph-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      position: relative;
+    }
     .state-svg-node {
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s ease;
     }
-    .state-svg-node:hover rect {
-      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.5));
-      stroke-width: 3.5px;
+    .state-svg-node.node-dimmed {
+      opacity: 0.45;
+    }
+    .state-svg-node.node-dimmed:hover {
+      opacity: 0.85;
+    }
+    .state-svg-node.state-node-active {
+      opacity: 1 !important;
     }
     .state-node-active rect {
-      stroke-width: 4px !important;
-      filter: drop-shadow(0 0 22px rgba(16, 185, 129, 0.85)) !important;
-      animation: pulseActive 2s infinite ease-in-out;
+      stroke-width: 3px !important;
+      stroke: var(--accent-emerald) !important;
+      filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.35)) !important;
     }
     .state-node-blocked rect {
-      stroke-width: 3.5px !important;
-      filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.85)) !important;
-    }
-    @keyframes pulseActive {
-      0%, 100% { filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.7)); }
-      50% { filter: drop-shadow(0 0 28px rgba(16, 185, 129, 1)); }
+      stroke-width: 3px !important;
+      stroke: var(--accent-rose) !important;
+      filter: drop-shadow(0 0 14px rgba(244, 63, 94, 0.35)) !important;
     }
     .svg-edge-path {
-      transition: stroke-width 0.25s ease, stroke 0.25s ease;
-    }
-    .svg-edge-path:hover {
-      stroke-width: 4.5px;
+      transition: stroke 0.2s ease;
     }
 
     /* SPECTACULAR GANTT TIMELINE FOR ZOOM */
@@ -1376,9 +1337,7 @@
        ==================================================================== -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="brand-badge">Sistemas Operativos</div>
-      <h1>Gestión de Procesos</h1>
-      <p>Componentes del Sistema y Ejecución</p>
+      <h1>Laboratorio de Sistemas Operativos</h1>
     </div>
 
     <nav class="sidebar-nav">
@@ -1951,97 +1910,97 @@
                   </marker>
                 </defs>
 
-                <!-- Conexiones / Transiciones con flechas gruesas -->
+                <!-- Conexiones / Transiciones con trazados limpios -->
                 <!-- 1. Admitir (Nuevo -> Preparado) -->
-                <path d="M 125 90 L 205 90" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
-                <rect x="135" y="70" width="60" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="165" y="83" fill="#93c5fd" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Admitir</text>
+                <path d="M 125 90 L 205 90" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
+                <rect x="135" y="71" width="60" height="16" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="165" y="83" fill="#71717a" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">Admitir</text>
 
                 <!-- 2. Despachar (Preparado -> Ejecutando) -->
-                <path d="M 335 78 L 420 78" stroke="#10b981" stroke-width="3.5" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
-                <rect x="345" y="58" width="68" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="379" y="71" fill="#86efac" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">Despachar</text>
+                <path d="M 335 78 L 420 78" stroke="${activeRunning ? 'rgba(16,185,129,0.7)' : 'rgba(255,255,255,0.2)'}" stroke-width="2.5" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
+                <rect x="345" y="59" width="68" height="16" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="379" y="71" fill="${activeRunning ? '#34d399' : '#71717a'}" font-size="10.5" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Despachar</text>
 
                 <!-- 3. Fin Quantum (Ejecutando -> Preparado) -->
-                <path d="M 420 102 L 335 102" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
-                <rect x="340" y="106" width="76" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="378" y="119" fill="#93c5fd" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Fin Quantum</text>
+                <path d="M 420 102 L 335 102" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
+                <rect x="340" y="106" width="76" height="16" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="378" y="118" fill="#71717a" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">Fin Quantum</text>
 
                 <!-- 4. Petición E/S (Ejecutando -> Esperando) -->
-                <path d="M 480 128 L 480 205" stroke="#f43f5e" stroke-width="3.5" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
-                <rect x="490" y="156" width="85" height="20" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="532" y="170" fill="#fda4af" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">Petición E/S</text>
+                <path d="M 480 128 L 480 205" stroke="${waitingProcesses.length > 0 ? 'rgba(244,63,94,0.7)' : 'rgba(255,255,255,0.2)'}" stroke-width="2.5" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
+                <rect x="490" y="157" width="85" height="18" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="532" y="170" fill="${waitingProcesses.length > 0 ? '#fda4af' : '#71717a'}" font-size="10.5" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Petición E/S</text>
 
                 <!-- 5. Fin de E/S (Esperando -> Preparado) -->
-                <path d="M 420 235 L 270 235 L 270 128" stroke="#10b981" stroke-width="3" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
-                <rect x="310" y="244" width="76" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="348" y="257" fill="#86efac" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
+                <path d="M 420 235 L 270 235 L 270 128" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
+                <rect x="310" y="244" width="76" height="16" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="348" y="256" fill="#71717a" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
 
                 <!-- 6. exit() (Ejecutando -> Terminado) -->
-                <path d="M 545 90 L 635 90" stroke="#f43f5e" stroke-width="3" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
-                <rect x="560" y="70" width="55" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
-                <text x="587" y="83" fill="#fca5a5" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">exit()</text>
+                <path d="M 545 90 L 635 90" stroke="rgba(255,255,255,0.2)" stroke-width="2" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
+                <rect x="560" y="71" width="55" height="16" rx="4" fill="rgba(18,18,21,0.9)" />
+                <text x="587" y="83" fill="#71717a" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">exit()</text>
 
-                <!-- NODOS DE ESTADO AMPLIADOS CON INTERACCIÓN -->
+                <!-- NODOS DE ESTADO REFINADOS (ENFOQUE VISUAL DIRIGIDO) -->
                 <!-- NODO 1: NUEVO -->
-                <g class="state-svg-node" onclick="actionT9_Admitir()" title="Clic para admitir un nuevo proceso">
-                  <rect x="15" y="58" width="110" height="64" rx="14" fill="rgba(15,23,42,0.95)" stroke="rgba(255,255,255,0.28)" stroke-width="2.5" />
-                  <text x="70" y="87" fill="#f8fafc" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">NUEVO</text>
-                  <text x="70" y="107" fill="#94a3b8" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">+ Click Crear</text>
+                <g class="state-svg-node node-dimmed" onclick="actionT9_Admitir()" title="Clic para admitir un nuevo proceso">
+                  <rect x="15" y="58" width="110" height="64" rx="12" fill="rgba(24,24,27,0.7)" stroke="var(--border-subtle)" stroke-width="1.5" />
+                  <text x="70" y="87" fill="#71717a" font-size="13" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">NUEVO</text>
+                  <text x="70" y="106" fill="#52525b" font-size="10" font-family="var(--font-mono)" text-anchor="middle">+ Click Crear</text>
                 </g>
 
                 <!-- NODO 2: PREPARADO (READY) -->
-                <g class="state-svg-node ${readyProcesses.length > 0 ? 'state-node-active' : ''}" onclick="actionT9_Despachar()" title="Clic para despachar a CPU">
-                  <rect x="210" y="58" width="125" height="64" rx="14" 
-                        fill="${readyProcesses.length > 0 ? 'rgba(56,189,248,0.22)' : 'rgba(15,23,42,0.9)'}" 
-                        stroke="#38bdf8" stroke-width="${readyProcesses.length > 0 ? '3.5' : '2.5'}" 
-                        ${readyProcesses.length > 0 ? 'filter="url(#glow-cyan)"' : ''} />
-                  <text x="272" y="87" fill="#bae6fd" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">PREPARADO</text>
-                  <text x="272" y="107" fill="#38bdf8" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">${readyProcesses.length} en cola</text>
+                <g class="state-svg-node ${readyProcesses.length > 0 && !activeRunning ? 'state-node-active' : 'node-dimmed'}" onclick="actionT9_Despachar()" title="Clic para despachar a CPU">
+                  <rect x="210" y="58" width="125" height="64" rx="12" 
+                        fill="${readyProcesses.length > 0 && !activeRunning ? 'rgba(99,102,241,0.15)' : 'rgba(24,24,27,0.7)'}" 
+                        stroke="${readyProcesses.length > 0 && !activeRunning ? '#818cf8' : 'var(--border-subtle)'}" 
+                        stroke-width="${readyProcesses.length > 0 && !activeRunning ? '2.5' : '1.5'}" />
+                  <text x="272" y="87" fill="${readyProcesses.length > 0 && !activeRunning ? '#ffffff' : '#a1a1aa'}" font-size="13" font-weight="700" font-family="var(--font-sans)" text-anchor="middle">PREPARADO</text>
+                  <text x="272" y="106" fill="${readyProcesses.length > 0 && !activeRunning ? '#c7d2fe' : '#71717a'}" font-size="10.5" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">${readyProcesses.length} en cola</text>
                 </g>
 
-                <!-- NODO 3: EJECUTANDO (RUNNING - VERDE VIVO PROTAGONISTA) -->
-                <g class="state-svg-node ${activeRunning ? 'state-node-active' : ''}" onclick="actionT9_Quantum()" title="Clic para forzar fin de quantum">
-                  <rect x="420" y="54" width="125" height="72" rx="16" 
-                        fill="${activeRunning ? 'rgba(16,185,129,0.32)' : 'rgba(15,23,42,0.9)'}" 
-                        stroke="#10b981" stroke-width="${activeRunning ? '4' : '2.5'}" 
-                        ${activeRunning ? 'filter="url(#glow-emerald)"' : ''} />
-                  <text x="482" y="85" fill="#a7f3d0" font-size="15" font-weight="900" font-family="var(--font-sans)" text-anchor="middle">EJECUTANDO</text>
-                  <text x="482" y="108" fill="${activeRunning ? '#10b981' : '#64748b'}" font-size="12" font-weight="800" font-family="var(--font-mono)" text-anchor="middle">
-                    ${activeRunning ? `PID_${activeRunning.pid} [CPU]` : 'IDLE'}
+                <!-- NODO 3: EJECUTANDO (RUNNING - ACTIVO PROTAGONISTA) -->
+                <g class="state-svg-node ${activeRunning ? 'state-node-active' : 'node-dimmed'}" onclick="actionT9_Quantum()" title="Clic para forzar fin de quantum">
+                  <rect x="420" y="54" width="125" height="72" rx="14" 
+                        fill="${activeRunning ? 'rgba(16,185,129,0.18)' : 'rgba(24,24,27,0.7)'}" 
+                        stroke="${activeRunning ? '#10b981' : 'var(--border-subtle)'}" 
+                        stroke-width="${activeRunning ? '3' : '1.5'}" />
+                  <text x="482" y="85" fill="${activeRunning ? '#ffffff' : '#71717a'}" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">EJECUTANDO</text>
+                  <text x="482" y="107" fill="${activeRunning ? '#34d399' : '#52525b'}" font-size="11.5" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">
+                    ${activeRunning ? `PID_${activeRunning.pid} (CPU)` : 'IDLE'}
                   </text>
                 </g>
 
-                <!-- NODO 4: ESPERANDO / BLOQUEADO (ROJO VIVO PROTAGONISTA) -->
-                <g class="state-svg-node ${waitingProcesses.length > 0 ? 'state-node-blocked' : ''}" onclick="actionT9_FinIO()" title="Clic para completar E/S y reanudar">
-                  <rect x="420" y="205" width="125" height="64" rx="14" 
-                        fill="${waitingProcesses.length > 0 ? 'rgba(244,63,94,0.28)' : 'rgba(15,23,42,0.9)'}" 
-                        stroke="#f43f5e" stroke-width="${waitingProcesses.length > 0 ? '3.5' : '2.5'}" 
-                        ${waitingProcesses.length > 0 ? 'filter="url(#glow-rose)"' : ''} />
-                  <text x="482" y="234" fill="#fecdd3" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">BLOQUEADO</text>
-                  <text x="482" y="254" fill="#f43f5e" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">${waitingProcesses.length} en E/S</text>
+                <!-- NODO 4: ESPERANDO / BLOQUEADO -->
+                <g class="state-svg-node ${waitingProcesses.length > 0 ? 'state-node-blocked' : 'node-dimmed'}" onclick="actionT9_FinIO()" title="Clic para completar E/S y reanudar">
+                  <rect x="420" y="205" width="125" height="64" rx="12" 
+                        fill="${waitingProcesses.length > 0 ? 'rgba(244,63,94,0.18)' : 'rgba(24,24,27,0.7)'}" 
+                        stroke="${waitingProcesses.length > 0 ? '#f43f5e' : 'var(--border-subtle)'}" 
+                        stroke-width="${waitingProcesses.length > 0 ? '2.5' : '1.5'}" />
+                  <text x="482" y="234" fill="${waitingProcesses.length > 0 ? '#ffffff' : '#71717a'}" font-size="13" font-weight="700" font-family="var(--font-sans)" text-anchor="middle">BLOQUEADO</text>
+                  <text x="482" y="253" fill="${waitingProcesses.length > 0 ? '#fda4af' : '#52525b'}" font-size="10.5" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">${waitingProcesses.length} en E/S</text>
                 </g>
 
                 <!-- NODO 5: TERMINADO -->
-                <g class="state-svg-node" onclick="actionT9_Admitir()" title="Proceso liberado de memoria">
-                  <rect x="640" y="58" width="110" height="64" rx="14" fill="rgba(15,23,42,0.9)" stroke="rgba(148,163,184,0.4)" stroke-width="2.5" />
-                  <text x="695" y="87" fill="#cbd5e1" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">TERMINADO</text>
-                  <text x="695" y="107" fill="#64748b" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">Memoria libre</text>
+                <g class="state-svg-node node-dimmed" onclick="actionT9_Admitir()" title="Proceso liberado de memoria">
+                  <rect x="640" y="58" width="110" height="64" rx="12" fill="rgba(24,24,27,0.7)" stroke="var(--border-subtle)" stroke-width="1.5" />
+                  <text x="695" y="87" fill="#71717a" font-size="13" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">TERMINADO</text>
+                  <text x="695" y="106" fill="#52525b" font-size="10" font-family="var(--font-mono)" text-anchor="middle">Memoria libre</text>
                 </g>
               </svg>
 
-              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:1.2rem; font-family:var(--font-mono); font-size:0.85rem; padding:0.8rem 1rem; background:rgba(4,9,20,0.6); border-radius:10px; border:1px solid var(--border-subtle);">
-                <div style="color:#7dd3fc; display:flex; align-items:center; gap:6px;">
-                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#38bdf8;"></span>
-                  <strong>Preparados:</strong> ${readyProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Vacía'}
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:1.2rem; font-family:var(--font-mono); font-size:0.82rem; padding:0.8rem 1.1rem; background:rgba(24,24,27,0.5); border-radius:8px; border:1px solid var(--border-subtle);">
+                <div style="color:#a1a1aa; display:flex; align-items:center; gap:8px;">
+                  <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#71717a;"></span>
+                  <span>Preparados: <strong style="color:#e4e4e7;">${readyProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Vacía'}</strong></span>
                 </div>
-                <div style="color:#86efac; display:flex; align-items:center; gap:6px;">
-                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
-                  <strong>En CPU:</strong> ${activeRunning ? `PID_${activeRunning.pid} (${activeRunning.cpuTime} u.t.)` : 'IDLE'}
+                <div style="color:#a1a1aa; display:flex; align-items:center; gap:8px;">
+                  <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${activeRunning ? '#10b981' : '#71717a'};"></span>
+                  <span>En CPU: <strong style="color:${activeRunning ? '#34d399' : '#e4e4e7'};">${activeRunning ? `PID_${activeRunning.pid} (${activeRunning.cpuTime} u.t.)` : 'IDLE'}</strong></span>
                 </div>
-                <div style="color:#fda4af; display:flex; align-items:center; gap:6px;">
-                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#f43f5e; box-shadow:0 0 10px #f43f5e;"></span>
-                  <strong>Bloqueados E/S:</strong> ${waitingProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Ninguno'}
+                <div style="color:#a1a1aa; display:flex; align-items:center; gap:8px;">
+                  <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${waitingProcesses.length > 0 ? '#f43f5e' : '#71717a'};"></span>
+                  <span>Bloqueados E/S: <strong style="color:${waitingProcesses.length > 0 ? '#fda4af' : '#e4e4e7'};">${waitingProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Ninguno'}</strong></span>
                 </div>
               </div>
             </div>
