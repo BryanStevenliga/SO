@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistemas Operativos - Gestión de Procesos y Componentes del Sistema | ULL ESIT</title>
+  <title>Laboratorio de Sistemas Operativos - Gestión de Procesos</title>
   
   <!-- Tipografía moderna Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,14 +56,15 @@
     }
 
     body {
-      background-color: #070b14;
+      background-color: #060913;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 16px;
       line-height: 1.6;
       display: flex;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       position: relative;
@@ -78,11 +79,12 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background: radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.6) 0%, transparent 70%),
+                  #070b14;
       z-index: 0;
+      pointer-events: none;
     }
 
     .bg-overlay {
@@ -91,10 +93,9 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, var(--bg-overlay-1) 0%, var(--bg-overlay-2) 100%);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: radial-gradient(ellipse at 50% 0%, rgba(30, 41, 59, 0.25) 0%, transparent 60%);
       z-index: 1;
+      pointer-events: none;
     }
 
     /* Scrollbars elegantes */
@@ -117,10 +118,11 @@
        BARRA LATERAL DE NAVEGACIÓN GLASSMORPHISM
        ========================================================================== */
     .sidebar {
-      position: relative;
-      z-index: 10;
+      position: sticky;
+      top: 0;
+      z-index: 20;
       width: var(--sidebar-width);
-      background: rgba(12, 19, 36, 0.78);
+      background: rgba(10, 16, 32, 0.92);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-right: 1px solid var(--border-subtle);
@@ -129,7 +131,7 @@
       flex-shrink: 0;
       height: 100vh;
       user-select: none;
-      box-shadow: 12px 0 35px rgba(0, 0, 0, 0.55);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
     }
 
     .sidebar-header {
@@ -291,13 +293,19 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
       height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
       padding: 1rem 2.2rem;
-      background: rgba(12, 19, 36, 0.75);
+      background: rgba(10, 16, 32, 0.88);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border-subtle);
@@ -397,8 +405,7 @@
 
     .content-scroll-container {
       flex: 1;
-      overflow-y: auto;
-      padding: 2.2rem;
+      padding: 2rem 2.4rem 4rem 2.4rem;
       display: flex;
       flex-direction: column;
       gap: 2rem;
@@ -1171,6 +1178,191 @@
       border: 1px solid rgba(239, 68, 68, 0.5);
       color: #fca5a5;
     }
+  
+    /* ENHANCED STATE GRAPH & GANTT STYLES FOR ZOOM */
+    .state-svg-node {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .state-svg-node:hover rect {
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.5));
+      stroke-width: 3.5px;
+    }
+    .state-node-active rect {
+      stroke-width: 4px !important;
+      filter: drop-shadow(0 0 22px rgba(16, 185, 129, 0.85)) !important;
+      animation: pulseActive 2s infinite ease-in-out;
+    }
+    .state-node-blocked rect {
+      stroke-width: 3.5px !important;
+      filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.85)) !important;
+    }
+    @keyframes pulseActive {
+      0%, 100% { filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.7)); }
+      50% { filter: drop-shadow(0 0 28px rgba(16, 185, 129, 1)); }
+    }
+    .svg-edge-path {
+      transition: stroke-width 0.25s ease, stroke 0.25s ease;
+    }
+    .svg-edge-path:hover {
+      stroke-width: 4.5px;
+    }
+
+    /* SPECTACULAR GANTT TIMELINE FOR ZOOM */
+    .gantt-chart-bar-spectacular {
+      display: flex;
+      height: 82px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      background: #02040a;
+      position: relative;
+      box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.7), 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+    .gantt-block-spectacular {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: var(--font-mono);
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border-right: 1.5px solid rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      user-select: none;
+    }
+    .gantt-block-spectacular:hover {
+      filter: brightness(1.22);
+      transform: scaleY(1.04);
+      z-index: 10;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    .gantt-block-pid {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+    .gantt-block-dur {
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.92;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1px 7px;
+      border-radius: 4px;
+      margin-top: 3px;
+    }
+    .gantt-time-labels {
+      display: flex;
+      position: relative;
+      width: 100%;
+      height: 38px;
+      margin-top: 10px;
+    }
+    .gantt-time-pill {
+      position: absolute;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-medium);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+    .gantt-time-pill.time-zero {
+      transform: translateX(0);
+    }
+    .gantt-time-pill.time-final {
+      transform: translateX(-100%);
+    }
+
+    /* COMPACT LAB SIMULATORS FOR T11-T14 */
+    .lab-compact .panel-body {
+      padding: 1.2rem 1.4rem;
+    }
+    .lab-compact .auto-demo-bar-hero {
+      padding: 1rem 1.2rem;
+      gap: 0.8rem;
+    }
+    .lab-compact .btn-giant-demo {
+      padding: 0.7rem 1rem;
+      gap: 10px;
+    }
+    .lab-compact .giant-demo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+    .lab-compact .giant-demo-title {
+      font-size: 0.95rem;
+    }
+    .lab-compact .giant-demo-desc {
+      font-size: 0.75rem;
+    }
+    .lab-compact .kpi-row {
+      margin-top: 1rem;
+      gap: 0.9rem;
+    }
+    .lab-compact .kpi-card {
+      padding: 1rem 1.2rem;
+    }
+    .lab-compact .kpi-number {
+      font-size: 1.7rem;
+    }
+    .lab-compact .audit-terminal {
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+    }
+
+    /* RESPONSIVE PROTECTIONS FOR SMALL SCREENS & ZOOM SHARING */
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0.8rem;
+      }
+      .nav-topic-card {
+        flex-shrink: 0;
+        min-width: 160px;
+      }
+      .top-header {
+        position: sticky;
+        top: 0;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0.9rem 1.2rem;
+      }
+      .content-scroll-container {
+        padding: 1.2rem;
+      }
+      .auto-demo-buttons-giant {
+        grid-template-columns: 1fr;
+      }
+      .secondary-inputs-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .t9-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1184,13 +1376,13 @@
        ==================================================================== -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="brand-badge">ULL ESIT • Cátedra SSOO</div>
+      <div class="brand-badge">Sistemas Operativos</div>
       <h1>Gestión de Procesos</h1>
       <p>Componentes del Sistema y Ejecución</p>
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-label">Módulo Temático (ULL ESIT)</div>
+      <div class="nav-label">Módulos Temáticos</div>
 
       <button class="nav-topic-card active" onclick="selectTopic(9)" id="nav-btn-9">
         <div class="nav-topic-num">09</div>
@@ -1242,8 +1434,8 @@
     </nav>
 
     <div class="sidebar-footer">
-      <span>ULL ESIT • SSOO</span>
-      <span>Apuntes Oficiales</span>
+      <span>Laboratorio SSOO</span>
+      <span>Simulador Interactivo</span>
     </div>
   </aside>
 
@@ -1282,11 +1474,11 @@
   </main>
 
   <!-- ====================================================================
-       3. LÓGICA Y CONTENIDOS OFICIALES ULL ESIT
+       3. LÓGICA Y CONTENIDOS TÉCNICOS FORMALES
        ==================================================================== -->
   <script>
     // --------------------------------------------------------------------------
-    // BASE DE CONOCIMIENTO RIGUROSA: APUNTES OFICIALES ULL ESIT
+    // BASE DE CONOCIMIENTO RIGUROSA: APUNTES FORMALES
     // (Integración de Componentes del Sistema: CPU, Memoria Principal, E/S, Almacenamiento)
     // --------------------------------------------------------------------------
     const THEORY_DATA = {
@@ -1310,7 +1502,7 @@
             tag: "RESPONSABILIDADES DEL KERNEL",
             num: "03",
             title: "Ciclo de 5 Estados y Responsabilidades",
-            body: "El componente de gestión de procesos de la ULL ESIT asume 5 responsabilidades centrales: <em>1. Crear y terminar procesos, 2. Suspender y reanudar, 3. Sincronización, 4. Comunicación IPC, 5. Tratamiento de interbloqueos</em>. Los estados formales son: <strong>Nuevo</strong> &rarr; <strong>Preparado</strong> &harr; <strong>Ejecutando</strong> &rarr; <strong>Esperando (E/S)</strong> &rarr; <strong>Terminado</strong>. Un proceso desbloqueado por E/S jamás ingresa directo a la CPU; siempre pasa a la cola de Preparados."
+            body: "El componente de gestión de procesos del sistema operativo asume 5 responsabilidades centrales: <em>1. Crear y terminar procesos, 2. Suspender y reanudar, 3. Sincronización, 4. Comunicación IPC, 5. Tratamiento de interbloqueos</em>. Los estados formales son: <strong>Nuevo</strong> &rarr; <strong>Preparado</strong> &harr; <strong>Ejecutando</strong> &rarr; <strong>Esperando (E/S)</strong> &rarr; <strong>Terminado</strong>. Un proceso desbloqueado por E/S jamás ingresa directo a la CPU; siempre pasa a la cola de Preparados."
           }
         ]
       },
@@ -1331,7 +1523,7 @@
             body: "Tiempo de Retorno (Turnaround): <code>T_ret = T_fin - T_llegada</code>.<br>Tiempo de Espera (Waiting): <code>T_esp = T_ret - T_ráfaga</code>.<br>Tiempo Medio de Espera: <code>TME = (1/n) &Sigma; T_esp</code>.<br>Tiempo Medio de Retorno: <code>TMR = (1/n) &Sigma; T_ret</code>.<br>Utilización de CPU: <code>U = (&Sigma; T_ráfaga / T_total) &times; 100%</code>. El objetivo del sistema operativo es minimizar el TME global."
           },
           {
-            tag: "ALGORITMOS DE CÁTEDRA",
+            tag: "ALGORITMOS CLÁSICOS",
             num: "03",
             title: "Algoritmos y Efecto Convoy",
             body: "<strong>FCFS:</strong> Atiende por estricto orden de llegada; produce el <em>Efecto Convoy</em> cuando un proceso con ráfaga CPU prolongada bloquea procesos cortos de E/S detrás. <strong>SJF:</strong> Prioriza la menor ráfaga (óptimo en TME pero no apropiativo). <strong>SRTF:</strong> SJF apropiativo con desalojo ante llegadas con menor tiempo restante. <strong>Round Robin:</strong> Asigna un quantum temporal <code>q</code> en cola circular."
@@ -1379,10 +1571,10 @@
             body: "Estructura de tamaño <code>BUFFER_SIZE = N</code> implementada en memoria compartida con dos índices enteros: <code>in</code> (índice donde escribe el productor) y <code>out</code> (índice donde lee el consumidor). Los punteros avanzan mediante aritmética modular: <code>(idx + 1) % N</code>, evitando el desplazamiento de bloques."
           },
           {
-            tag: "REGLA FORMAL ULL",
+            tag: "REGLA FORMAL",
             num: "03",
             title: "Condiciones Matemáticas de Lleno y Vacío",
-            body: "Búfer Vacío: <code>in == out</code>.<br>Búfer Lleno: <code>(in + 1) % N == out</code>.<br><em>Regla de implementación de cátedra:</em> La capacidad de almacenamiento utilizable es exactamente <code>N - 1</code> elementos. Si se permitiesen N elementos, la condición de lleno coincidiría con la de vacío (in == out), generando ambigüedad aritmética."
+            body: "Búfer Vacío: <code>in == out</code>.<br>Búfer Lleno: <code>(in + 1) % N == out</code>.<br><em>Regla formal de implementación:</em> La capacidad de almacenamiento utilizable es exactamente <code>N - 1</code> elementos. Si se permitiesen N elementos, la condición de lleno coincidiría con la de vacío (in == out), generando ambigüedad aritmética."
           }
         ]
       },
@@ -1421,7 +1613,7 @@
             body: "Una <strong>condición de carrera</strong> surge cuando varios hilos acceden y manipulan concurrentemente datos compartidos en memoria principal, dependiendo el resultado del orden de intercalación. Una instrucción de alto nivel como <code>count++</code> se traduce a 3 microinstrucciones de máquina: <code>R1 = count</code>, <code>R1 = R1 + 1</code>, <code>count = R1</code>. Si se interrumpe la CPU antes de la escritura en RAM, ocurre corrupción."
           },
           {
-            tag: "CRITERIOS DE CÁTEDRA",
+            tag: "CRITERIOS FORMALES",
             num: "02",
             title: "Requisitos de la Sección Crítica",
             body: "Toda solución formal al problema de la sección crítica debe satisfacer 3 condiciones obligatorias: <strong>1. Exclusión Mutua:</strong> Solo un proceso/hilo puede ejecutar en la sección crítica a la vez. <strong>2. Progreso:</strong> Si ningún proceso está en su sección crítica, solo los que deseen entrar participan en la selección. <strong>3. Espera Acotada:</strong> Existe un límite en el número de veces que otros procesos acceden antes de conceder la entrada."
@@ -1579,7 +1771,7 @@
     }
 
     // --------------------------------------------------------------------------
-    // MODO PRESENTACIÓN (TEORÍA FORMAL ULL ESIT CON FOCO DE PRESENTADOR)
+    // MODO PRESENTACIÓN (TEORÍA FORMAL CON FOCO DE PRESENTADOR)
     // --------------------------------------------------------------------------
     function renderPresentationView(container) {
       const data = THEORY_DATA[currentTopic];
@@ -1596,7 +1788,7 @@
             </div>
             <div>
               <h3 class="panel-title">${data.indicator}: ${data.title}</h3>
-              <p class="panel-subtitle">Apuntes Oficiales de Cátedra ULL ESIT • Haz clic en una tarjeta para activar el Foco de Presentador</p>
+              <p class="panel-subtitle">Conceptos Teóricos Fundamentales • Haz clic en una tarjeta para activar el Foco de Presentador</p>
             </div>
           </div>
           <button class="btn btn-emerald" onclick="switchMode('lab')">
@@ -1657,7 +1849,7 @@
             <div class="panel-icon-pill">09</div>
             <div>
               <h3 class="panel-title">Laboratorio: Ciclo de Vida de Procesos y Descriptor PCB</h3>
-              <p class="panel-subtitle">Transiciones legales entre los 5 estados según la cátedra de la ULL ESIT</p>
+              <p class="panel-subtitle">Transiciones legales y cambios de estado del ciclo de vida</p>
             </div>
           </div>
         </div>
@@ -1721,66 +1913,136 @@
           <!-- GRAFO SVG 5 ESTADOS + PCB DINÁMICO -->
           <div class="t9-layout">
             <div class="state-graph-container">
-              <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--neon-emerald); margin-bottom:1rem; font-weight:700;">
-                DIAGRAMA FORMAL DE 5 ESTADOS (ULL ESIT)
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <span style="font-family:var(--font-mono); font-size:0.88rem; color:var(--neon-emerald); font-weight:700; letter-spacing:0.04em;">
+                  DIAGRAMA FORMAL DEL CICLO DE VIDA (INTERACTIVO)
+                </span>
+                <span style="font-size:0.78rem; color:var(--text-muted); font-family:var(--font-mono);">
+                  Haz clic en cualquier nodo para ejecutar la transición
+                </span>
               </div>
               
-              <svg viewBox="0 0 680 260" style="width:100%; height:auto;">
+              <svg viewBox="0 0 760 300" style="width:100%; height:auto; overflow:visible;" id="svg-process-lifecycle">
                 <defs>
-                  <marker id="arr-em" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                  <filter id="glow-emerald" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="7" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                  <filter id="glow-rose" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="7" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                  <filter id="glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="7" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+
+                  <marker id="arr-em-lg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
                   </marker>
-                  <marker id="arr-cy" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
+                  <marker id="arr-cy-lg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
                   </marker>
-                  <marker id="arr-am" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b" />
+                  <marker id="arr-am-lg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b" />
                   </marker>
-                  <marker id="arr-re" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#ef4444" />
+                  <marker id="arr-re-lg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f43f5e" />
                   </marker>
                 </defs>
 
-                <!-- Transiciones -->
-                <path d="M 100 80 L 190 80" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-cy)" fill="none" />
-                <text x="145" y="70" fill="#94a3b8" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Admitir</text>
+                <!-- Conexiones / Transiciones con flechas gruesas -->
+                <!-- 1. Admitir (Nuevo -> Preparado) -->
+                <path d="M 125 90 L 205 90" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
+                <rect x="135" y="70" width="60" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="165" y="83" fill="#93c5fd" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Admitir</text>
 
-                <path d="M 290 70 L 380 70" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-em)" fill="none" />
-                <text x="335" y="60" fill="#86efac" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Despachar</text>
+                <!-- 2. Despachar (Preparado -> Ejecutando) -->
+                <path d="M 335 78 L 420 78" stroke="#10b981" stroke-width="3.5" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
+                <rect x="345" y="58" width="68" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="379" y="71" fill="#86efac" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">Despachar</text>
 
-                <path d="M 380 90 L 290 90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-cy)" fill="none" />
-                <text x="335" y="110" fill="#94a3b8" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Fin Quantum</text>
+                <!-- 3. Fin Quantum (Ejecutando -> Preparado) -->
+                <path d="M 420 102 L 335 102" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-cy-lg)" fill="none" class="svg-edge-path" />
+                <rect x="340" y="106" width="76" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="378" y="119" fill="#93c5fd" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Fin Quantum</text>
 
-                <path d="M 430 115 L 430 185" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arr-am)" fill="none" />
-                <text x="450" y="155" fill="#fde68a" font-size="12" font-family="var(--font-mono)">Petición E/S</text>
+                <!-- 4. Petición E/S (Ejecutando -> Esperando) -->
+                <path d="M 480 128 L 480 205" stroke="#f43f5e" stroke-width="3.5" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
+                <rect x="490" y="156" width="85" height="20" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="532" y="170" fill="#fda4af" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">Petición E/S</text>
 
-                <path d="M 380 215 L 240 215 L 240 115" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-em)" fill="none" />
-                <text x="300" y="235" fill="#86efac" font-size="12" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
+                <!-- 5. Fin de E/S (Esperando -> Preparado) -->
+                <path d="M 420 235 L 270 235 L 270 128" stroke="#10b981" stroke-width="3" marker-end="url(#arr-em-lg)" fill="none" class="svg-edge-path" />
+                <rect x="310" y="244" width="76" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="348" y="257" fill="#86efac" font-size="11" font-weight="600" font-family="var(--font-mono)" text-anchor="middle">Fin de E/S</text>
 
-                <path d="M 480 80 L 570 80" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arr-re)" fill="none" />
-                <text x="525" y="70" fill="#fca5a5" font-size="12" font-family="var(--font-mono)" text-anchor="middle">exit()</text>
+                <!-- 6. exit() (Ejecutando -> Terminado) -->
+                <path d="M 545 90 L 635 90" stroke="#f43f5e" stroke-width="3" marker-end="url(#arr-re-lg)" fill="none" class="svg-edge-path" />
+                <rect x="560" y="70" width="55" height="18" rx="4" fill="rgba(8,14,28,0.9)" />
+                <text x="587" y="83" fill="#fca5a5" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">exit()</text>
 
-                <!-- Nodos -->
-                <rect x="20" y="55" width="80" height="50" rx="10" fill="rgba(15,23,42,0.9)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-                <text x="60" y="85" fill="#fff" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Nuevo</text>
+                <!-- NODOS DE ESTADO AMPLIADOS CON INTERACCIÓN -->
+                <!-- NODO 1: NUEVO -->
+                <g class="state-svg-node" onclick="actionT9_Admitir()" title="Clic para admitir un nuevo proceso">
+                  <rect x="15" y="58" width="110" height="64" rx="14" fill="rgba(15,23,42,0.95)" stroke="rgba(255,255,255,0.28)" stroke-width="2.5" />
+                  <text x="70" y="87" fill="#f8fafc" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">NUEVO</text>
+                  <text x="70" y="107" fill="#94a3b8" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">+ Click Crear</text>
+                </g>
 
-                <rect x="190" y="55" width="100" height="50" rx="10" fill="rgba(56,189,248,0.18)" stroke="#38bdf8" stroke-width="2"/>
-                <text x="240" y="85" fill="#7dd3fc" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Preparado</text>
+                <!-- NODO 2: PREPARADO (READY) -->
+                <g class="state-svg-node ${readyProcesses.length > 0 ? 'state-node-active' : ''}" onclick="actionT9_Despachar()" title="Clic para despachar a CPU">
+                  <rect x="210" y="58" width="125" height="64" rx="14" 
+                        fill="${readyProcesses.length > 0 ? 'rgba(56,189,248,0.22)' : 'rgba(15,23,42,0.9)'}" 
+                        stroke="#38bdf8" stroke-width="${readyProcesses.length > 0 ? '3.5' : '2.5'}" 
+                        ${readyProcesses.length > 0 ? 'filter="url(#glow-cyan)"' : ''} />
+                  <text x="272" y="87" fill="#bae6fd" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">PREPARADO</text>
+                  <text x="272" y="107" fill="#38bdf8" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">${readyProcesses.length} en cola</text>
+                </g>
 
-                <rect x="380" y="55" width="100" height="50" rx="10" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="2.5"/>
-                <text x="430" y="85" fill="#86efac" font-size="13" font-family="var(--font-sans)" font-weight="800" text-anchor="middle">Ejecutando</text>
+                <!-- NODO 3: EJECUTANDO (RUNNING - VERDE VIVO PROTAGONISTA) -->
+                <g class="state-svg-node ${activeRunning ? 'state-node-active' : ''}" onclick="actionT9_Quantum()" title="Clic para forzar fin de quantum">
+                  <rect x="420" y="54" width="125" height="72" rx="16" 
+                        fill="${activeRunning ? 'rgba(16,185,129,0.32)' : 'rgba(15,23,42,0.9)'}" 
+                        stroke="#10b981" stroke-width="${activeRunning ? '4' : '2.5'}" 
+                        ${activeRunning ? 'filter="url(#glow-emerald)"' : ''} />
+                  <text x="482" y="85" fill="#a7f3d0" font-size="15" font-weight="900" font-family="var(--font-sans)" text-anchor="middle">EJECUTANDO</text>
+                  <text x="482" y="108" fill="${activeRunning ? '#10b981' : '#64748b'}" font-size="12" font-weight="800" font-family="var(--font-mono)" text-anchor="middle">
+                    ${activeRunning ? `PID_${activeRunning.pid} [CPU]` : 'IDLE'}
+                  </text>
+                </g>
 
-                <rect x="380" y="190" width="100" height="50" rx="10" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="2"/>
-                <text x="430" y="220" fill="#fde68a" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Esperando</text>
+                <!-- NODO 4: ESPERANDO / BLOQUEADO (ROJO VIVO PROTAGONISTA) -->
+                <g class="state-svg-node ${waitingProcesses.length > 0 ? 'state-node-blocked' : ''}" onclick="actionT9_FinIO()" title="Clic para completar E/S y reanudar">
+                  <rect x="420" y="205" width="125" height="64" rx="14" 
+                        fill="${waitingProcesses.length > 0 ? 'rgba(244,63,94,0.28)' : 'rgba(15,23,42,0.9)'}" 
+                        stroke="#f43f5e" stroke-width="${waitingProcesses.length > 0 ? '3.5' : '2.5'}" 
+                        ${waitingProcesses.length > 0 ? 'filter="url(#glow-rose)"' : ''} />
+                  <text x="482" y="234" fill="#fecdd3" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">BLOQUEADO</text>
+                  <text x="482" y="254" fill="#f43f5e" font-size="11" font-weight="700" font-family="var(--font-mono)" text-anchor="middle">${waitingProcesses.length} en E/S</text>
+                </g>
 
-                <rect x="570" y="55" width="90" height="50" rx="10" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="2"/>
-                <text x="615" y="85" fill="#fca5a5" font-size="13" font-family="var(--font-sans)" font-weight="700" text-anchor="middle">Terminado</text>
+                <!-- NODO 5: TERMINADO -->
+                <g class="state-svg-node" onclick="actionT9_Admitir()" title="Proceso liberado de memoria">
+                  <rect x="640" y="58" width="110" height="64" rx="14" fill="rgba(15,23,42,0.9)" stroke="rgba(148,163,184,0.4)" stroke-width="2.5" />
+                  <text x="695" y="87" fill="#cbd5e1" font-size="14" font-weight="800" font-family="var(--font-sans)" text-anchor="middle">TERMINADO</text>
+                  <text x="695" y="107" fill="#64748b" font-size="10.5" font-family="var(--font-mono)" text-anchor="middle">Memoria libre</text>
+                </g>
               </svg>
 
-              <div style="display:flex; justify-content:space-between; margin-top:1rem; font-family:var(--font-mono); font-size:0.8rem;">
-                <div style="color:#7dd3fc;">Preparados: ${readyProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Vacía'}</div>
-                <div style="color:#86efac;">En CPU: ${activeRunning ? `PID_${activeRunning.pid}` : 'IDLE'}</div>
-                <div style="color:#fde68a;">Esperando E/S: ${waitingProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Ninguno'}</div>
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:1.2rem; font-family:var(--font-mono); font-size:0.85rem; padding:0.8rem 1rem; background:rgba(4,9,20,0.6); border-radius:10px; border:1px solid var(--border-subtle);">
+                <div style="color:#7dd3fc; display:flex; align-items:center; gap:6px;">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#38bdf8;"></span>
+                  <strong>Preparados:</strong> ${readyProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Vacía'}
+                </div>
+                <div style="color:#86efac; display:flex; align-items:center; gap:6px;">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
+                  <strong>En CPU:</strong> ${activeRunning ? `PID_${activeRunning.pid} (${activeRunning.cpuTime} u.t.)` : 'IDLE'}
+                </div>
+                <div style="color:#fda4af; display:flex; align-items:center; gap:6px;">
+                  <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#f43f5e; box-shadow:0 0 10px #f43f5e;"></span>
+                  <strong>Bloqueados E/S:</strong> ${waitingProcesses.map(p => `PID_${p.pid}`).join(', ') || 'Ninguno'}
+                </div>
               </div>
             </div>
 
@@ -1813,7 +2075,7 @@ struct task_struct *current = NULL;
               </div>
 
               <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
-                <strong>Nota ULL ESIT:</strong> Cada cambio de contexto implica salvar este descriptor en la memoria principal antes de ceder la CPU.
+                <strong>Nota Técnica:</strong> Cada cambio de contexto implica salvar este descriptor en la memoria principal antes de ceder la CPU.
               </div>
             </div>
           </div>
@@ -1876,7 +2138,7 @@ struct task_struct *current = NULL;
 
           <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Auditoría del Planificador y Kernel ULL ESIT</div>
+            <div class="audit-header-tag">Auditoría del Planificador y Kernel</div>
             <div><strong>Última Transición:</strong> ${stateT9.lastAction}</div>
             <div><strong>Diagnóstico del Kernel:</strong> ${stateT9.auditMsg}</div>
             ${stateT9.auditAlert ? `<div class="audit-alert-box">${stateT9.auditAlert}</div>` : ''}
@@ -1886,7 +2148,18 @@ struct task_struct *current = NULL;
       container.appendChild(panel);
     }
 
+    function resetStateT9() {
+      stateT9.processes = [];
+      stateT9.nextPid = 104;
+      stateT9.contextSwitches = 0;
+      stateT9.auditAlert = null;
+      stateT9.lastAction = "";
+      stateT9.auditMsg = "";
+    }
+
     function demoT9_CicloNormal() {
+      resetStateT9();
+      stateT9.contextSwitches = 3;
       stateT9.processes = [
         { pid: 101, state: "Preparado", pc: "0x00401A20", cpuTime: 4, priority: 2 },
         { pid: 102, state: "Ejecutando", pc: "0x00402F00", cpuTime: 12, priority: 1 },
@@ -1899,6 +2172,8 @@ struct task_struct *current = NULL;
     }
 
     function demoT9_BloqueoIO() {
+      resetStateT9();
+      stateT9.contextSwitches = 5;
       stateT9.processes = [
         { pid: 101, state: "Ejecutando", pc: "0x00401A20", cpuTime: 4, priority: 2 },
         { pid: 102, state: "Esperando", pc: "0x00402F00", cpuTime: 8, priority: 1 },
@@ -1906,7 +2181,7 @@ struct task_struct *current = NULL;
       ];
       stateT9.lastAction = "Auto-Demo: Suspensión por dispositivos periféricos de E/S";
       stateT9.auditMsg = "Dos procesos bloqueados en espera de interrupción de hardware.";
-      stateT9.auditAlert = "REGLA DE CÁTEDRA: Al concluir la E/S, el proceso pasa obligatoriamente a Preparado para volver a ser planificado.";
+      stateT9.auditAlert = "REGLA FORMAL: Al concluir la E/S, el proceso pasa obligatoriamente a Preparado para volver a ser planificado.";
       renderView();
     }
 
@@ -2273,30 +2548,54 @@ struct task_struct *current = NULL;
             </div>
           </div>
 
-          <!-- DIAGRAMA DE GANTT PROPORCIONAL -->
+          <!-- DIAGRAMA DE GANTT PROPORCIONAL ESPECTACULAR -->
           <div class="gantt-live-wrapper">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--neon-emerald);">
-                DIAGRAMA DE GANTT PROPORCIONAL (Tiempo Total: ${totalTime} u.t.)
-              </span>
-              <span style="font-size:0.8rem; color:var(--text-muted);">Inspección precisa de ranuras de despacho</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; gap:10px;">
+              <div>
+                <span style="font-family:var(--font-mono); font-size:1rem; font-weight:800; color:var(--neon-emerald); letter-spacing:0.04em;">
+                  CRONOGRAMA DE GANTT DE ALTA RESOLUCIÓN
+                </span>
+                <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">
+                  Tiempo Total de Despacho: <strong style="color:#fff; font-family:var(--font-mono);">${totalTime} u.t.</strong> &bull; Algoritmo: <strong style="color:var(--neon-cyan);">${stateT10.algorithm}</strong>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; font-family:var(--font-mono); font-size:0.78rem;">
+                <span style="background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:3px 10px; border-radius:6px;">
+                  ${stateT10.gantt.filter(g => g.pid !== 'IDLE').length} Ráfagas Despachadas
+                </span>
+              </div>
             </div>
 
-            <div class="gantt-chart-bar">
+            <!-- Barra de Gantt más gruesa y prominente -->
+            <div class="gantt-chart-bar-spectacular">
               ${stateT10.gantt.map(g => {
                 const pct = (g.duration / totalTime) * 100;
-                const bg = colorMap[g.pid] || "#10b981";
+                const bg = g.pid === 'IDLE' 
+                  ? 'repeating-linear-gradient(45deg, #1e293b, #1e293b 10px, #0f172a 10px, #0f172a 20px)' 
+                  : (colorMap[g.pid] || "#10b981");
                 return `
-                  <div class="gantt-block" style="width:${pct}%; background-color:${bg};" title="${g.pid}: [${g.start} - ${g.end}] (${g.duration} u.t.)">
-                    ${g.pid}
+                  <div class="gantt-block-spectacular" 
+                       style="width:${pct}%; background:${bg};" 
+                       title="${g.pid}: [${g.start} &rarr; ${g.end} u.t.] | Duración: ${g.duration} u.t.">
+                    <span class="gantt-block-pid">${g.pid}</span>
+                    <span class="gantt-block-dur">${g.duration} u.t.</span>
                   </div>
                 `;
               }).join('')}
             </div>
 
-            <div class="gantt-timeline-ticks">
-              <span>0 u.t.</span>
-              ${stateT10.gantt.map(g => `<span>${g.end}</span>`).join('')}
+            <!-- Tiempos de inicio y fin claros debajo de cada bloque -->
+            <div class="gantt-time-labels">
+              <span class="gantt-time-pill time-zero" style="left:0%;">0 u.t.</span>
+              ${stateT10.gantt.map((g, idx) => {
+                const isLast = idx === stateT10.gantt.length - 1;
+                const endPct = (g.end / totalTime) * 100;
+                return `
+                  <span class="gantt-time-pill ${isLast ? 'time-final' : ''}" style="left:${Math.min(endPct, 100)}%;">
+                    ${g.end} u.t.
+                  </span>
+                `;
+              }).join('')}
             </div>
           </div>
 
@@ -2353,12 +2652,12 @@ struct task_struct *current = NULL;
 
           <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Auditoría Analítica de Cátedra</div>
+            <div class="audit-header-tag">Auditoría Analítica de Planificación</div>
             <div><strong>Cálculo TMR:</strong> (${stateT10.evaluated.map(p => p.turnaround).join(' + ')}) / ${stateT10.evaluated.length} = <strong style="color:#fff;">${stateT10.tmr} u.t.</strong></div>
             <div><strong>Cálculo TME:</strong> (${stateT10.evaluated.map(p => p.waiting).join(' + ')}) / ${stateT10.evaluated.length} = <strong style="color:var(--neon-emerald);">${stateT10.tme} u.t.</strong></div>
             ${stateT10.hasConvoy ? `
               <div class="audit-alert-box">
-                <strong>EFECTO CONVOY DETECTADO EN FCFS:</strong> El proceso P1 domina la CPU con una ráfaga de ${stateT10.evaluated[0].burst} u.t., castigando la cola completa. Recomendación ULL: evaluar SRTF o Round Robin.
+                <strong>EFECTO CONVOY DETECTADO EN FCFS:</strong> El proceso P1 domina la CPU con una ráfaga de ${stateT10.evaluated[0].burst} u.t., castigando la cola completa. Recomendación técnica: evaluar SRTF o Round Robin.
               </div>
             ` : `
               <div class="audit-success-box">
@@ -2371,7 +2670,19 @@ struct task_struct *current = NULL;
       container.appendChild(panel);
     }
 
+    function resetStateT10() {
+      stateT10.processes = [];
+      stateT10.evaluated = [];
+      stateT10.gantt = [];
+      stateT10.tme = "0.0";
+      stateT10.tmr = "0.0";
+      stateT10.cpuUtil = "100%";
+      stateT10.hasConvoy = false;
+      stateT10.auditMsg = "";
+    }
+
     function demoT10_Convoy() {
+      resetStateT10();
       stateT10.algorithm = "FCFS";
       stateT10.processes = [
         { pid: "P1", arrival: 0, burst: 24 },
@@ -2382,6 +2693,7 @@ struct task_struct *current = NULL;
     }
 
     function demoT10_SRTF() {
+      resetStateT10();
       stateT10.algorithm = "SRTF";
       stateT10.processes = [
         { pid: "P1", arrival: 0, burst: 8 },
@@ -2420,7 +2732,7 @@ struct task_struct *current = NULL;
     // ==========================================================================
     function renderLabT11(container) {
       const panel = document.createElement('div');
-      panel.className = 'glass-panel';
+      panel.className = 'glass-panel lab-compact';
       panel.innerHTML = `
         <div class="panel-header">
           <div class="panel-header-left">
@@ -2574,7 +2886,16 @@ struct task_struct *current = NULL;
       container.appendChild(panel);
     }
 
+    function resetStateT11() {
+      stateT11.mailbox = [];
+      stateT11.p1State = "Activo";
+      stateT11.p3State = "Activo";
+      stateT11.auditAlert = null;
+      stateT11.auditMsg = "";
+    }
+
     function demoT11_BloqueoLleno() {
+      resetStateT11();
       stateT11.mode = "blocking";
       stateT11.capacity = 2;
       stateT11.mailbox = [
@@ -2589,6 +2910,7 @@ struct task_struct *current = NULL;
     }
 
     function demoT11_BloqueoVacio() {
+      resetStateT11();
       stateT11.mode = "blocking";
       stateT11.capacity = 3;
       stateT11.mailbox = [];
@@ -2669,14 +2991,14 @@ struct task_struct *current = NULL;
       const nextIn = (stateT12.inPtr + 1) % stateT12.size;
 
       const panel = document.createElement('div');
-      panel.className = 'glass-panel';
+      panel.className = 'glass-panel lab-compact';
       panel.innerHTML = `
         <div class="panel-header">
           <div class="panel-header-left">
             <div class="panel-icon-pill">12</div>
             <div>
               <h3 class="panel-title">Laboratorio: Memoria Compartida (Búfer Circular)</h3>
-              <p class="panel-subtitle">Verificación aritmética de condiciones de lleno y vacío de la ULL ESIT</p>
+              <p class="panel-subtitle">Verificación aritmética de condiciones de lleno y vacío en memoria compartida</p>
             </div>
           </div>
         </div>
@@ -2799,7 +3121,7 @@ struct task_struct *current = NULL;
 
           <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Comprobación Matemática de Cátedra ULL ESIT</div>
+            <div class="audit-header-tag">Comprobación Matemática de Búfer Circular</div>
             <div><strong>Comprobación de Vacío:</strong> (in == out) &rArr; (${stateT12.inPtr} == ${stateT12.outPtr}) = <strong style="color:${isEmpty ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">${isEmpty ? 'VERDADERO (Búfer Vacío)' : 'FALSO'}</strong></div>
             <div><strong>Comprobación de Lleno:</strong> ((in + 1) % N == out) &rArr; ((${stateT12.inPtr} + 1) % ${stateT12.size} == ${stateT12.outPtr}) &rArr; (${nextIn} == ${stateT12.outPtr}) = <strong style="color:${isFull ? 'var(--neon-rose)' : 'var(--neon-emerald)'};">${isFull ? 'VERDADERO (Búfer Lleno)' : 'FALSO'}</strong></div>
             <div style="margin-top:0.4rem; color:var(--text-muted);">
@@ -2812,7 +3134,17 @@ struct task_struct *current = NULL;
       container.appendChild(panel);
     }
 
+    function resetStateT12() {
+      stateT12.size = 8;
+      stateT12.inPtr = 0;
+      stateT12.outPtr = 0;
+      stateT12.buffer = Array(8).fill(null);
+      stateT12.auditAlert = null;
+      stateT12.auditMsg = "";
+    }
+
     function demoT12_Llenar() {
+      resetStateT12();
       stateT12.size = 8;
       stateT12.inPtr = 7;
       stateT12.outPtr = 0;
@@ -2823,6 +3155,7 @@ struct task_struct *current = NULL;
     }
 
     function demoT12_Vaciar() {
+      resetStateT12();
       stateT12.inPtr = 0;
       stateT12.outPtr = 0;
       stateT12.buffer = Array(stateT12.size).fill(null);
@@ -2876,7 +3209,7 @@ struct task_struct *current = NULL;
       const efficiency = ((S / N) * 100).toFixed(1);
 
       const panel = document.createElement('div');
-      panel.className = 'glass-panel';
+      panel.className = 'glass-panel lab-compact';
       panel.innerHTML = `
         <div class="panel-header">
           <div class="panel-header-left">
@@ -3018,7 +3351,7 @@ struct task_struct *current = NULL;
 
           <!-- AUDITORÍA -->
           <div class="audit-terminal">
-            <div class="audit-header-tag">Fórmula Formal de Amdahl (ULL ESIT)</div>
+            <div class="audit-header-tag">Fórmula Formal de la Ley de Amdahl</div>
             <div><code>S(N) = 1 / ((1 - P) + (P / N))</code> &rArr; <code>1 / (${(1 - P).toFixed(2)} + (${P} / ${N})) = ${S}x</code>.</div>
             <div><strong>Conclusión de Rendimiento:</strong> Aunque añadas infinitos procesadores, la aceleración jamás superará <strong style="color:var(--neon-cyan);">${Smax}x</strong> debido a que el ${((1 - P) * 100).toFixed(0)}% del código es estrictamente secuencial.</div>
           </div>
@@ -3058,7 +3391,7 @@ struct task_struct *current = NULL;
       const isCorrupt = !stateT14.useMutex && stateT14.stepIndex === 6;
 
       const panel = document.createElement('div');
-      panel.className = 'glass-panel';
+      panel.className = 'glass-panel lab-compact';
       panel.innerHTML = `
         <div class="panel-header">
           <div class="panel-header-left">
@@ -3200,7 +3533,18 @@ ${stateT14.useMutex ? '<span style="color:#86efac;">pthread_mutex_unlock(&m);</s
       container.appendChild(panel);
     }
 
+    function resetStateT14() {
+      stateT14.stepIndex = 0;
+      stateT14.r1 = 0;
+      stateT14.r2 = 0;
+      stateT14.count = 5;
+      stateT14.mutexLocked = false;
+      stateT14.auditAlert = null;
+      stateT14.lastStepText = "Secuencia reiniciada.";
+    }
+
     function demoT14_SinMutex() {
+      resetStateT14();
       stateT14.useMutex = false;
       stateT14.stepIndex = 6;
       stateT14.r1 = 6;
@@ -3211,6 +3555,7 @@ ${stateT14.useMutex ? '<span style="color:#86efac;">pthread_mutex_unlock(&m);</s
     }
 
     function demoT14_ConMutex() {
+      resetStateT14();
       stateT14.useMutex = true;
       stateT14.stepIndex = 6;
       stateT14.r1 = 6;
